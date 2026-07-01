@@ -1,0 +1,194 @@
+.orders-page{
+    max-width:1200px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+.page-title{
+    font-size:36px;
+    font-weight:800;
+    margin-bottom:25px;
+}
+
+.order-card{
+    background:#fff;
+    border-radius:16px;
+    padding:22px;
+    margin-bottom:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.order-header{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 120px;
+    gap:15px;
+    align-items:center;
+    border-bottom:1px solid #e5e7eb;
+    padding-bottom:15px;
+    margin-bottom:15px;
+}
+
+.header-item span{
+    display:block;
+    color:#64748b;
+    font-size:13px;
+}
+
+.header-item strong{
+    display:block;
+    margin-top:3px;
+    font-size:18px;
+}
+
+.header-item small{
+    color:#64748b;
+}
+
+.text-right{
+    text-align:right;
+}
+
+.status{
+    display:inline-block;
+    background:#22c55e;
+    color:#fff;
+    padding:8px 18px;
+    border-radius:25px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.products-list{
+    margin-top:10px;
+}
+
+.product-row{
+    display:grid;
+    grid-template-columns:1fr 120px 180px;
+    align-items:center;
+    gap:20px;
+    padding:12px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.product-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.product-left img{
+    width:75px;
+    height:75px;
+    object-fit:contain;
+}
+
+.product-left strong{
+    font-size:17px;
+}
+
+.product-qty{
+    font-weight:700;
+    color:#475569;
+}
+
+.product-price{
+    font-size:20px;
+    font-weight:800;
+    color:#2563eb;
+    text-align:right;
+}
+
+.order-footer{
+    display:grid;
+    grid-template-columns:1fr 260px;
+    gap:20px;
+    margin-top:18px;
+    align-items:center;
+}
+
+.address-box,
+.total-box{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:15px;
+}
+
+.address-box p{
+    margin:5px 0 0;
+    color:#475569;
+}
+
+.total-box span{
+    display:block;
+    color:#64748b;
+    margin-bottom:5px;
+}
+
+.total-box strong{
+    font-size:22px;
+    color:#111827;
+}
+
+.empty-orders{
+    text-align:center;
+    background:#fff;
+    padding:60px;
+    border-radius:16px;
+}
+
+.cancel-btn{
+    margin-top:12px;
+    background:#dc2626;
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.cancel-btn:hover{
+    background:#b91c1c;
+}
+.invoice-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    position: relative;
+    width: 194px;
+    left: 60px;
+    padding:12px 22px;
+    background:linear-gradient(135deg,#4f46e5,#2563eb);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:14px;
+    border-radius:10px;
+    transition:.3s;
+    box-shadow:0 8px 18px rgba(37,99,235,.25);
+}
+
+.invoice-btn:hover{
+    background:linear-gradient(135deg,#4338ca,#1d4ed8);
+    color:#fff;
+    transform:translateY(-2px);
+    box-shadow:0 12px 22px rgba(37,99,235,.35);
+}
+
+.invoice-btn i{
+    font-size:16px;
+}
+@media(max-width:900px){
+    .order-header,
+    .product-row,
+    .order-footer{
+        grid-template-columns:1fr;
+    }
+
+    .text-right,
+    .product-price{
+        text-align:left;
+    }
+}
