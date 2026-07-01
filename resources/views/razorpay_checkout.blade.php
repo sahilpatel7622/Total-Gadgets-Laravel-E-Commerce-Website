@@ -8,6 +8,8 @@
     @csrf
     <input type="hidden" name="order_id" value="{{ $order->id }}">
     <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+
+    <input type="hidden" name="buy_now_product_id" value="{{ $buyNowProductId ?? '' }}">
 </form>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

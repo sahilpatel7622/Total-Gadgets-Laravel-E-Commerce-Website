@@ -215,6 +215,7 @@ class CartController extends Controller
                     'order' => $order,
                     'amount' => $cartTotal,
                     'key' => env('RAZORPAY_KEY'),
+                    'buyNowProductId' => $request->buy_now_product_id,
                 ]);
             }
 
@@ -285,7 +286,9 @@ class CartController extends Controller
             'Paid'
         );
 
-        Cart::where('user_id', Auth::id())->delete();
+        if (!$request->buy_now_product_id) {
+            Cart::where('user_id', Auth::id())->delete();
+        }
 
         return redirect()
             ->route('products')
