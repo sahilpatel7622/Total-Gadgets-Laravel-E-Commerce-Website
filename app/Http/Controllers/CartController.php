@@ -360,7 +360,7 @@ class CartController extends Controller
         ->where('user_id', Auth::id())
         ->findOrFail($id);
         $pdf = Pdf::loadView('invoice', compact('order'));
-        return $pdf->download('Invoice-'.$order->order_number.'.pdf');
+        return $pdf->download('In   voice-'.$order->order_number.'.pdf');
     }
 
 }
