@@ -179,9 +179,7 @@
 
 <script>
 document.getElementById("forgotForm").addEventListener("submit", function () {
-
     document.getElementById("loader").style.display = "flex";
-
     document.getElementById("submitBtn").disabled = true;
     document.getElementById("submitBtn").innerHTML = "Sending...";
 

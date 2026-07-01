@@ -181,7 +181,7 @@ class CartController extends Controller
 
             $order = Order::create([
                 'user_id' => Auth::id(),
-                'order_number' => 'ORD' . date('YmdHis'),
+                'order_number' => 'TG' . date('YmdHis'),
                 'amount' => $cartTotal,
                 'address' => $fullAddress,
                 'status' => 'Pending',
