@@ -13,6 +13,7 @@ use App\Models\Payment;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Otp;
 
 class CartController extends Controller
 {
@@ -114,7 +115,6 @@ class CartController extends Controller
         ));
     }
 
-
     // Checkout
     
     public function checkout()
@@ -130,8 +130,7 @@ class CartController extends Controller
         return view('checkout', compact('cartItems', 'cartTotal'));
     }
 
-    // Place Order
-
+    // Place Order - OTP Send
     public function placeOrder(Request $request)
     {
         $request->validate([
@@ -147,6 +146,7 @@ class CartController extends Controller
 
         if ($request->buy_now_product_id) {
             $product = product::findOrFail($request->buy_now_product_id);
+
             $cartItems = collect([
                 (object)[
                     'product' => $product,
@@ -154,9 +154,7 @@ class CartController extends Controller
                     'quantity' => 1
                 ]
             ]);
-
         } else {
-
             $cartItems = Cart::with('product')
                 ->where('user_id', Auth::id())
                 ->get();
@@ -167,6 +165,125 @@ class CartController extends Controller
                 ->with('error', 'Cart is empty.');
         }
 
+        $otp = rand(100000, 999999);
+        Otp::where('user_id', Auth::id())
+            ->where('type', 'order_verify')
+            ->delete();
+
+        Otp::create([
+            'user_id' => Auth::id(),
+            'email' => $request->email,
+            'otp' => $otp,
+            'type' => 'order_verify',
+            'expiry' => now()->addMinutes(5),
+        ]);
+
+        session([
+            'order_data' => $request->all()
+        ]);
+
+            Mail::html("
+                <div style='max-width:600px;margin:auto;padding:30px;
+                            font-family:Arial,sans-serif;
+                            border:1px solid #e5e7eb;
+                            border-radius:10px;
+                            background:#f9fafb;'>
+
+                    <div style='text-align:center'>
+                        <h2 style='color:#4f46e5;margin-bottom:10px;'>
+                            Total Gadgets
+                        </h2>
+
+                        <p style='font-size:16px;color:#555;'>
+                            Password Reset OTP
+                        </p>
+
+                        <div style='margin:30px 0'>
+                            <span style='font-size:34px;
+                                        font-weight:bold;
+                                        color:#111827;
+                                        letter-spacing:6px;'>
+                                {$otp}
+                            </span>
+                        </div>
+
+                        <p style='color:#666'>
+                            This OTP is valid for
+                            <strong>5 Minutes</strong>.
+                        </p>
+
+                        <p style='color:#999;font-size:13px'>
+                            Do not share this OTP with anyone.
+                        </p>
+                    </div>
+
+                </div>
+        
+        ",function ($message) use ($request) {
+            $message->to($request->email)
+                ->subject('Order Verification OTP');
+        });
+
+        return redirect()->route('order.otp.form')
+            ->with('success', 'OTP sent successfully.');
+    }
+
+
+    // OTP Page
+    public function orderOtpForm()
+    {
+        if (!session()->has('order_data')) {
+            return redirect()->route('checkout')
+                ->with('error', 'Session expired.');
+        }
+        return view('order_verify_otp');
+    }
+
+
+    // Verify OTP + Create Order
+    public function verifyOrderOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|digits:6',
+        ]);
+
+        $otpData = Otp::where('user_id', Auth::id())
+            ->where('otp', $request->otp)
+            ->where('type', 'order_verify')
+            ->latest()
+            ->first();
+
+        if (!$otpData) {
+            return back()->with('error', 'Invalid OTP.');
+        }
+
+        if (now()->gt($otpData->expiry)) {
+            return back()->with('error', 'OTP expired.');
+        }
+
+        $orderData = session('order_data');
+
+        if (!$orderData) {
+            return redirect()->route('checkout')
+                ->with('error', 'Session expired.');
+        }
+
+        if (!empty($orderData['buy_now_product_id'])) {
+            $product = product::findOrFail($orderData['buy_now_product_id']);
+
+            $cartItems = collect([
+                (object)[
+                    'product' => $product,
+                    'product_id' => $product->id,
+                    'quantity' => 1
+                ]
+            ]);
+        } else {
+            $cartItems = Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->get();
+        }
+
         DB::beginTransaction();
 
         try {
@@ -174,10 +291,10 @@ class CartController extends Controller
                 return $item->product ? $item->product->price * $item->quantity : 0;
             });
 
-            $fullAddress = $request->address . ', ' .
-                $request->city . ', ' .
-                $request->state . ' - ' .
-                $request->pincode;
+            $fullAddress = $orderData['address'] . ', ' .
+                $orderData['city'] . ', ' .
+                $orderData['state'] . ' - ' .
+                $orderData['pincode'];
 
             $order = Order::create([
                 'user_id' => Auth::id(),
@@ -200,33 +317,32 @@ class CartController extends Controller
                 'order_id' => $order->id,
                 'user_id' => Auth::id(),
                 'amount' => $cartTotal,
-                'payment_method' => $request->payment_method,
+                'payment_method' => $orderData['payment_method'],
                 'payment_status' => 'Pending',
                 'razorpay_payment_id' => null,
             ]);
 
-            if ($request->payment_method == 'COD' && !$request->buy_now_product_id) {
+            if ($orderData['payment_method'] == 'COD' && empty($orderData['buy_now_product_id'])) {
                 Cart::where('user_id', Auth::id())->delete();
             }
 
             DB::commit();
-            if ($request->payment_method == 'RAZORPAY') {
+            if ($orderData['payment_method'] == 'RAZORPAY') {
                 return view('razorpay_checkout', [
                     'order' => $order,
                     'amount' => $cartTotal,
                     'key' => env('RAZORPAY_KEY'),
-                    'buyNowProductId' => $request->buy_now_product_id,
+                    'buyNowProductId' => $orderData['buy_now_product_id'] ?? null,
                 ]);
             }
 
             $order->load('items.product');
             $this->sendOrderConfirmMail(
                 $order,
-                $request->email,
-                $request->name,
+                $orderData['email'],
+                $orderData['name'],
                 'Cash On Delivery'
             );
-
 
             return redirect()
                 ->route('products')
@@ -237,6 +353,7 @@ class CartController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
 
     // My Order
     public function myOrders()

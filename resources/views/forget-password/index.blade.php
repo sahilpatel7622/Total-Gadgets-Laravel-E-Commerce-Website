@@ -127,6 +127,10 @@
             border-radius:50%;
             animation:spin .8s linear infinite;
         }
+        input[readonly]{
+            background:#f3f4f6;
+            cursor:not-allowed;
+        }
 
         @keyframes spin{
             100%{
@@ -166,7 +170,8 @@
             name="email"
             class="form-control"
             placeholder="Enter Email"
-            value="{{ old('email') }}"
+             value="{{ old('email', $email) }}"
+            {{ Auth::check() ? 'readonly' : '' }}
         >
 
         @error('email')
@@ -180,10 +185,12 @@
         </button>
     </form>
 
+    @if(!Auth::check())
     <div class="back-login">
         Remember password?
         <a href="{{ url('/login') }}">Login</a>
     </div>
+    @endif
 
 </div>
 
@@ -191,12 +198,9 @@
 
 <script>
 document.getElementById("forgotForm").addEventListener("submit", function () {
-
     document.getElementById("loader").style.display = "flex";
-
     document.getElementById("submitBtn").disabled = true;
     document.getElementById("submitBtn").innerHTML = "Sending...";
-
 });
 </script>
 

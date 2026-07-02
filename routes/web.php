@@ -5,7 +5,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\GmailController;
+use App\Http\Controllers\OtpController;
 
     Route::get('/', function () {
         return redirect()->route('dashboard');
@@ -54,6 +54,10 @@ Route::middleware('auth')->group(function () {
     // Buy Now
     Route::get('/buy-now/{slug}', [CartController::class, 'buyNow'])->name('buy.now');
 
+    // Order Time OTP Verify
+    Route::get('/order/otp', [CartController::class, 'orderOtpForm'])->name('order.otp.form');
+    Route::post('/order/otp', [CartController::class, 'verifyOrderOtp'])->name('order.otp.verify');
+
     // Place Order
     Route::post('/place-order', [CartController::class, 'placeOrder'])->name('place.order');
 
@@ -74,12 +78,12 @@ Route::middleware('auth')->group(function () {
 
 // Forget Password
 
-Route::get('/forgot-password', [GmailController::class,'forgotPassword'])->name('forgot.password');
-Route::post('/send-otp', [GmailController::class,'sendOtp'])->name('send.otp');
-Route::get('/verify-otp', [GmailController::class,'verifyOtpForm'])->name('verify.otp');
-Route::post('/verify-otp', [GmailController::class,'verifyOtp']);
-Route::get('/reset-password', [GmailController::class,'resetPasswordForm'])->name('reset.password');
-Route::post('/reset-password', [GmailController::class,'resetPassword']);
+Route::get('/forgot-password', [OtpController::class,'forgotPassword'])->name('forgot.password');
+Route::post('/send-otp', [OtpController::class,'sendOtp'])->name('send.otp');
+Route::get('/verify-otp', [OtpController::class,'verifyOtpForm'])->name('verify.otp');
+Route::post('/verify-otp', [OtpController::class,'verifyOtp']);
+Route::get('/reset-password', [OtpController::class,'resetPasswordForm'])->name('reset.password');
+Route::post('/reset-password', [OtpController::class,'resetPassword']);
 
 Route::get('/admin', [AdminController::class, 'admin_login']);
 Route::post('/admin', [AdminController::class, 'admin_login_store'])->name('admin_login_store');

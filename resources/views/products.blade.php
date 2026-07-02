@@ -59,7 +59,7 @@
 }
 
 .search-form input{
-    width:100%;
+    width:70%;
     padding:11px 14px;
     border:1px solid #ddd;
     border-radius:8px 0 0 8px;
@@ -78,8 +78,10 @@
 
 .category-filters{
     display:flex;
-    gap:8px;
+    gap:10px;
     flex-wrap:wrap;
+    position: relative;
+    right: 55px;
 }
 
 .filter-chip{
@@ -102,6 +104,8 @@
     display:flex;
     align-items:center;
     gap:8px;
+    position: relative;
+    right: 30px;
 }
 
 .sort-form label{
@@ -119,6 +123,8 @@
     margin-left:auto;
     font-size:14px;
     color:#64748b;
+    position: relative;
+    right: 15px;
 }
 
 /* Product Grid */
@@ -339,33 +345,27 @@ a:hover .product-name{
     position: relative;
     top: 5px
 }
-
-#loader{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(255,255,255,.7);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
+.reset-btn{
+    margin-left: 10px;
 }
 
-.spinner{
-    width:60px;
-    height:60px;
-    border:6px solid #ddd;
-    border-top:6px solid #5b7cf0;
-    border-radius:50%;
-    animation:spin .8s linear infinite;
+.reset-btn button,
+#clearFilters{
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+    white-space: nowrap;
 }
 
-@keyframes spin{
-    100%{
-        transform:rotate(360deg);
-    }
+.reset-btn button:hover,
+#clearFilters:hover{
+    background: #1d4ed8;
 }
 
 /* Responsive */
@@ -379,14 +379,44 @@ grid-template-columns:repeat(2,1fr);
 }
 
 @media(max-width:768px){
-
 .toolbar-row{
-flex-direction:column;
-align-items:stretch;
+    flex-direction:column;
+    align-items:stretch;
+    gap:15px;
+}
+
+.search-form{
+    width:100%;
+    min-width:100%;
+}
+
+.search-form input{
+    width:100%;
+}
+
+.category-filters{
+    position:static;
+    right:auto;
+    justify-content:flex-start;
+}
+
+.sort-form{
+    position:static;
+    right:auto;
+    width:100%;
+    justify-content:flex-start;
 }
 
 .results-meta{
-margin-left:0;
+    position:static;
+    right:auto;
+    margin:0;
+}
+
+#clearFilters{
+    width:100%;
+    height:42px;
+    margin-top:5px;
 }
 
 .products-grid{
@@ -408,78 +438,78 @@ text-align:center;
 
 </style>
 
-<body>
-<div id="loader">
-    <div class="spinner"></div>
-</div>
-    <div class="products-page">
+<div class="products-page">
 
-        <div class="products-hero">
-            <h1>Shop Our Products</h1>
-            <p>Browse curated items across categories. Find quality products at competitive prices.</p>
-        </div>
-
-        <div class="products-toolbar" id="products-toolbar">
-            <div class="toolbar-row">
-
-                <form id="forgotForm" action="{{ route('products') }}" method="GET" class="search-form" id="searchForm">
-                    <input type="text"
-                        name="search"
-                        id="searchInput"
-                        placeholder="Search by product or category..."
-                        value="{{ request('search') }}">
-
-                    <button type="submit">Search</button>
-                </form>
-
-                <div class="category-filters">
-                    <a href="#" data-category="" class="filter-chip ajax-category active">All</a>
-
-                    @foreach($categories as $cat)
-                        <a href="#"
-                        data-category="{{ $cat->slug }}"
-                        class="filter-chip ajax-category">
-                            {{ $cat->name }}
-                        </a>
-                    @endforeach
-                </div>
-
-                <form action="{{ route('products') }}" method="GET" class="sort-form" id="sortForm">
-                    <label for="sort">Sort by</label>
-
-                    <select name="sort" id="sort">
-                        <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>
-                            Newest first
-                        </option>
-
-                        <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>
-                            Price: Low to High
-                        </option>
-
-                        <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>
-                            Price: High to Low
-                        </option>
-
-                        <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>
-                            Name: A to Z
-                        </option>
-                    </select>
-                </form>
-
-                <div class="results-meta">
-                    Showing <strong>{{ $product->count() }}</strong>
-                    product{{ $product->count() === 1 ? '' : 's' }}
-                </div>
-
-            </div>
-        </div>
-
-        <div class="products-grid" id="productsGrid">
-            @include('product_ajax')
-        </div>
-
+    <div class="products-hero">
+        <h1>Shop Our Products</h1>
+        <p>Browse curated items across categories. Find quality products at competitive prices.</p>
     </div>
-</body>
+
+    <div class="products-toolbar" id="products-toolbar">
+        <div class="toolbar-row">
+
+            <form action="{{ route('products') }}" method="GET" class="search-form" id="searchForm">
+                <input type="text"
+                       name="search"
+                       id="searchInput"
+                       placeholder="Search by product or category..."
+                       value="{{ request('search') }}">
+
+                <button type="submit">Search</button>
+            </form>
+
+            <div class="category-filters">
+                <a href="#" data-category="" class="filter-chip ajax-category active">All</a>
+
+                @foreach($categories as $cat)
+                    <a href="#"
+                    data-category="{{ $cat->slug }}"
+                    class="filter-chip ajax-category">
+                        {{ $cat->name }}
+                    </a>
+                @endforeach
+            </div>
+
+            <form action="{{ route('products') }}" method="GET" class="sort-form" id="sortForm">
+                <label for="sort">Sort by</label>
+
+                <select name="sort" id="sort">
+                    <option value="newest" {{ request('sort', 'newest') === 'newest' ? 'selected' : '' }}>
+                        Newest first
+                    </option>
+
+                    <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>
+                        Price: Low to High
+                    </option>
+
+                    <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>
+                        Price: High to Low
+                    </option>
+
+                    <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>
+                        Name: A to Z
+                    </option>
+                </select>
+            </form>
+
+            <div class="results-meta">
+                Showing <strong>{{ $product->count() }}</strong>
+                product{{ $product->count() === 1 ? '' : 's' }}
+            </div>
+
+            <button type="button" id="clearFilters" class="btn btn-secondary">
+                Reset
+            </button>
+
+        </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+        @include('product_ajax')
+    </div>
+
+</div>
+
 <script>
 
 let selectedCategory = "{{ request('category') ?? '' }}";
@@ -566,15 +596,6 @@ document.addEventListener('click', function(e) {
 
         fetchProducts();
     }
-});
-</script>
-
-<script>
-document.getElementById("forgotForm").addEventListener("submit", function () {
-    document.getElementById("loader").style.display = "flex";
-    document.getElementById("submitBtn").disabled = true;
-    document.getElementById("submitBtn").innerHTML = "Sending...";
-
 });
 </script>
 

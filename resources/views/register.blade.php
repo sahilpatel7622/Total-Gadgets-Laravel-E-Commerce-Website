@@ -169,10 +169,14 @@
                 id="password"
                 name="password"
                 placeholder="Enter Password"
-                required
             >
-
             <span class="toggle-password" onclick="togglePassword()">👁</span>
+            @error('password')
+                <small style="color:red;display:block;margin:-12px 0 12px;">
+                    {{ $message }}
+                </small>
+            @enderror
+
         </div>
         <button type="submit" name="register">Register</button>
 
@@ -187,61 +191,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    $('#userregister').submit(function(e){
-        let name = $('input[name="name"]').val().trim();
-        let email = $('input[name="email"]').val().trim();
-        let number = $('input[name="number"]').val().trim();
-        let password = $('input[name="password"]').val().trim();
-
-        if(name == ''){
-            Swal.fire({ title: 'Error', text: 'Name is required', icon: 'error', heightAuto: false });
-            return false;
-        }
-
-        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!emailPattern.test(email)){
-            Swal.fire({ title: 'Error', text: 'Enter valid email address', icon: 'error', heightAuto: false });
-            return false;
-        }
-
-        if(number == ''){
-            Swal.fire({ title: 'Error', text: 'Number is required', icon: 'error', heightAuto: false });
-            return false;
-        }
-
-        if(number.length != 10){
-            Swal.fire({ title: 'Error', text: 'Number must be 10 digits', icon: 'error', heightAuto: false });
-            return false;
-        }
-
-        if(password == ''){
-            Swal.fire({ title: 'Error', text: 'Password is required', icon: 'error', heightAuto: false });
-            return false;
-        }
-
-        if(password.length != 6){
-            Swal.fire({ title: 'Error', text: 'Password must be 6 digits', icon: 'error', heightAuto: false });
-            return false;
-        }
-    });
-
-    $(document).ready(function(){
-        $('#number').on('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.length > 10) {
-                this.value = this.value.slice(0, 10);
-            }
-        });
-
-        $('#password').on('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.length > 6) {
-                this.value = this.value.slice(0, 6);
-            }
-        });
-    });
-
-
 
         function togglePassword() {
             const password = document.getElementById('password');
@@ -252,7 +201,6 @@
                 password.type = 'password';
             }
         }
-
 
 </script>
 

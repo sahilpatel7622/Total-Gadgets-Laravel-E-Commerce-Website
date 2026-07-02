@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 01, 2026 at 02:40 PM
+-- Generation Time: Jul 02, 2026 at 11:28 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,13 @@ CREATE TABLE `add_to_cart` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `add_to_cart`
+--
+
+INSERT INTO `add_to_cart` (`id`, `user_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
+(45, 17, 6, 1, '2026-07-02 03:53:05', '2026-07-02 03:53:05');
 
 -- --------------------------------------------------------
 
@@ -78,7 +85,7 @@ CREATE TABLE `category` (
 INSERT INTO `category` (`id`, `name`, `slug`, `status`, `created_at`, `updated_at`) VALUES
 (2, 'Tv', 'tv', 1, '2026-06-19 02:11:29', '2026-06-19 23:34:10'),
 (3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-06-19 23:34:09'),
-(6, 'Laptop', 'laptop', 0, '2026-06-19 04:09:24', '2026-07-01 01:33:50');
+(6, 'Laptop', 'laptop', 0, '2026-06-19 04:09:24', '2026-07-01 23:24:16');
 
 -- --------------------------------------------------------
 
@@ -202,7 +209,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (27, '2026_07_01_053729_payments', 22),
 (28, '2026_07_01_055636_payments', 23),
 (29, '2026_07_01_055827_payments', 24),
-(30, '2026_07_01_074344_add_reset_otp_columns_to_user_table', 25);
+(30, '2026_07_01_074344_add_reset_otp_columns_to_user_table', 25),
+(31, '2026_07_02_055827_otps', 26),
+(32, '2026_07_02_073002_otps', 27),
+(33, '2026_07_02_073403_otps', 28);
 
 -- --------------------------------------------------------
 
@@ -226,8 +236,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `order_number`, `amount`, `address`, `status`, `created_at`, `updated_at`) VALUES
-(29, 17, 'TG20260701123815', 37999.00, 'Ishanpur, Ahmedabad, Gujarat - 368512', 'Pending', '2026-07-01 07:08:15', '2026-07-01 07:08:15'),
-(30, 17, 'TG20260701123943', 159900.00, 'Thaltej, Ahmedabad, Gujarat - 380059', 'Delivered', '2026-07-01 07:09:43', '2026-07-01 07:10:05');
+(32, 17, 'TG20260702091818', 52999.00, 'Thaltej, Ahmedabad, Gujarat - 380059', 'Pending', '2026-07-02 03:48:18', '2026-07-02 03:48:18'),
+(34, 17, 'TG20260702092341', 32999.00, 'Ishanpur, Ahmedabad, Gujarat - 494946', 'Delivered', '2026-07-02 03:53:41', '2026-07-02 03:54:26');
 
 -- --------------------------------------------------------
 
@@ -250,8 +260,25 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`, `updated_at`) VALUES
-(31, 29, 10, 1, 37999.00, '2026-07-01 07:08:15', '2026-07-01 07:08:15'),
-(32, 30, 6, 1, 159900.00, '2026-07-01 07:09:43', '2026-07-01 07:09:43');
+(34, 32, 8, 1, 52999.00, '2026-07-02 03:48:18', '2026-07-02 03:48:18'),
+(36, 34, 12, 1, 32999.00, '2026-07-02 03:53:41', '2026-07-02 03:53:41');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `otps`
+--
+
+CREATE TABLE `otps` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `otp` varchar(6) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `expiry` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -276,8 +303,8 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `user_id`, `amount`, `payment_method`, `payment_status`, `razorpay_payment_id`, `created_at`, `updated_at`) VALUES
-(28, 29, 17, 37999.00, 'NETBANKING', 'Paid', 'pay_T8F0wbZ6gatQjE', '2026-07-01 07:08:15', '2026-07-01 07:08:43'),
-(29, 30, 17, 159900.00, 'COD', 'Pending', NULL, '2026-07-01 07:09:43', '2026-07-01 07:09:43');
+(31, 32, 17, 52999.00, 'COD', 'Pending', NULL, '2026-07-02 03:48:18', '2026-07-02 03:48:18'),
+(33, 34, 17, 32999.00, 'CARDLESS_EMI', 'Paid', 'pay_T8aEOvZjXZBH2n', '2026-07-02 03:53:41', '2026-07-02 03:54:01');
 
 -- --------------------------------------------------------
 
@@ -331,8 +358,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('FgL8EvNVcpiCje4cLZgcVGsV6k1w9lEf623hDZEa', 17, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVWdKeVgweFNmNldiaER4Q3d2TmpQZjRldVRlelF4a1NyM2R1NVl0MCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9teS1vcmRlcnMiO3M6NToicm91dGUiO3M6OToibXkub3JkZXJzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTc7fQ==', 1782909608),
-('XjOxQ2ZcpmRWZCREYxmwySVDlN7U6jFSRIcCTT8p', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiVDIySnhJZEtmeUtsQWFUSTVtcTJWN2F6YzZUTXJmRTQ2NXY3Wmd4dSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjg6ImFkbWluX2lkIjtpOjE7czoxMDoiYWRtaW5fbmFtZSI7czo1OiJzYWhpbCI7fQ==', 1782909606);
+('2N4lL0lRCCX3XBChkJ02XNT9Fiy83ZYi22chn3hw', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiZTh6TzFaV0pneEhHN3lYMHFlMkFGZW9KNlR5dkg1cVdZdXJmUEVYaSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjg6ImFkbWluX2lkIjtpOjE7czoxMDoiYWRtaW5fbmFtZSI7czo1OiJzYWhpbCI7fQ==', 1782984270),
+('Mw3LzrZVhRQv634aNBu9DHemM2aYlr0kj5E4t5OL', 17, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRFdtcWxMZmh2TE45VHhrWWs5MTlmRW8zTW1EWEk5eVUxRVlsY3M0WSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9kdWN0cyI7czo1OiJyb3V0ZSI7czo4OiJwcm9kdWN0cyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE3O30=', 1782984525);
 
 -- --------------------------------------------------------
 
@@ -374,8 +401,6 @@ CREATE TABLE `user` (
   `number` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `reset_otp` varchar(6) DEFAULT NULL,
-  `reset_otp_expiry` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active'
@@ -385,9 +410,9 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `reset_otp`, `reset_otp_expiry`, `created_at`, `updated_at`, `status`) VALUES
-(17, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$oQi5TAnGgzlHw4P/amP2xeuU43Jm32ncOyyd1x9QGjqAsZmjQ2rk2', '793756', '2026-07-01 05:16:35', '2026-06-20 03:52:07', '2026-07-01 05:11:35', 'Active'),
-(18, 'Dhruvi', '9846541654', 'dhruvi@gamil.com', '$2y$12$ylW5oElZye1vik33.mxRZumW9Q2H5mS8.9Ouvj.E9A3t.xlfV3kSG', NULL, NULL, '2026-06-20 03:52:27', '2026-06-30 23:00:23', 'Active');
+INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `created_at`, `updated_at`, `status`) VALUES
+(17, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$Z30xpJTOmXyrjruDGXSDVObokCk.eUyObWv4mtxmt1fqoC11IqV1C', '2026-06-20 03:52:07', '2026-07-02 01:50:50', 'Active'),
+(18, 'Dhruvi', '9846541654', 'dhruvi@gamil.com', '$2y$12$ylW5oElZye1vik33.mxRZumW9Q2H5mS8.9Ouvj.E9A3t.xlfV3kSG', '2026-06-20 03:52:27', '2026-06-30 23:00:23', 'Active');
 
 -- --------------------------------------------------------
 
@@ -480,6 +505,13 @@ ALTER TABLE `order_items`
   ADD KEY `order_items_product_id_foreign` (`product_id`);
 
 --
+-- Indexes for table `otps`
+--
+ALTER TABLE `otps`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `otps_user_id_foreign` (`user_id`);
+
+--
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -531,7 +563,7 @@ ALTER TABLE `user_location_mapping`
 -- AUTO_INCREMENT for table `add_to_cart`
 --
 ALTER TABLE `add_to_cart`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `Admin_user`
@@ -567,25 +599,31 @@ ALTER TABLE `data`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT for table `otps`
+--
+ALTER TABLE `otps`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -603,7 +641,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `user_location_mapping`
@@ -627,6 +665,12 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `otps`
+--
+ALTER TABLE `otps`
+  ADD CONSTRAINT `otps_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `payments`

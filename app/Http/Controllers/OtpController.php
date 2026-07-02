@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Otp;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
-class GmailController extends Controller
+class OtpController extends Controller
 {
     // Forgot Password Page
     public function forgotPassword()
     {
-        return view('forget-password.index');
+         $email = Auth::check() ? Auth::user()->email : '';
+        return view('forget-password.index', compact('email'));
     }
 
     // Send OTP
@@ -25,12 +28,18 @@ class GmailController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-
         $otp = rand(100000, 999999);
+        Otp::where('email', $user->email)
+            ->where('type', 'forgot_password')
+            ->delete();
 
-        $user->reset_otp = $otp;
-        $user->reset_otp_expiry = now()->addMinutes(5);
-        $user->save();
+        Otp::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'otp' => $otp,  
+            'type' => 'forgot_password',
+            'expiry' => now()->addMinutes(5),
+        ]);
 
         Mail::html("
         <div style='max-width:600px;margin:auto;padding:30px;
@@ -102,17 +111,17 @@ class GmailController extends Controller
 
         $user = User::where('email', session('reset_email'))->first();
 
-        if (!$user) {
-            return redirect()
-                ->route('forgot.password')
-                ->with('error', 'Session expired.');
-        }
+        $otpData = Otp::where('email', session('reset_email'))
+            ->where('otp', $request->otp)
+            ->where('type', 'forgot_password')
+            ->latest()
+            ->first();
 
-        if ($user->reset_otp != $request->otp) {
+        if (!$otpData) {
             return back()->with('error', 'Invalid OTP.');
         }
 
-        if (now()->gt($user->reset_otp_expiry)) {
+        if (now()->gt($otpData->expiry)) {
             return back()->with('error', 'OTP expired.');
         }
 
@@ -139,9 +148,13 @@ class GmailController extends Controller
         $request->validate([
             'password' => [
                 'required',
-                'digits:6',
+                'min:6',
                 'confirmed',
             ],
+        ], [
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be minimum 6 characters.',
+            'password.confirmed' => 'Confirm password does not match.',
         ]);
 
         $email = session('reset_email');
@@ -158,11 +171,22 @@ class GmailController extends Controller
         }
 
         $user->password = Hash::make($request->password);
-        $user->reset_otp = null;
-        $user->reset_otp_expiry = null;
+        Otp::where('email', $user->email)
+            ->where('type', 'forgot_password')
+            ->delete();
         $user->save();
         session()->forget('reset_email');
-        return redirect('/login')->with('success', 'Password updated successfully.');
-    }
+
+
+        if (Auth::check()) {
+            return redirect()
+                ->route('profile.security')
+                ->with('success', 'Password updated successfully!.');
+        }
+
+        return redirect()
+            ->route('login')
+            ->with('success', 'Password updated successfully!. Please login.');
+        }
 
 }

@@ -166,13 +166,9 @@
             </div>
         @endif
 
-        @if($errors->any())
+        @if(session('error'))
             <div class="error">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                {{ session('error') }}
             </div>
         @endif
 
@@ -181,24 +177,29 @@
             name="email"
             value="{{ old('email') }}"
             placeholder="Enter Email"
-            required
         >
+        @error('email')
+            <small style="color:red;display:block;margin:-12px 0 12px;">
+                {{ $message }}
+            </small>
+        @enderror
 
         <div class="password-box">
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter Password"
-                required
-                maxlength="6"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                title="Password must be exactly 6 digits"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);"
-            >
+        <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter Password"
+            inputmode="numeric"
+            {{-- oninput="this.value=this.value.replace(/[^0-9]/g,'');" --}}
+        >
+        @error('password')
+            <small style="color:red;display:block;margin:-12px 0 12px;">
+                {{ $message }}
+            </small>
+        @enderror
             
-            <span class="toggle-password" onclick="togglePassword()">👁</span>
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
         </div>
 
         <div class="forgot-link">

@@ -26,12 +26,19 @@ class FrontController extends Controller
         $req->validate([
             'name' => 'required',
             'email' => 'required|email|unique:user,email',
-            'number' => 'required|min:10|max:10|unique:user,number',
+            'number' => 'required|digits:10|unique:user,number',
             'password' => 'required|min:6',
         ],  
         [
-            'email.unique' => 'This email is already exit.',
-            'mobile.unique' => 'This mobile number is already exit.',
+            'name.required' => 'Name is required.',
+            'email.required' => 'Email is required.',
+            'email.email' => 'Enter a valid email.',
+            'email.unique' => 'This email is already exists.',
+            'number.required' => 'Number is required.',
+            'number.digits' => 'Mobile number must be 10 digits.',
+            'number.unique' => 'This mobile number already exists.',
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be at least 6 characters.',
         ]);
 
         User::create([
@@ -52,6 +59,15 @@ class FrontController extends Controller
 
     public function login_store(Request $req)
     {
+        $req->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ], [
+            'email.required' => 'Email is required.',
+            'email.email' => 'Enter a valid email.',
+            'password.required' => 'Password is required.',
+            'password.digits' => 'Password is minimum 6 digits.',
+        ]);
         $credentials = $req->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -65,7 +81,9 @@ class FrontController extends Controller
             return redirect('/dashboard')->with('successe', 'You Are Login Successfully!');
         }
         else {
-            return redirect()->back()->withErrors(['email' => 'Email or Password is Wrong'])->withInput();
+            return back()
+            ->with('error', 'Email or Password is Wrong')
+            ->withInput();
         }
     }
 
@@ -74,7 +92,7 @@ class FrontController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/dashboard')->with('success', 'Logout successfully');
+        return redirect('/dashboard')->with('success', 'Logout successfully!');
     }
 
     public function dashboard()
@@ -294,7 +312,12 @@ class FrontController extends Controller
     {
         $req->validate([
             'current_password' => 'required',
-            'password' => 'required|numeric|digits:6|confirmed',
+            'password' => 'required|numeric|confirmed',
+        ], [
+            'current_password.required' => 'Current password is required.',
+            'password.required' => 'New password is required.',
+            'password.numeric' => 'Password must be numbers only.',
+            'password.confirmed' => 'Confirm password does not match.',
         ]);
 
         $user = User::findOrFail(Auth::id());
@@ -318,7 +341,8 @@ class FrontController extends Controller
             ->with('success', 'Password Changed Successfully!');
     }
 
-    public function about(){
+    public function about()
+    {
         return view('about');
     }
 }

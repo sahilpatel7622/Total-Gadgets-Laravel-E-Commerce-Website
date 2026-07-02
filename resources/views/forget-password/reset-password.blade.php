@@ -45,7 +45,7 @@
         }
 
         .input-group{
-            margin-bottom:18px;
+            margin-bottom:6px;
         }
 
         .form-control{
@@ -197,10 +197,6 @@
                 type="password"
                 id="password"
                 name="password"
-                maxlength="6"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);"
                 class="form-control @error('password') is-invalid @enderror"
                 placeholder="Enter New Password"
             >
@@ -208,23 +204,21 @@
             <i class="fa-solid fa-eye toggle-password"
             id="togglePassword"
             onclick="togglePassword('password','togglePassword')"></i>
-
-            @error('password')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-            @enderror
         </div>
+
+        @error('password')
+            @if($message != 'Confirm password does not match.')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @endif
+        @enderror<br>
 
         <div class="input-group password-box">
             <input
                 type="password"
                 id="password_confirmation"
                 name="password_confirmation"
-                maxlength="6"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6);"
                 class="form-control"
                 placeholder="Confirm Password"
             >
@@ -234,14 +228,22 @@
             onclick="togglePassword('password_confirmation','toggleConfirmPassword')"></i>
         </div>
 
-        <button type="submit" class="btn-reset">
+        @if($errors->has('password') && $errors->first('password') == 'Confirm password does not match.')
+            <div class="invalid-feedback">
+                {{ $errors->first('password') }}
+            </div>
+        @endif<br>
+
+        <button type="submit" class="btn-reset" id="submitBtn">
             Update Password
         </button>
     </form>
 
+    @if(!Auth::check())
     <div class="back-login">
         <a href="{{ url('/login') }}">Back to Login</a>
     </div>
+    @endif
 
 </div>
 

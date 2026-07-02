@@ -67,14 +67,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 <table class="table table-bordered table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th width="70">Id</th>
-                            <th width="70">C_Name</th>
-                            <th>Name</th>
-                            <th>Slug</th>
-                            <th width="100">Price</th>
-                            <th width="300">Description</th>
+                            <th width="60">Id</th>
+                            <th width="50">C_Name</th>
+                            <th width="80">Name</th>
+                            <th width="70">Slug</th>
+                            <th width="80">Price</th>
+                            <th width="350">Description</th>
                             <th width="100">Image</th>
-                            <th width="150" class="text-center">Action</th>
+                            <th width="100" class="text-center">Action</th>
                         </tr>
                     </thead>
                         @forelse($product as $p)

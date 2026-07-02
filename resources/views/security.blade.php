@@ -171,6 +171,33 @@ Swal.fire({
     font-size:13px;
     margin-top:6px;
 }
+#loader{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #5b7cf0;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
 
 @media(max-width:900px){
     .profile-wrapper{
@@ -179,86 +206,90 @@ Swal.fire({
 }
 </style>
 
-<div class="profile-wrapper">
+<body>
 
-    <div class="profile-sidebar">
+<div id="loader">
+    <div class="spinner"></div>
+</div>
+    <div class="profile-wrapper">
 
-        <div class="profile-top">
-            <div class="profile-avatar">
-                {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+        <div class="profile-sidebar">
+
+            <div class="profile-top">
+                <div class="profile-avatar">
+                    {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+                </div>
+                <h3>{{ ucfirst(Auth::user()->name) }}</h3>
+                <p>{{ Auth::user()->email }}</p>
             </div>
-            <h3>{{ ucfirst(Auth::user()->name) }}</h3>
-            <p>{{ Auth::user()->email }}</p>
+
+            <a href="{{ route('profile') }}" class="side-link">👤 Edit Profile</a>
+            <a href="{{ route('profile.security') }}" class="side-link active">🛡️ Security</a>
+
+            <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                @csrf
+                <button type="submit" class="side-link logout">↪ Logout</button>
+            </form>
+
         </div>
 
-        <a href="{{ route('profile') }}" class="side-link">👤 Edit Profile</a>
-        <a href="{{ route('profile.security') }}" class="side-link active">🛡️ Security</a>
+        <div class="security-card">
 
-        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-            @csrf
-            <button type="submit" class="side-link logout">↪ Logout</button>
-        </form>
+            <h2>Change Password</h2>
+
+            <form id="forgotForm" action="{{ route('profile.updatePassword') }}" method="POST" autocomplete="off">
+                @csrf
+
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <div class="password-box">
+                        <input type="password" id="current_password" name="current_password"
+                            placeholder="Enter current password" inputmode="numeric"
+                            autocomplete="new-password"
+                            >
+                        <span class="toggle-password" onclick="togglePassword('current_password', this)">👁</span>
+                    </div>
+                    @error('current_password')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>New Password</label>
+                    <div class="password-box">
+                        <input type="password" id="password" name="password"
+                            placeholder="Create new password" inputmode="numeric"
+                            autocomplete="new-password"
+                            >
+                        <span class="toggle-password" onclick="togglePassword('password', this)">👁</span>
+                    </div>
+                    @error('password')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <div class="password-box">
+                        <input type="password" id="password_confirmation" name="password_confirmation"
+                            placeholder="Confirm your new password" inputmode="numeric"
+                            autocomplete="new-password"
+                            >
+                        <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">👁</span>
+                    </div>
+                </div>
+
+                <a href="{{ route('forgot.password') }}" class="forgot-link">Forgot Password?</a>
+                <br>
+
+                <button type="submit" class="update-btn">UPDATE PASSWORD</button>
+            </form>
+
+        </div>
 
     </div>
 
-    <div class="security-card">
-
-        <h2>Change Password</h2>
-
-        <form action="{{ route('profile.updatePassword') }}" method="POST" autocomplete="off">
-            @csrf
-
-            <div class="form-group">
-                <label>Current Password</label>
-                <div class="password-box">
-                    <input type="password" id="current_password" name="current_password"
-                        placeholder="Enter current password" maxlength="6" inputmode="numeric"
-                        pattern="[0-9]{6}"
-                        autocomplete="new-password"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                    <span class="toggle-password" onclick="togglePassword('current_password', this)">👁</span>
-                </div>
-                @error('current_password')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label>New Password</label>
-                <div class="password-box">
-                    <input type="password" id="password" name="password"
-                        placeholder="Create new password" maxlength="6" inputmode="numeric"
-                        pattern="[0-9]{6}"
-                        autocomplete="new-password"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                    <span class="toggle-password" onclick="togglePassword('password', this)">👁</span>
-                </div>
-                @error('password')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Confirm New Password</label>
-                <div class="password-box">
-                    <input type="password" id="password_confirmation" name="password_confirmation"
-                        placeholder="Confirm your new password" maxlength="6" inputmode="numeric"
-                        pattern="[0-9]{6}"
-                        autocomplete="new-password"
-                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,6)">
-                    <span class="toggle-password" onclick="togglePassword('password_confirmation', this)">👁</span>
-                </div>
-            </div>
-
-            <a href="{{ route('forgot.password') }}" class="forgot-link">Forgot Password?</a>
-            <br>
-
-            <button type="submit" class="update-btn">UPDATE PASSWORD</button>
-        </form>
-
-    </div>
-
-</div>
+</body>
 
 <script>
 function togglePassword(inputId, icon){
@@ -272,6 +303,14 @@ function togglePassword(inputId, icon){
         icon.textContent = '👁';
     }
 }
+</script>
+
+<script>
+document.getElementById("forgotForm").addEventListener("submit", function () {
+    document.getElementById("loader").style.display = "flex";
+    document.getElementById("submitBtn").disabled = true;
+    document.getElementById("submitBtn").innerHTML = "Sending...";
+});
 </script>
 
 @endsection

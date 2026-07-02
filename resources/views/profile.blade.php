@@ -209,6 +209,34 @@ Swal.fire({
     background:#8bc34a !important;
 }
 
+#loader{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.spinner{
+    width:60px;
+    height:60px;
+    border:6px solid #ddd;
+    border-top:6px solid #5b7cf0;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
 @media(max-width:900px){
     .profile-wrapper{
         grid-template-columns:1fr;
@@ -219,97 +247,111 @@ Swal.fire({
     }
 }
 </style>
+<body>
 
-<div class="profile-wrapper">
+<div id="loader">
+    <div class="spinner"></div>
+</div>
 
-    <div class="profile-sidebar">
+    <div class="profile-wrapper">
 
-        <div class="profile-top">
-            <div class="profile-avatar">
-                {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+        <div class="profile-sidebar">
+
+            <div class="profile-top">
+                <div class="profile-avatar">
+                    {{ strtoupper(substr(Auth::user()->name,0,1)) }}
+                </div>
+
+                <h3>{{ ucfirst(Auth::user()->name) }}</h3>
+                <p>{{ Auth::user()->email }}</p>
             </div>
 
-            <h3>{{ ucfirst(Auth::user()->name) }}</h3>
-            <p>{{ Auth::user()->email }}</p>
+            <a href="{{ route('profile') }}" class="side-link active">
+                👤 Edit Profile
+            </a>
+
+            <a href="{{ route('profile.security') }}" class="side-link">
+                🛡️ Security
+            </a>
+
+            <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                @csrf
+                <button type="submit" class="side-link logout">↪ Logout</button>
+            </form>
+
         </div>
 
-        <a href="{{ route('profile') }}" class="side-link active">
-            👤 Edit Profile
-        </a>
+        <div class="profile-content">
 
-        <a href="{{ route('profile.security') }}" class="side-link">
-            🛡️ Security
-        </a>
+            <h2>Personal Details</h2>
 
-        <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-            @csrf
-            <button type="submit" class="side-link logout">↪ Logout</button>
-        </form>
-
-    </div>
-
-    <div class="profile-content">
-
-        <h2>Personal Details</h2>
-
-        <form action="{{ route('profile.updateProfile') }}" method="POST">
-            @csrf
-
-        <div class="form-group">
-            <label>Name</label>
-            <input
-                type="text"
-                name="name"
-                value="{{ old('name', Auth::user()->name) }}"
-                maxlength="50"
-                pattern="[A-Za-z ]+"
-                oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
-            >
-            @error('name')
-                <div class="error-text">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div class="form-group">
+            <form id="forgotForm" action="{{ route('profile.updateProfile') }}" method="POST">
+                @csrf
 
             <div class="form-group">
-                <label>Email Address</label>
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email', Auth::user()->email) }}"
-                >
-                    @error('email')
-                        <div class="error-text">{{ $message }}</div>
-                    @enderror
-            </div>
-
-            <div class="form-group">
-                <label>Phone Number</label>
+                <label>Name</label>
                 <input
                     type="text"
-                    name="number"
-                    value="{{ old('number', Auth::user()->number) }}"
-                    maxlength="10"
-                    pattern="[0-9]{10}"
-                    inputmode="numeric"
-                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                    name="name"
+                    value="{{ old('name', Auth::user()->name) }}"
+                    maxlength="50"
+                    pattern="[A-Za-z ]+"
+                    oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
                 >
-                @error('number')
+                @error('name')
                     <div class="error-text">{{ $message }}</div>
                 @enderror
             </div>
 
+            <div class="form-group">
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ old('email', Auth::user()->email) }}"
+                    >
+                        @error('email')
+                            <div class="error-text">{{ $message }}</div>
+                        @enderror
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input
+                        type="text"
+                        name="number"
+                        value="{{ old('number', Auth::user()->number) }}"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        inputmode="numeric"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+                    >
+                    @error('number')
+                        <div class="error-text">{{ $message }}</div>
+                    @enderror
+                </div>
+
+            </div>
+
+                <button type="submit" class="save-btn" style="position: relative; top: 10px">
+                    SAVE CHANGES
+                </button>
+
+            </form>
+
         </div>
 
-            <button type="submit" class="save-btn" style="position: relative; top: 10px">
-                SAVE CHANGES
-            </button>
-
-        </form>
-
     </div>
+</body>
 
-</div>
+<script>
+document.getElementById("forgotForm").addEventListener("submit", function () {
+    document.getElementById("loader").style.display = "flex";
+    document.getElementById("submitBtn").disabled = true;
+    document.getElementById("submitBtn").innerHTML = "Sending...";
+});
+</script>
 
 @endsection
