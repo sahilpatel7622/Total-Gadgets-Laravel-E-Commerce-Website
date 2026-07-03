@@ -111,27 +111,26 @@
             transform: translateX(4px);
         }
 
-        .top-navbar {
-            height: 70px;
-            background: #fff;
-            padding: 0 35px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        .top-navbar{
+            height:70px;
+            background:#fff;
+            padding:0 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 4px 18px rgba(0,0,0,.06);
         }
 
         .top-navbar h2 {
             font-size: 22px;
             color: #222;
         }
-
-        .admin-info {
-            color: #555;
-            font-weight: 500;
-            background: #f4f6f9;
-            padding: 10px 16px;
-            border-radius: 25px;
+        
+        .admin-info{
+            background:#f5f5f5;
+            padding:8px 15px;
+            border-radius:25px;
+            font-size:16px;
         }
 
         .admin-info i {
@@ -209,6 +208,42 @@
             background: #e60000;
         }
 
+        .maintenance-btn{
+            text-decoration:none;
+            color:#fff;
+            padding:8px 14px;
+            font-size:13px;
+            border-radius:8px;
+            font-weight:600;
+            transition:.3s;
+        }
+
+        .live-btn{
+            background:#22c55e;
+        }
+
+        .live-btn:hover{
+            background:#16a34a;
+            color:#fff;
+        }
+
+        .maintenance-btn-danger{
+            background:#ef4444;
+        }
+
+        .maintenance-btn-danger:hover{
+            background:#dc2626;
+            color:#fff;
+        }
+
+        .maintenance-on {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+        }
+
+        .maintenance-off {
+            background: linear-gradient(135deg, #22c55e, #15803d);
+        }
+
     </style>
 </head>
 
@@ -253,7 +288,7 @@
 
             <li>
                 <a href="{{ route('admin.payments') }}"class="{{ Request::is('admin/payment*') ? 'active' : '' }}">
-                    <i class="fa-solid fa-cart-shopping"></i> Payments                
+                    <i class="fa-solid fa-credit-card"></i> Payments                
                 </a>
             </li>
 
@@ -270,7 +305,7 @@
     <div class="sidebar-footer" style="position: relative; right: 20px;">
         <ul>
             <li>
-                <a href="#">
+                <a href="{{ route('admin.profile') }}">
                     <i class="fa-solid fa-user-gear"></i> Profile Setting
                 </a>
             </li>
@@ -288,12 +323,34 @@
 </div>
 
 <div class="main-content">
+
+    @php
+        $setting = \App\Models\MaintenanceModel::firstOrCreate(
+            ['id' => 1],
+            ['maintenance_mode' => 1]
+        );
+    @endphp
+
     <div class="top-navbar">
         <h2>@yield('title')</h2>
 
-        <div class="admin-info">
-            <i class="fa-solid fa-circle-user"></i>
-            Welcome, <b>{{ ucfirst(session('admin_name', 'Admin')) }}</b>
+        <div class="d-flex align-items-center gap-2">
+
+            @if($setting->maintenance_mode == 0)
+                <a href="{{ route('maintenance') }}" class="maintenance-btn live-btn">
+                    <i class="fa-solid fa-power-off"></i> Live
+                </a>
+            @else
+                <a href="{{ route('maintenance') }}" class="maintenance-btn maintenance-btn-danger">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> Maintenance
+                </a>
+            @endif
+
+            <div class="admin-info">
+                <i class="fa-solid fa-circle-user"></i>
+                Welcome, <b>{{ ucfirst(auth('admin')->user()->name ?? 'Admin') }}</b>
+            </div>
+
         </div>
     </div>
 

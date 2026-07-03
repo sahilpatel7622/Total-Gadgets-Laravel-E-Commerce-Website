@@ -160,6 +160,78 @@
         </form>
 
     </div>
+
+
+@if(session('show_otp_modal'))
+
+<div class="otp-overlay">
+
+    <div id="otpLoader">
+        <div class="otpSpinner"></div>
+    </div>
+
+    <div class="otp-popup">
+
+        <div class="otp-popup-header">
+            <h3>Order Verification</h3>
+        </div>
+
+        <div class="otp-popup-body">
+            <p>Enter the OTP sent to your email.</p>
+
+            @if(session('success'))
+                <div class="otp-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="otp-error text-center">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <form id="otpForm" action="{{ route('order.otp.verify') }}" method="POST">
+                @csrf
+
+                <input
+                    type="text"
+                    name="otp"
+                    value="{{ old('otp') }}"
+                    maxlength="6"
+                    placeholder="Enter 6 Digit OTP"
+                    inputmode="numeric"
+                    class="otp-input"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+                >
+
+                @error('otp')
+                    <div class="otp-error">
+                        {{ $message }}
+                    </div>
+                @enderror
+
+                <button type="submit" id="otpSubmitBtn" class="otp-btn">
+                    Verify OTP
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.getElementById("otpForm").addEventListener("submit", function () {
+        document.getElementById("otpLoader").style.display = "flex";
+        let btn = document.getElementById("otpSubmitBtn");
+        btn.disabled = true;
+        btn.innerHTML = "Verifying...";
+
+    });
+</script>
+@endif
+
+
 </body>
 
 <script>
@@ -180,10 +252,8 @@
 <script>
 document.getElementById("forgotForm").addEventListener("submit", function () {
     document.getElementById("loader").style.display = "flex";
-    document.getElementById("submitBtn").disabled = true;
-    document.getElementById("submitBtn").innerHTML = "Sending...";
-
+    let btn = document.querySelector(".place-btn");
+    btn.disabled = true;
+    btn.innerHTML = "Sending...";
 });
 </script>
-
-@endsection

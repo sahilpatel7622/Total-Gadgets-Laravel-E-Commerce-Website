@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class AdminMiddleware
 {
@@ -15,10 +16,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(session()->has('admin_logged_in'))
+        if(Auth::guard('admin')->check() && in_array(Auth::guard('admin')->user()->role, ['admin', 'super_admin']))
         {
             return $next($request);
         }
-        return redirect('/admin');
+        return redirect('/login')->with('error', 'Please login to access admin panel');
     }
 }

@@ -11,11 +11,12 @@ use App\Models\City;
 use App\Models\location_mapping;
 use App\Models\product;
 use App\Models\category;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class FrontController extends Controller
+class UserController extends Controller
 {
     public function register(){
         return view('register');
@@ -66,32 +67,54 @@ class FrontController extends Controller
             'email.required' => 'Email is required.',
             'email.email' => 'Enter a valid email.',
             'password.required' => 'Password is required.',
-            'password.digits' => 'Password is minimum 6 digits.',
+            'password.min' => 'Password must be at least 6 characters.',
         ]);
-        $credentials = $req->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->status == 'Inactive') {
-                Auth::logout();
-                return back()->withErrors([
-                    'email' => 'Your account has been deactivated. Please contact the administrator.'
-                ]);
+        $user = User::where('email', $req->email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'Email or Password is Wrong')->withInput();
+        }
+
+        // Inactive User Check
+        if ($user->status == 'Inactive') {
+            return back()->withErrors([
+                'email' => 'Your account has been deactivated. Please contact the administrator.'
+            ]);
+        }
+
+        // Admin & Super Admin (Normal Password)
+        if ($user->role == 'admin' || $user->role == 'super_admin') {
+            if ($user->password == $req->password) {
+                Auth::guard('admin')->login($user);
+                $req->session()->regenerate();
+                return redirect('/admin/dashboard')
+                    ->with('successe', 'Welcome Admin!');
             }
+
+            return back()->with('error', 'Email or Password is Wrong')->withInput();
+        }
+
+        // Normal User (Hashed Password)
+        if (Hash::check($req->password, $user->password)) {
+            Auth::login($user);
             $req->session()->regenerate();
-            return redirect('/dashboard')->with('successe', 'You Are Login Successfully!');
+            return redirect('/dashboard')
+                ->with('successe', 'You Are Login Successfully!');
         }
-        else {
-            return back()
-            ->with('error', 'Email or Password is Wrong')
-            ->withInput();
-        }
+
+        return back()->with('error', 'Email or Password is Wrong')->withInput();
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        
+        if (!Auth::guard('admin')->check()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+        
         return redirect('/dashboard')->with('success', 'Logout successfully!');
     }
 
@@ -99,9 +122,32 @@ class FrontController extends Controller
     {
         $totalProducts = product::count();
         $totalCategories = category::where('status', 1)->count();
-        $latestProducts = product::with('category')->latest()->take(4)->get();
 
-        return view('dashboard', compact('totalProducts', 'totalCategories', 'latestProducts'));
+        $trendingProducts = product::select(
+                'product.*',
+                DB::raw('SUM(order_items.quantity) as total_sales')
+            )
+            ->join('order_items', 'product.id', '=', 'order_items.product_id')
+            ->groupBy(
+                'product.id',
+                'product.c_id',
+                'product.name',
+                'product.slug',
+                'product.price',
+                'product.image',
+                'product.description',
+                'product.created_at',
+                'product.updated_at'
+            )
+            ->orderByDesc('total_sales')
+            ->take(4)
+            ->get();
+
+        return view('dashboard', compact(
+            'totalProducts',
+            'totalCategories',
+            'trendingProducts'
+        ));
     }
 
 
@@ -344,5 +390,10 @@ class FrontController extends Controller
     public function about()
     {
         return view('about');
+    }
+
+public function contact()
+    {
+        return view('contact');
     }
 }

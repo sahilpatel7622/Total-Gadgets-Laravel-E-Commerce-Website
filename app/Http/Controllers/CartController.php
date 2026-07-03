@@ -14,6 +14,7 @@ use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
@@ -224,28 +225,25 @@ class CartController extends Controller
                 ->subject('Order Verification OTP');
         });
 
-        return redirect()->route('order.otp.form')
-            ->with('success', 'OTP sent successfully.');
-    }
-
-
-    // OTP Page
-    public function orderOtpForm()
-    {
-        if (!session()->has('order_data')) {
-            return redirect()->route('checkout')
-                ->with('error', 'Session expired.');
-        }
-        return view('order_verify_otp');
+        return back()
+        ->with('success', 'OTP sent successfully.')
+        ->with('show_otp_modal', true);
     }
 
 
     // Verify OTP + Create Order
     public function verifyOrderOtp(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'otp' => 'required|digits:6',
         ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('show_otp_modal', true);
+        }
 
         $otpData = Otp::where('user_id', Auth::id())
             ->where('otp', $request->otp)
@@ -254,11 +252,15 @@ class CartController extends Controller
             ->first();
 
         if (!$otpData) {
-            return back()->with('error', 'Invalid OTP.');
+            return back()
+                ->with('error', 'Invalid OTP.')
+                ->with('show_otp_modal', true);
         }
 
         if (now()->gt($otpData->expiry)) {
-            return back()->with('error', 'OTP expired.');
+            return back()
+                ->with('error', 'OTP expired.')
+                ->with('show_otp_modal', true);
         }
 
         $orderData = session('order_data');
@@ -341,7 +343,8 @@ class CartController extends Controller
                 $order,
                 $orderData['email'],
                 $orderData['name'],
-                'Cash On Delivery'
+                'Cash On Delivery',
+                'Pending'
             );
 
             return redirect()
@@ -400,7 +403,8 @@ class CartController extends Controller
             $order,
             Auth::user()->email,
             Auth::user()->name,
-            'Paid'
+            $payment->payment_method,
+            $payment->payment_status
         );
 
         if (!$request->buy_now_product_id) {
@@ -412,7 +416,7 @@ class CartController extends Controller
             ->with('successe', 'Payment successful.');
     }
 
-    private function sendOrderConfirmMail($order, $email, $name, $paymentStatus)
+    private function sendOrderConfirmMail($order, $email, $name, $paymentMethod, $paymentStatus)
     {
         try {
             $order->load('items.product');
@@ -441,8 +445,8 @@ class CartController extends Controller
                         <p><b>Order Number:</b> {$order->order_number}</p>
                         <p><b>Product:</b> {$productNames}</p>
                         <p><b>Total Amount:</b> ₹" . number_format($order->amount, 2) . "</p>
+                        <p><b>Payment Method:</b> {$paymentMethod}</p>
                         <p><b>Payment Status:</b> {$paymentStatus}</p>
-                        <p><b>Order Status:</b> {$order->status}</p>
 
                         <hr>
 

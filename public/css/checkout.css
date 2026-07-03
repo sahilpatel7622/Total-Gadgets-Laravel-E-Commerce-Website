@@ -214,3 +214,119 @@
         position:static;
     }
 }
+
+
+    /* Model Popup */
+    .otp-overlay{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(15,23,42,.65);
+        backdrop-filter:blur(8px);
+        -webkit-backdrop-filter:blur(8px);
+        z-index:99999;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .otp-popup{
+        width:100%;
+        max-width:430px;
+        background:#fff;
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:0 25px 70px rgba(0,0,0,.35);
+    }
+
+    .otp-popup-header{
+        background:linear-gradient(135deg,#36d1dc,#5b86e5);
+        color:#fff;
+        padding:24px;
+        text-align:center;
+    }
+
+    .otp-popup-header h3{
+        margin:0;
+        font-size:22px;
+        font-weight:800;
+    }
+
+    .otp-popup-body{
+        padding:28px;
+    }
+
+    .otp-popup-body p{
+        text-align:center;
+        color:#666;
+        margin-bottom:18px;
+    }
+
+    .otp-success{
+        background:#d1fae5;
+        color:#065f46;
+        padding:12px;
+        border-radius:8px;
+        text-align:center;
+        margin-bottom:15px;
+    }
+
+    .otp-error{
+        color:red;
+        font-size:13px;
+        margin-bottom:10px;
+    }
+
+    .otp-input{
+        width:100%;
+        height:48px;
+        padding:0 15px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        font-size:16px;
+        margin-bottom:15px;
+    }
+
+    .otp-btn{
+        width:100%;
+        height:48px;
+        border:none;
+        border-radius:8px;
+        background:#4f46e5;
+        color:#fff;
+        font-size:16px;
+        font-weight:700;
+    }
+
+    #otpLoader{
+        position:absolute;
+        inset:0;
+        background:rgba(255,255,255,.75);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        border-radius:18px;
+        z-index:999;
+    }
+
+    .otp-popup{
+        position:relative;
+    }
+
+    .otpSpinner{
+        width:60px;
+        height:60px;
+        border:6px solid #ddd;
+        border-top:6px solid #4f46e5;
+        border-radius:50%;
+        animation:spin .8s linear infinite;
+    }
+
+    @keyframes spin{
+        to{
+            transform:rotate(360deg);
+        }
+    }
+

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Login</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
@@ -154,7 +154,7 @@
 
 <div class="register-box">
 
-    <h2>User Login</h2>
+    <h2>Login</h2>
     <p class="heading">Welcome Back! Please login to continue.</p>
 
     <form action="{{ route('login_store') }}" method="post">

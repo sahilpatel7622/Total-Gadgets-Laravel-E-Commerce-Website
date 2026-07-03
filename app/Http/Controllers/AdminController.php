@@ -4,74 +4,80 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Admin_usermodel;
 use App\Models\datamodel;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use App\Models\location_mapping;
 use App\Models\category;
 use App\Models\product;
-use Illuminate\Validation\Rule;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\MaintenanceModel;
+use Illuminate\Support\Facades\Hash;
 
 
 class AdminController extends Controller
 {
-    public function admin_login()
-    {
-        return view('admin.index');
-    }
-
-    public function admin_login_store(Request $request)
-    {
-        $admin = Admin_usermodel::where('email', $request->email)->first();
-
-        if ($admin && $admin->password === $request->password) {
-
-            $request->session()->put('admin_logged_in', true);
-            $request->session()->put('admin_id', $admin->id);
-            $request->session()->put('admin_name', $admin->name);
-            
-
-            return redirect('/admin/dashboard')
-                ->with('successe', 'Admin Login Successfully!');
-        }
-
-        return redirect()->back()
-        ->withInput()
-        ->with('error', 'Invalid email or password');
-    }
 
     public function admin_dashboard()
     {
-        return view('admin.dashboard');
+        $totalCustomers = User::where('role', 'user')->count();
+        $totalCategories = Category::count();
+        $totalProducts = product::count();
+
+        $totalOrders = Order::count();
+
+        $pendingOrders = Order::where('status', 'Pending')->count();
+        $completedOrders = Order::where('status', 'Delivered')->count();
+
+        $totalRevenue = Order::where('status', 'Delivered')->sum('amount');
+
+        $latestOrders = Order::with('user', 'payment')
+            ->whereHas('user', function ($q) {
+                $q->where('role', 'user')
+                ->where('status', 'Active');
+            })
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalCustomers',
+            'totalCategories',
+            'totalProducts',
+            'totalOrders',
+            'pendingOrders',
+            'completedOrders',
+            'totalRevenue',
+            'latestOrders',
+        ));
     }
 
     public function logout(Request $request)
     {
-        $request->session()->forget([
-            'admin_logged_in',
-            'admin_name',
-            'admin_id',
-        ]);
-
-        return redirect('/admin')->with('success', 'Logout successfully');
+        Auth::guard('admin')->logout();
+        
+        if (!Auth::guard('web')->check()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+        
+        return redirect('/')->with('success', 'Logout successfully');
     }
     
     public function Admin_users(Request $req)
     {
         $record = User::query();
-
         if ($req->filled('search')) {
-
             $record->where('name', 'LIKE', '%' . $req->search . '%')
                 ->orWhere('email', 'LIKE', '%' . $req->search . '%')
                 ->orWhere('number', 'LIKE', '%' . $req->search . '%');
 
         }
 
-        $record = $record->latest()->get();
-
+        $record = User::where('role', 'user')
+            ->latest()
+            ->get();
         return view('admin.users', compact('record'));
     } 
 
@@ -99,9 +105,7 @@ class AdminController extends Controller
         }
 
         location_mapping::where('data_id', $id)->delete();
-
         $record->delete();
-
         return redirect('admin/data')->with('success', 'Record Deleted Successfully');
     }
 
@@ -114,7 +118,6 @@ class AdminController extends Controller
             : 'Active';
 
         $user->save();
-
         return back()->with('success', 'User status updated successfully.');
     }
 
@@ -413,6 +416,86 @@ class AdminController extends Controller
         $payment->save();
 
         return back()->with('success', 'Payment status updated successfully.');
+    }
+
+
+    // Profile
+    public function admin_profile()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.profile', compact('admin'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $authAdmin = Auth::guard('admin')->user();
+        $admin = User::findOrFail($authAdmin->id);
+        $request->validate([
+            'name'  => 'required',
+            'email' => ['required','email',
+                Rule::unique('user', 'email')->ignore($admin->id),
+            ],
+        ]);
+
+        if ($admin->name == $request->name && $admin->email == $request->email) {
+            return back()->with('info', 'No changes found.');
+        }
+
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->save();
+
+        return back()->with('success', 'Profile updated successfully.');
+    }
+
+    public function passwordUpdate(Request $request)
+    {
+        $admin = User::findOrFail(Auth::guard('admin')->id());
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ],[
+            'current_password.required' => 'Current password is required.',
+            'password.required' => 'New password is required.',
+            'password.min' => 'New password must be at least 6 characters.',
+            'password.confirmed' => 'Confirm password does not match.',
+        ]);
+
+        // Check if current password is correct (plain text or hashed)
+        if ($request->current_password != $admin->password && !Hash::check($request->current_password, $admin->password)) {
+            return back()
+                ->withErrors([
+                    'current_password' => 'Current password is incorrect.'
+                ])
+                ->withInput();
+        }
+
+        if ($request->current_password == $request->password) {
+            return back()
+                ->withErrors([
+                    'password' => 'New password must be different from the current password.'
+                ])
+                ->withInput();
+        }
+        
+        $admin->password = $request->password;
+        $admin->save();
+        return back()->with('success', 'Password updated successfully.');
+    }
+
+
+    // Maintenance Mode
+    public function maintenance()
+    {
+        $setting = MaintenanceModel::firstOrCreate(
+            ['id' => 1],
+            ['maintenance_mode' => 1]
+        );
+
+        $setting->maintenance_mode = !$setting->maintenance_mode;
+        $setting->save();
+
+        return back()->with('success', 'Maintenance Mode Updated Successfully.');
     }
 
 }

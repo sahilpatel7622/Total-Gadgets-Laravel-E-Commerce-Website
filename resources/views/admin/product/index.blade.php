@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <th width="80">Price</th>
                             <th width="350">Description</th>
                             <th width="100">Image</th>
-                            <th width="100" class="text-center">Action</th>
+                            <th width="120" class="text-center">Action</th>
                         </tr>
                     </thead>
                         @forelse($product as $p)

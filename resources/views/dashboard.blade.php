@@ -116,172 +116,106 @@
     margin-bottom:28px;
 }
 
-.panel{
+.trending-section{
     background:#fff;
     border-radius:22px;
     padding:28px;
     box-shadow:0 10px 30px rgba(15,23,42,.06);
     border:1px solid #eef2f7;
+    margin-bottom:28px;
 }
 
-.panel-header{
+.section-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:22px;
-    gap:12px;
 }
 
-.panel-header h2{
-    font-size:22px;
+.section-header h2{
+    font-size:24px;
+    font-weight:900;
     color:#111827;
 }
 
-.view-all{
+.section-header a{
     color:#0d6efd;
-    text-decoration:none;
     font-size:14px;
     font-weight:700;
-}
-
-.view-all:hover{
-    color:#0b5ed7;
-}
-
-.quick-actions{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-}
-
-.action-card{
-    display:block;
     text-decoration:none;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
-    border-radius:16px;
-    padding:20px;
-    transition:.2s;
 }
 
-.action-card:hover{
-    background:#eff6ff;
-    border-color:#bfdbfe;
-    transform:translateY(-3px);
-}
-
-.action-card strong{
-    display:block;
-    color:#111827;
-    font-size:16px;
-    margin-bottom:6px;
-}
-
-.action-card span{
-    color:#64748b;
-    font-size:13px;
-    line-height:1.5;
-}
-
-.account-list{
-    list-style:none;
-}
-
-.account-list li{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    padding:14px 0;
-    border-bottom:1px solid #f1f5f9;
-    font-size:14px;
-}
-
-.account-list li:last-child{
-    border-bottom:0;
-    padding-bottom:0;
-}
-
-.account-list span{
-    color:#64748b;
-}
-
-.account-list strong{
-    color:#111827;
-    text-align:right;
-    word-break:break-word;
-}
-
-.status-active{
-    color:#059669;
-    background:#ecfdf5;
-    padding:4px 10px;
-    border-radius:999px;
-    font-size:12px;
-}
-
-.products-preview{
+.trending-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
 }
 
-.preview-card{
+.trending-card{
     text-decoration:none;
     color:inherit;
-    border:1px solid #eef2f7;
-    border-radius:16px;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
     overflow:hidden;
-    transition:.2s;
+    background:#fff;
+    transition:.25s;
 }
 
-.preview-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 12px 25px rgba(15,23,42,.08);
+.trending-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 14px 30px rgba(15,23,42,.10);
 }
 
-.preview-img{
-    height:120px;
-    background:linear-gradient(180deg,#f8fafc,#eef2ff);
-    overflow:hidden;
+.trending-img{
+    height:180px;
+    background:#f8fafc;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.preview-img img{
+.trending-img img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:contain;
+    padding:15px;
 }
 
-.preview-body{
-    padding:14px;
+.trending-body{
+    padding:16px;
 }
 
-.preview-body h3{
-    font-size:15px;
-    color:#111827;
-    margin-bottom:6px;
-}
-
-.preview-body p{
-    color:#0d6efd;
-    font-weight:800;
+.trending-body h3{
     font-size:16px;
+    color:#111827;
+    margin-bottom:8px;
 }
 
-.empty-products{
+.trending-body p{
+    color:#0d6efd;
+    font-size:17px;
+    font-weight:900;
+}
+
+.empty-trending{
+    grid-column:1 / -1;
     text-align:center;
-    padding:30px 20px;
-    color:#64748b;
+    padding:30px;
     background:#f8fafc;
     border-radius:16px;
-    border:1px dashed #dbeafe;
+    color:#64748b;
 }
 
-.empty-products a{
-    display:inline-block;
-    margin-top:14px;
-    color:#0d6efd;
-    font-weight:700;
-    text-decoration:none;
+@media(max-width:992px){
+    .trending-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:640px){
+    .trending-grid{
+        grid-template-columns:1fr;
+    }
 }
 
 @media(max-width:992px){
@@ -311,7 +245,33 @@
         @else
             <a href="{{ route('login') }}" class="hero-badge">Login to continue</a>
         @endif
-    </div>
+    </div><br>
+
+    <div class="trending-section">
+        <div class="section-header">
+            <h2>Trending Products</h2>
+            <a href="{{ route('products') }}">View All</a>
+        </div><br>
+
+        <div class="trending-grid">
+            @forelse($trendingProducts as $product)
+                <a href="{{ route('product.detail', $product->slug) }}" class="trending-card">
+                    <div class="trending-img">
+                        <img src="{{ asset('product/'.$product->image) }}" alt="{{ $product->name }}">
+                    </div>
+
+                    <div class="trending-body">
+                        <h3>{{ $product->name }}</h3>
+                        <p>₹{{ number_format($product->price, 2) }}</p>
+                    </div>
+                </a>
+            @empty
+                <div class="empty-trending">
+                    No trending products available.
+                </div>
+            @endforelse
+        </div>
+    </div><br>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -333,26 +293,8 @@
         </div>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="panel">
-            <div class="panel-header">
-                <h2>Quick Actions</h2>
-            </div>
-
-            <div class="quick-actions">
-                <a href="{{ route('products') }}" class="action-card">
-                    <strong>Browse Products</strong>
-                    <span>Explore all items by category and price.</span>
-                </a>
-
-                <a href="{{ route('products') }}?sort=newest" class="action-card">
-                    <strong>New Arrivals</strong>
-                    <span>See the latest products added to the store.</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+
 
 @endsection

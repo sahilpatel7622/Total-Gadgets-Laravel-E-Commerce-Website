@@ -30,6 +30,10 @@
         <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">
             About Us
         </a>
+
+        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">
+            Contact Us
+        </a>
     </div>
 
     <div class="right-menu">

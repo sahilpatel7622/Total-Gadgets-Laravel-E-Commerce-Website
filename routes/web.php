@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FrontController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
@@ -12,37 +12,26 @@ use App\Http\Controllers\OtpController;
     });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [FrontController::class, 'register'])->name('register');
-    Route::post('/register', [FrontController::class, 'register_store'])->name('register_store');
-    Route::get('/login', [FrontController::class, 'login'])->name('login');
-    Route::post('/login', [FrontController::class, 'login_store'])->name('login_store');
+    Route::get('/register', [UserController::class, 'register'])->name('register');
+    Route::post('/register', [UserController::class, 'register_store'])->name('register_store');
+    Route::get('/login', [UserController::class, 'login'])->name('login');
+    Route::post('/login', [UserController::class, 'login_store'])->name('login_store');
 });
 
-    Route::get('/dashboard', [FrontController::class, 'dashboard'])->name('dashboard');
-    Route::get('/crud', [FrontController::class, 'index'])->name('crud');
-    Route::get('/crud/view', [FrontController::class, 'view'])->name('view');
-    Route::get('/crud/insert', [FrontController::class, 'index'])->name('insert.form');
-    Route::get('/crud/insert/states/{country_id}', [FrontController::class, 'getStates']);
-    Route::get('/crud/insert/cities/{state_id}', [FrontController::class, 'getCities']);
-    Route::post('/crud/insert', [FrontController::class, 'insert_i'])->name('insert');
-    Route::get('/crud/delete/{id}', [FrontController::class, 'delete'])->name('delete');
-    Route::get('/crud/edit/{id}', [FrontController::class, 'edit'])->name('edit');
-    Route::post('/crud/update/{id}', [FrontController::class, 'update'])->name('update');
-    Route::get('/about', [FrontController::class, 'about'])->name('about');    
-    Route::post('/logout', [FrontController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
-    // Profile
-    Route::get('/profile', [FrontController::class, 'profile'])->name('profile');
-    Route::post('/profile/update-profile', [FrontController::class, 'updateProfile'])->name('profile.updateProfile');
-    Route::get('/profile/security', [FrontController::class, 'profile_security'])->name('profile.security');
-    Route::post('/profile/update-password', [FrontController::class, 'updatePassword'])->name('profile.updatePassword');
+Route::middleware(['auth', 'check.status'])->group(function () {
+    Route::get('/crud', [UserController::class, 'index'])->name('crud');
+    Route::get('/crud/view', [UserController::class, 'view'])->name('view');
+    Route::get('/crud/insert', [UserController::class, 'index'])->name('insert.form');
+    Route::get('/crud/insert/states/{country_id}', [UserController::class, 'getStates']);
+    Route::get('/crud/insert/cities/{state_id}', [UserController::class, 'getCities']);
+    Route::post('/crud/insert', [UserController::class, 'insert_i'])->name('insert');
+    Route::get('/crud/delete/{id}', [UserController::class, 'delete'])->name('delete');
+    Route::get('/crud/edit/{id}', [UserController::class, 'edit'])->name('edit');
+    Route::post('/crud/update/{id}', [UserController::class, 'update'])->name('update');  
+    Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     
-    // Product
-    Route::get('/products', [ProductController::class, 'products'])->name('products');
-    Route::get('/products/{slug}', [ProductController::class, 'productDetail'])->name('product.detail');
-
-    
-Route::middleware('auth')->group(function () {
     // Cart
     Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
@@ -55,7 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/buy-now/{slug}', [CartController::class, 'buyNow'])->name('buy.now');
 
     // Order Time OTP Verify
-    Route::get('/order/otp', [CartController::class, 'orderOtpForm'])->name('order.otp.form');
     Route::post('/order/otp', [CartController::class, 'verifyOrderOtp'])->name('order.otp.verify');
 
     // Place Order
@@ -73,7 +61,24 @@ Route::middleware('auth')->group(function () {
     // Invoice
     Route::get('/invoice/{id}', [CartController::class, 'invoice'])->name('invoice');
 
+    // Profile
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::post('/profile/update-profile', [UserController::class, 'updateProfile'])->name('profile.updateProfile');
+    Route::get('/profile/security', [UserController::class, 'profile_security'])->name('profile.security');
+    Route::post('/profile/update-password', [UserController::class, 'updatePassword'])->name('profile.updatePassword');
+
 });
+
+    // About
+    Route::get('/about', [UserController::class, 'about'])->name('about'); 
+    
+    // Contact
+    Route::get('/contact', [UserController::class, 'contact'])->name('contact'); 
+
+    // Product
+    Route::get('/products', [ProductController::class, 'products'])->name('products');
+    Route::get('/products/{slug}', [ProductController::class, 'productDetail'])->name('product.detail');
+
 
 
 // Forget Password
@@ -85,8 +90,6 @@ Route::post('/verify-otp', [OtpController::class,'verifyOtp']);
 Route::get('/reset-password', [OtpController::class,'resetPasswordForm'])->name('reset.password');
 Route::post('/reset-password', [OtpController::class,'resetPassword']);
 
-Route::get('/admin', [AdminController::class, 'admin_login']);
-Route::post('/admin', [AdminController::class, 'admin_login_store'])->name('admin_login_store');
 
 Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard');
@@ -124,5 +127,13 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/payments', [AdminController::class, 'Admin_payments'])->name('admin.payments');
     Route::get('/admin/payment/view/{id}', [AdminController::class, 'Admin_payment_view'])->name('admin.payment.view');
     Route::post('/admin/payment/status/{id}', [AdminController::class, 'Admin_payment_status'])->name('admin.payment.status');
+
+    // Profile
+    Route::get('/admin/profile', [AdminController::class, 'admin_profile'])->name('admin.profile');
+    Route::post('/admin/profile/update', [AdminController::class, 'profileUpdate'])->name('admin.profile.update');
+    Route::post('/admin/profile/password', [AdminController::class, 'passwordUpdate'])->name('admin.password.update');
+
+    // Maintenance Mode
+    Route::get('/admin/maintenance', [AdminController::class, 'maintenance'])->name('maintenance');
 
 });
