@@ -2,20 +2,29 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
 
-Route::post('/register',[ApiController::class,'register']);
-Route::get('/login',[ApiController::class,'login']);
+Route::post('/register',[AuthController::class,'register']);
+Route::post('/login',[AuthController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/list',[ApiController::class,'list']);
-    Route::post('/add-data',[ApiController::class,'add_data']);
-    Route::delete('/delete-data/{id}',[ApiController::class,'delete_data']);
-    Route::get('/search-data/{id}',[ApiController::class,'search_data']);
-    Route::put('/update-data/{id}',[ApiController::class,'update_data']);
-});
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('category', CategoryController::class);
+    Route::apiResource('product', ProductController::class);
+    Route::post('/product/update/{id}', [ProductController::class, 'update']);
+    Route::apiResource('cart', CartController::class);
+    Route::apiResource('orders', OrderController::class);
+    Route::post('/buy-now', [OrderController::class, 'buyNow']);
+    Route::apiResource('payments', PaymentController::class);
+    Route::get('/my-orders', [OrderController::class, 'myOrders']);
+}); 

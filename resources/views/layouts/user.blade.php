@@ -74,7 +74,7 @@
 
                                             <div class="cart-qty">
 
-                                                <form action="{{ route('cart.update', $item->id) }}" method="POST" class="cart-update-form">
+                                                <form action="{{ route('cart.update_qty', $item->id) }}" method="POST" class="cart-update-form">
                                                     @csrf
                                                     <input type="hidden" name="cart_action" value="minus">
                                                     <button type="submit">-</button>
@@ -84,7 +84,7 @@
                                                     {{ $item->quantity }}
                                                 </span>
 
-                                                <form action="{{ route('cart.update', $item->id) }}" method="POST" class="cart-update-form">
+                                                <form action="{{ route('cart.update_qty', $item->id) }}" method="POST" class="cart-update-form">
                                                     @csrf
                                                     <input type="hidden" name="cart_action" value="plus">
                                                     <button type="submit">+</button>
