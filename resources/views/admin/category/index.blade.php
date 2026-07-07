@@ -28,6 +28,24 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 @endif
 
+@if(session('info'))
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: "{{ session('info') }}",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        background: '#ffffff',
+        color: '#333'
+    });
+});
+</script>
+@endif
+
 <style>
     .switch {
     position: relative;

@@ -202,24 +202,22 @@ class AdminController extends Controller
         'slug' => [
             'required',
             Rule::unique('category', 'slug')->ignore($id),
-        ],
-            // 'status' => 'required',
-        ]);
+        ],]);
 
         $record = category::findOrFail($id);
 
         $record->name = $req->name;
         $record->slug = $req->slug;
-        // $record->status = $req->status;
+        if (!$record->isDirty()) {
+            return redirect('/admin/category')->with('info', 'No changes found.');
+        }
         $record->save();
-
         return redirect('admin/category')->with('success', 'Category Update Successfully');
     }
 
     public function changeStatus_category($id)
     {
         $category = category::findOrFail($id);
-
         $category->status = $category->status == 1 ? 0 : 1;
         $category->save();
 
@@ -231,7 +229,6 @@ class AdminController extends Controller
     public function Admin_product(Request $req)
     {
         $product = product::with('category');
-        
         if ($req->filled('search')) {
             $product->where('name', 'LIKE', '%' . $req->search . '%')
                     ->orWhere('price', 'LIKE', '%' . $req->search . '%')
@@ -239,9 +236,7 @@ class AdminController extends Controller
                         $q->where('name', 'LIKE', '%'.$req->search.'%');
                     });
         }
-
         $product = $product->latest()->get();
-
         return view('admin.product.index', compact('product'));
     }
 
@@ -290,7 +285,6 @@ class AdminController extends Controller
         }
 
         $record->delete();
-
         return redirect('admin/product')->with('success', 'Product Deleted Successfully');
     }
 
@@ -333,12 +327,13 @@ class AdminController extends Controller
 
         $imageName = time().'.'.$req->image->extension();
         $req->image->move(public_path('product'), $imageName);
-
         $product->image = $imageName;
     }
 
+    if (!$product->isDirty()) {
+        return redirect('/admin/product')->with('info', 'No changes found.');
+    }
     $product->save();
-
     return redirect('/admin/product')
             ->with('success', 'Product Updated Successfully!');
     }
