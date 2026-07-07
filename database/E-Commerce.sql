@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 07, 2026 at 01:27 PM
+-- Generation Time: Jul 07, 2026 at 02:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,7 +66,7 @@ CREATE TABLE `category` (
 INSERT INTO `category` (`id`, `name`, `slug`, `status`, `created_at`, `updated_at`) VALUES
 (2, 'Tv', 'tv', 1, '2026-06-19 02:11:29', '2026-06-19 23:34:10'),
 (3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-06-19 23:34:09'),
-(6, 'Laptop', 'laptop', 0, '2026-06-19 04:09:24', '2026-07-01 23:24:16');
+(9, 'Laptop', 'laptop', 0, '2026-07-07 07:02:08', '2026-07-07 07:02:08');
 
 -- --------------------------------------------------------
 
@@ -209,7 +209,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (34, '2026_07_03_053340_add_role_to_user_table', 29),
 (35, '2026_07_03_073823_add_to_cart', 30),
 (36, '2026_07_03_090208_maintenance__mode', 31),
-(37, '2026_07_03_132212_create_personal_access_tokens_table', 32);
+(37, '2026_07_03_132212_create_personal_access_tokens_table', 32),
+(38, '2026_07_07_122841_remove_restrict_on_delete', 33);
 
 -- --------------------------------------------------------
 
@@ -399,8 +400,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('NndHQvWBz8mVQRCWV4oOg25SZ3IkzkxfeYuqPwlf', 32, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZ0ZURHAzaUpHYVJ5N28xRVRrUkpaUURYZXZVZmNDUVduM0lleHZqUyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9teS1vcmRlcnMiO3M6NToicm91dGUiO3M6OToibXkub3JkZXJzIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzI7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6ImdGVERwM2lKR2FSeTdvMUVUa1JKWlFEWGV2VWZjQ1FXbjNJZXh2alMiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoyOiIxMCI7czo0OiJuYW1lIjtzOjU6IlNhaGlsIjtzOjY6Im51bWJlciI7czoxMDoiNjM1OTk1MDgyOSI7czo1OiJlbWFpbCI7czoyNToic2FoaWxwYXRlbDU1NTAwQGdtYWlsLmNvbSI7czo3OiJhZGRyZXNzIjtzOjU6IkRlbGhpIjtzOjQ6ImNpdHkiO3M6NToiRGVsaGkiO3M6NToic3RhdGUiO3M6NToiRGVsaGkiO3M6NzoicGluY29kZSI7czo2OiI0NTY2NTQiO3M6MTQ6InBheW1lbnRfbWV0aG9kIjtzOjg6IlJBWk9SUEFZIjt9fQ==', 1783423665),
-('rmmAnJJJkPzAaVWm5yPySTvNk0tmaBc7WiErt0ep', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV2JaY2ZyeHhGTHdaTndSOXNmN3IwTVdkMUVNa0preWthcFpsdXNxdiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjIzO30=', 1783423662);
+('NndHQvWBz8mVQRCWV4oOg25SZ3IkzkxfeYuqPwlf', 32, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZ0ZURHAzaUpHYVJ5N28xRVRrUkpaUURYZXZVZmNDUVduM0lleHZqUyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzI7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6ImdGVERwM2lKR2FSeTdvMUVUa1JKWlFEWGV2VWZjQ1FXbjNJZXh2alMiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoyOiIxMCI7czo0OiJuYW1lIjtzOjU6IlNhaGlsIjtzOjY6Im51bWJlciI7czoxMDoiNjM1OTk1MDgyOSI7czo1OiJlbWFpbCI7czoyNToic2FoaWxwYXRlbDU1NTAwQGdtYWlsLmNvbSI7czo3OiJhZGRyZXNzIjtzOjU6IkRlbGhpIjtzOjQ6ImNpdHkiO3M6NToiRGVsaGkiO3M6NToic3RhdGUiO3M6NToiRGVsaGkiO3M6NzoicGluY29kZSI7czo2OiI0NTY2NTQiO3M6MTQ6InBheW1lbnRfbWV0aG9kIjtzOjg6IlJBWk9SUEFZIjt9fQ==', 1783428392),
+('rmmAnJJJkPzAaVWm5yPySTvNk0tmaBc7WiErt0ep', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV2JaY2ZyeHhGTHdaTndSOXNmN3IwTVdkMUVNa0preWthcFpsdXNxdiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9jYXRlZ29yeSI7czo1OiJyb3V0ZSI7Tjt9czo1MjoibG9naW5fYWRtaW5fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyMzt9', 1783427908);
 
 -- --------------------------------------------------------
 
@@ -614,7 +615,7 @@ ALTER TABLE `add_to_cart`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -644,7 +645,7 @@ ALTER TABLE `Maintenance_Mode`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -680,7 +681,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -740,7 +741,7 @@ ALTER TABLE `payments`
 -- Constraints for table `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `product_c_id_foreign` FOREIGN KEY (`c_id`) REFERENCES `category` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `product_c_id_foreign` FOREIGN KEY (`c_id`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
