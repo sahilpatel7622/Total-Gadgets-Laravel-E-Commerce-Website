@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\UserController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -28,3 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::get('/my-orders', [OrderController::class, 'myOrders']);
 }); 
+
+Route::apiResource('users', UserController::class);

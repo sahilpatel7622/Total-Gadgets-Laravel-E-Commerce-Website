@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\product;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -64,6 +65,50 @@ class OrderController extends Controller
         }
 
         Cart::where('user_id', $user_id)->delete();
+        $user = Auth::user();
+        $name = $user->name;
+        $email = $user->email;
+        $productNames = $cartItems->pluck('product.name')->implode(', ');
+        $totalQuantity = $cartItems->sum('quantity');
+
+        Mail::html("
+            <div style='max-width:600px;margin:auto;padding:30px;
+                        font-family:Arial,sans-serif;
+                        border:1px solid #e5e7eb;
+                        border-radius:12px;
+                        background:#f9fafb;'>
+
+                <div style='background:#ffffff;padding:25px;border-radius:10px;'>
+
+                    <h2 style='text-align:center;color:#4f46e5;margin-bottom:10px;'>
+                        Order Confirmed 🎉
+                    </h2>
+
+                    <p>Hello <b>{$name}</b>,</p>
+                    <p>Your order has been placed successfully.</p>
+
+                    <hr>
+
+                    <p><b>Order Number:</b> {$order->order_number}</p>
+                    <p><b>Product:</b> {$productNames}</p>
+                    <p><b>Quantity:</b> {$totalQuantity}</p>
+                    <p><b>Total Amount:</b> ₹" . number_format($order->amount, 2) . "</p>
+                    <hr>
+
+                    <p>Thank you for shopping with <b>Total Gadgets</b>.</p>
+
+                    <p style='margin-top:25px;'>
+                        Regards,<br>
+                        <b>Total Gadgets Team</b>
+                    </p>
+
+                </div>
+            </div>
+        ", function ($message) use ($email) {
+            $message->to($email)
+                    ->subject('Order Confirmation - Total Gadget');
+        });
+
         return response()->json([
             'status' => true,
             'message' => 'Order placed successfully',
@@ -157,6 +202,45 @@ class OrderController extends Controller
             'quantity' => $request->quantity,
             'price' => $product->price,
         ]);
+
+        $user = Auth::user();
+
+        $name = $user->name;
+        $email = $user->email;
+        $productNames = $product->name;
+
+        Mail::html("
+            <div style='max-width:600px;margin:auto;padding:30px;
+                        font-family:Arial,sans-serif;
+                        border:1px solid #e5e7eb;
+                        border-radius:12px;
+                        background:#f9fafb;'>
+
+                <div style='background:#ffffff;padding:25px;border-radius:10px;'>
+
+                    <h2 style='text-align:center;color:#4f46e5;'>
+                        Order Confirmed 🎉
+                    </h2>
+                    <p>Hello <b>{$name}</b>,</p>
+                    <p>Your order has been placed successfully.</p>
+
+                    <hr>
+
+                    <p><b>Order Number:</b> {$order->order_number}</p>
+                    <p><b>Product:</b> {$productNames}</p>
+                    <p><b>Quantity:</b> {$request->quantity}</p>
+                    <p><b>Total Amount:</b> ₹" . number_format($order->amount, 2) . "</p>
+
+                    <hr>
+
+                    <p>Thank you for shopping with <b>Total Gadget</b>.</p>
+
+                </div>
+            </div>
+        ", function ($message) use ($email) {
+            $message->to($email)
+                    ->subject('Order Confirmation - Total Gadget');
+        });
 
         return response()->json([
             'status' => true,

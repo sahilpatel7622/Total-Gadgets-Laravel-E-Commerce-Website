@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use App\Models\Order;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -56,8 +57,55 @@ class PaymentController extends Controller
             'amount' => $order->amount,
             'payment_method' => $request->payment_method,
             'payment_status' => $request->payment_status,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
         ]);
+
+        $user = Auth::user();
+        $name = $user->name;
+        $email = $user->email;
+        $productNames = $order->Items()
+            ->with('product')
+            ->get()
+            ->pluck('product.name')
+            ->implode(', ');
+        $totalQuantity = $order->Items()->sum('quantity');
+
+        Mail::html("
+        <div style='max-width:600px;margin:auto;padding:30px;
+                    font-family:Arial,sans-serif;
+                    border:1px solid #e5e7eb;
+                    border-radius:12px;
+                    background:#f9fafb;'>
+
+            <div style='background:#ffffff;padding:25px;border-radius:10px;'>
+
+                <h2 style='text-align:center;color:#16a34a;'>
+                    Payment Successful 💳
+                </h2>
+                <p>Hello <b>{$name}</b>,</p>
+                <p>Your payment has been received successfully.</p>
+
+                <hr>
+
+                <p><b>Order Number:</b> {$order->order_number}</p>
+                <p><b>Products:</b> {$productNames}</p>
+                <p><b>Total Quantity:</b> {$totalQuantity}</p>
+                <p><b>Total Amount:</b> ₹" . number_format($payment->amount, 2) . "</p>
+                <p><b>Payment Method:</b> {$payment->payment_method}</p>
+                <p><b>Payment Status:</b> {$payment->payment_status}</p>
+
+                <hr>
+                <p>Thank you for shopping with <b>Total Gadgets</b>.</p>
+                <p style='margin-top:20px'>
+                    Regards,<br>
+                    <b>Total Gadgets Team</b>
+                </p>
+
+            </div>
+        </div>
+        ", function ($message) use ($email) {
+            $message->to($email)
+                    ->subject('Payment Confirmation - Total Gadgets');
+        });
 
         return response()->json([
             'status' => true,
