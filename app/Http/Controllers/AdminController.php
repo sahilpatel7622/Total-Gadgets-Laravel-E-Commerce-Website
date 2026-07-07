@@ -24,14 +24,10 @@ class AdminController extends Controller
         $totalCustomers = User::where('role', 'user')->count();
         $totalCategories = Category::count();
         $totalProducts = product::count();
-
         $totalOrders = Order::count();
-
         $pendingOrders = Order::where('status', 'Pending')->count();
         $completedOrders = Order::where('status', 'Delivered')->count();
-
-        $totalRevenue = Order::where('status', 'Delivered')->sum('amount');
-
+        $totalRevenue = Payment::where('payment_status', 'paid')->sum('amount');
         $latestOrders = Order::with('user', 'payment')
             ->whereHas('user', function ($q) {
                 $q->where('role', 'user')
