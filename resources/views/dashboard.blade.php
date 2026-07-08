@@ -295,6 +295,13 @@
 
 </div>
 
-
-
 @endsection
+
+@section('script')
+<script>
+    function preventBack() { window.history.forward(); }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+</script>
+@endsection
+
