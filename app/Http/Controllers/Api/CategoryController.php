@@ -17,7 +17,7 @@ class CategoryController extends Controller
             'data' => $categories
         ]);
     }
-
+    
     public function store(Request $req){
         $validator = Validator::make($req->all(),
         [
