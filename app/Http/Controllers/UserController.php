@@ -71,7 +71,6 @@ class UserController extends Controller
         ]);
 
         $user = User::where('email', $req->email)->first();
-
         if (!$user) {
             return back()->with('error', 'Email or Password is Wrong')->withInput();
         }
@@ -91,7 +90,6 @@ class UserController extends Controller
                 return redirect('/admin/dashboard')
                     ->with('successe', 'Welcome Admin!');
             }
-
             return back()->with('error', 'Email or Password is Wrong')->withInput();
         }
 
@@ -99,6 +97,10 @@ class UserController extends Controller
         if (Hash::check($req->password, $user->password)) {
             Auth::login($user);
             $req->session()->regenerate();
+            DB::table('sessions')   
+                ->where('user_id', $user->id)
+                ->where('id', '!=', session()->getId())
+                ->delete();
             return redirect('/dashboard')
                 ->with('successe', 'You Are Login Successfully!');
         }
@@ -108,13 +110,15 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
+        $userId = Auth::id();
         Auth::logout();
-        
-        if (!Auth::guard('admin')->check()) {
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+        if ($userId) {
+            DB::table('sessions')
+                ->where('user_id', $userId)
+                ->delete();
         }
-        
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/dashboard')->with('success', 'Logout successfully!');
     }
 

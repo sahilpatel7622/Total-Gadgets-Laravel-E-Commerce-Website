@@ -201,6 +201,7 @@ Swal.fire({
             <a href="{{ route('dashboard') }}">Home</a>
             <a href="{{ route('products') }}">Products</a>
             <a href="{{ route('about') }}">About Us</a>
+            <a href="{{ route('contact') }}">Contact Us</a>
         </div>
 
         <div class="footer-col">

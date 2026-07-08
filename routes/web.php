@@ -20,7 +20,7 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 
-Route::middleware(['auth', 'check.status'])->group(function () {
+Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
     Route::get('/crud', [UserController::class, 'index'])->name('crud');
     Route::get('/crud/view', [UserController::class, 'view'])->name('view');
     Route::get('/crud/insert', [UserController::class, 'index'])->name('insert.form');

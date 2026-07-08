@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckUserStatus;
 use App\Http\Middleware\MaintenanceMode;
+use App\Http\Middleware\NoCache;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,10 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'check.status' => CheckUserStatus::class,
+            'nocache' => NoCache::class,
         ]);
 
         $middleware->web(append: [
-            MaintenanceMode::class,
+            MaintenanceMode::class, NoCache::class,
         ]);
     })
 
