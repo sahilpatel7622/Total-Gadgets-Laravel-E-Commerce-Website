@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 09, 2026 at 08:38 AM
+-- Generation Time: Jul 09, 2026 at 09:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -420,7 +420,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 ('5T7CEOYBQ4qFvt0FIlR3mYcGZb4ucS3gKDqDhOBy', 32, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibjJnZFQ2ZzJXUjBLUzgwTzdON1JaZnBXbjhVVXBEODh5eUxmTjNGdyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9kdWN0cyI7czo1OiJyb3V0ZSI7czo4OiJwcm9kdWN0cyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjMyO30=', 1783577716),
 ('711gSctdd8LbAQMK0QyGPlfWAJLRUNQ7JtA3GSls', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMFdQRmRvblg2YTZPWExwM2FkV2hpaHVwSXNFam9pNUhBRWduYWY4bCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjIzO30=', 1783577916),
 ('d954zRpEudNDN2PPYpcz63QK6iXojMbazFzgABWx', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibGI0azdhMFNBZHdmV2Q3c2xmM0NIYTAwMmpTOHBuZVE1T1VXN3NSYiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9vcmRlcnMiO3M6NToicm91dGUiO3M6MTI6ImFkbWluLm9yZGVycyI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjM7fQ==', 1783574385),
-('zeEDUsRrBlaMiYDw7sAIniFODn2WOwDAXaV9n3GY', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNGFEWDJzczFIbW9vNlpmWmVMZ2dLYW5admNoRlZKZzFYbFJ3cjJHYyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjM7fQ==', 1783579093);
+('fgQdzuLu8EL27QGqvQmdSIK1ukQEqaJZ1cg3rgQv', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWE5ZYlI2YjBnbmF6eTVVNEdTRzJrRElzWW1HQmk2NUNWSTVLMjV4bSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzY7fQ==', 1783582204);
 
 -- --------------------------------------------------------
 
@@ -473,10 +473,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `role`, `created_at`, `updated_at`, `status`) VALUES
-(23, 'Sahil', '', 'sahil@gmail.com', '123456', 'admin', NULL, NULL, 'Active'),
 (24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-03 07:28:54', 'Active'),
 (27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-07 03:40:39', 'Inactive'),
-(32, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$.b76vIF3dLhzc3lJ3cxFdOr8R7.Xp1Awz/fjyMAz.rJa9XQSO8byy', 'user', '2026-07-07 01:29:41', '2026-07-07 01:29:41', 'Active');
+(32, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$.b76vIF3dLhzc3lJ3cxFdOr8R7.Xp1Awz/fjyMAz.rJa9XQSO8byy', 'user', '2026-07-07 01:29:41', '2026-07-07 01:29:41', 'Active'),
+(36, 'Sahil', '1231231230', 'sahil@gmail.com', '$2y$12$LHR.irWTuCUmTqTDQ9Oo/usiYTdRVSksXF1mkW8oTrkujyEFfRsrW', 'admin', '2026-07-09 01:56:11', '2026-07-09 01:56:11', 'Active');
 
 -- --------------------------------------------------------
 
@@ -635,7 +635,7 @@ ALTER TABLE `user_location_mapping`
 -- AUTO_INCREMENT for table `add_to_cart`
 --
 ALTER TABLE `add_to_cart`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -725,7 +725,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `user_location_mapping`

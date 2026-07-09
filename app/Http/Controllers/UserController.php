@@ -84,7 +84,7 @@ class UserController extends Controller
 
         // Admin & Super Admin (Normal Password)
         if ($user->role == 'admin' || $user->role == 'super_admin') {
-            if ($user->password == $req->password) {
+            if (Hash::check ($req->password, $user->password)) {
                 Auth::guard('admin')->login($user);
                 $req->session()->regenerate();
                 return redirect('/admin/dashboard')

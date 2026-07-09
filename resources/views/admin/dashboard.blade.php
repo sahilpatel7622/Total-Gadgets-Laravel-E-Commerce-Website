@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="col-xl-3 col-md-6">
             <div class="stat-card bg-purple">
                 <h4>{{ $totalCustomers }}</h4>
-                <p>Total Customers</p>
+                <p>Total Users</p>
                 <i class="fa-solid fa-users"></i>
             </div>
         </div>
