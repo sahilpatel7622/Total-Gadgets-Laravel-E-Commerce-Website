@@ -182,12 +182,6 @@
             <div class="box">
                 <h3>Payment Details</h3>
                 <p><strong>Method:</strong> {{ $order->payment?->payment_method ?? 'N/A' }}</p>
-                <p>
-                    <strong>Status:</strong>
-                    <span style="position: relative;top: 10px" class="status {{ ($order->payment?->payment_status == 'Paid') ? 'paid' : 'pending' }}">
-                        {{ $order->payment?->payment_status ?? 'Pending' }}
-                    </span>
-                </p>
             </div>
         </div>
 

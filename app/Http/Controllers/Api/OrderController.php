@@ -203,7 +203,7 @@ class OrderController extends Controller
 
         $order = Order::create([
             'user_id' => Auth::id(),
-            'order_number' => 'TG' . time(),
+            'order_number' => 'TG' . date('YmdHis'),
             'amount' => $totalAmount,
             'status' => 'Pending',
         ]);

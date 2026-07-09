@@ -48,6 +48,16 @@
         white-space: nowrap;
     }
 
+    .logo img,
+    .brand-logo img,
+    .navbar-brand img{
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ff6b00;
+    }
+
     .nav-menu {
         display: flex;
         align-items: center;

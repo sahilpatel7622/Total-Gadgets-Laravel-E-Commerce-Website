@@ -47,21 +47,32 @@
             min-height: 100vh;
         }
 
-        .brand {
-            margin-bottom: 35px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #34344a;
+        .brand{
+            margin-bottom:35px;
+            padding-bottom:20px;
+            border-bottom:1px solid #34344a;
         }
 
-        .brand a {
-            color: #4caf50;
-            text-decoration: none;
-            font-size: 24px;
-            font-weight: 700;
+        .brand a{
             display: flex;
             align-items: center;
             gap: 12px;
-            justify-content: center;
+            text-decoration: none;
+            color: #4caf50;
+            white-space: nowrap; 
+        }
+
+        .brand img{
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .brand span{
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1;
         }
 
         .sidebar ul {
@@ -244,6 +255,38 @@
             background: linear-gradient(135deg, #22c55e, #15803d);
         }
 
+        .brand-logo{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            width:100%;
+            text-decoration:none;
+        }
+
+        .brand-logo img{
+            width:45px;
+            height:45px;
+            object-fit:contain;
+            flex-shrink:0;
+        }
+
+        .brand-logo:hover{
+            background: transparent !important;
+            transform: none !important; 
+        }
+
+        .logo img,
+        .brand-logo img,
+        .navbar-brand img{
+            width: 51px;
+            height: 51px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff6b00; /* Optional */
+        }
+
+
     </style>
 </head>
 
@@ -251,9 +294,10 @@
 
 <div class="sidebar">
     <div>
-        <div class="brand" style="position: relative; right: 20px;">
-            <a href="{{ url('/admin/dashboard') }}" style="font-size: 18px">
-                <i class="fa-solid fa-gauge"></i> Admin Panel
+        <div class="brand" style="position: relative; right: 2px;">
+            <a href="{{ url('/admin/dashboard') }}" class="brand-logo">
+                <img src="{{ asset('images/tg-logo.png') }}" alt="Total Gadgets Logo">
+                <span style="font-size: 22px">Total Gadgets</span>
             </a>
         </div>
 
