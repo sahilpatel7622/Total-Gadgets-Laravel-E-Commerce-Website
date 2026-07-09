@@ -439,18 +439,25 @@ class AdminController extends Controller
     {
         $authAdmin = Auth::guard('admin')->user();
         $admin = User::findOrFail($authAdmin->id);
+        
         $request->validate([
-            'name'  => 'required',
+            'name' => 'required',
+            'number' => [
+                'required',
+                'digits:10',
+                Rule::unique('user', 'number')->ignore($admin->id),
+            ],
             'email' => ['required','email',
                 Rule::unique('user', 'email')->ignore($admin->id),
             ],
         ]);
 
-        if ($admin->name == $request->name && $admin->email == $request->email) {
+        if ($admin->name == $request->name &&  $admin->number == $request->number && $admin->email == $request->email) {
             return back()->with('info', 'No changes found.');
         }
 
         $admin->name = $request->name;
+        $admin->number = $request->number;
         $admin->email = $request->email;
         $admin->save();
 
