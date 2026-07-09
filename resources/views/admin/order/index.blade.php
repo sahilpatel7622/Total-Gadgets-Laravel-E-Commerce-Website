@@ -54,6 +54,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="submit" class="btn btn-primary ms-2">
                     <i class="fa-solid fa-search"></i>
                 </button>
+
+                @if(request('search'))
+                <a href="{{ route('admin.orders') }}" class="btn btn-secondary ms-2">
+                    <i class="fa-solid fa-xmark"></i> Reset
+                </a>
+                @endif
             </form>
         </div>
 

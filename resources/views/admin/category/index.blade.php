@@ -119,11 +119,18 @@ input:checked + .slider:before {
                     name="search"
                     class="form-control"
                     placeholder="Search ID, Name or Status..."
-                    value="{{ request('search') }}">
+                    value="{{ request('search') }}"
+                    style="width:250px;">
 
-                <button class="btn btn-primary ms-2">
+                <button type="submit" class="btn btn-primary ms-2">
                     <i class="fa-solid fa-search"></i>
                 </button>
+
+                @if(request('search'))
+                <a href="{{ url('/admin/category') }}" class="btn btn-secondary ms-2">
+                    <i class="fa-solid fa-xmark"></i> Reset
+                </a>
+                @endif
             </form>
             
         </div>
