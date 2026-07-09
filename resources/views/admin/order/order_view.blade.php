@@ -244,6 +244,7 @@
         <div class="info-card">
             <h3>Customer Details</h3>
 
+            <p><strong>ID:</strong> <a style="color: green">#{{ $order->user->id ?? 'N/A' }}</a></p>
             <p><strong>Name:</strong> {{ $order->detail->name ?? 'N/A' }}</p>
             <p><strong>Email:</strong> {{ $order->detail->email ?? 'N/A' }}</p>
             <p><strong>Phone:</strong> {{ $order->detail->number ?? 'N/A' }}</p>
@@ -257,12 +258,6 @@
                 <span class="badge badge-success">{{ $order->status }}</span>
             </p>
             <p><strong>Payment Method:</strong> {{ $order->payment->payment_method ?? 'N/A' }}</p>
-            <p>
-                <strong>Payment:</strong>
-                <span class="badge badge-warning">
-                    {{ $order->payment->payment_status ?? 'Pending' }}
-                </span>
-            </p>
         </div>
 
     </div>

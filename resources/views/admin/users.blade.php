@@ -135,11 +135,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </label>
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('user_delete', $r->id) }}"
-                                       onclick="return confirm('Delete this user?')"
-                                       class="btn btn-danger btn-sm">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete('{{ route('user_delete', $r->id) }}', '{{ $r->name }}')">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
@@ -177,6 +176,30 @@ $(document).ready(function () {
         window.location.href = "{{ url('/admin/user/status') }}/" + userId;
     });
 });
+</script>
+
+<script>
+function confirmDelete(url, name) {
+    Swal.fire({
+        title: 'Delete User?',
+        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53935',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Yes, Delete',
+        cancelButtonText: '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 </script>
 
 @endsection

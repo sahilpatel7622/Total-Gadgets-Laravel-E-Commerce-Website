@@ -168,9 +168,10 @@ input:checked + .slider:before {
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
 
-                                <a href="{{ Route('delete_category',$r->id)}}" class="btn btn-danger btn-sm">
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    onclick="confirmDelete('{{ Route('delete_category', $r->id) }}', '{{ $r->name }}')">
                                     <i class="fa-solid fa-trash"></i>
-                                </a>
+                                </button>
                             </td>
                         </tr>
                         @empty
@@ -200,5 +201,28 @@ input:checked + .slider:before {
 
 </div>
 
+<script>
+function confirmDelete(url, name) {
+    Swal.fire({
+        title: 'Delete Category?',
+        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53935',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Yes, Delete',
+        cancelButtonText: '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
 
 @endsection

@@ -20,7 +20,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white">
             <h5 class="mb-0">
-                <i class="fa-solid fa-credit-card"></i> Payment #{{ $payment->id }}
+                <i class="fa-solid fa-credit-card"></i> Payment <a style="color: green">#{{ $payment->id }}</a>
             </h5>
         </div>
 

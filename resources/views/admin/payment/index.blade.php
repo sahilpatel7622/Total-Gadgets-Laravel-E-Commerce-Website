@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <th width="130">Method</th>
                             <th width="120">Amount</th>
                             <th width="130">Status</th>
-                            <th width="100" class="text-center">Action</th>
+                            <th width="75" class="text-center">Action</th>
                         </tr>
                     </thead>
 

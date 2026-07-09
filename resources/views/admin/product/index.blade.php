@@ -92,11 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     <thead class="table-dark">
                         <tr>
                             <th width="60">Id</th>
-                            <th width="50">C_Name</th>
+                            <th width="40">C_Name</th>
                             <th width="80">Name</th>
                             <th width="70">Slug</th>
                             <th width="80">Price</th>
-                            <th width="350">Description</th>
+                            <th width="400">Description</th>
                             <th width="100">Image</th>
                             <th width="120" class="text-center">Action</th>
                         </tr>
@@ -123,9 +123,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <i class="fa-solid fa-pen"></i>
                                 </a>
 
-                                <a href="{{ route('delete_product', $p->id) }}" class="btn btn-danger btn-sm">
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    onclick="confirmDelete('{{ route('delete_product', $p->id) }}', '{{ $p->name }}')">
                                     <i class="fa-solid fa-trash"></i>
-                                </a>
+                                </button>
                             </td>
                         </tr>
                         @empty
@@ -156,3 +157,27 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 @endsection
+
+<script>
+function confirmDelete(url, name) {
+    Swal.fire({
+        title: 'Delete Product?',
+        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53935',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Yes, Delete',
+        cancelButtonText: '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>

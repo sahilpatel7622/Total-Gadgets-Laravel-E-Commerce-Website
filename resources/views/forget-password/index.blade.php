@@ -132,6 +132,17 @@
             cursor:not-allowed;
         }
 
+        .back-link{
+            text-align:center;
+            margin-top:20px;
+        }
+
+        .back-link a{
+            color:#5b7cf0;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
         @keyframes spin{
             100%{
                 transform:rotate(360deg);
@@ -191,7 +202,11 @@
         <a href="{{ url('/login') }}">Login</a>
     </div>
     @endif
-
+    @if(Auth::check())
+    <div class="back-link">
+        <a href="{{ route('profile.security') }}">Back</a>
+    </div>
+    @endif
 </div>
 
 </body>

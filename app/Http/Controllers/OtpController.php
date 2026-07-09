@@ -175,9 +175,35 @@ class OtpController extends Controller
             ->where('type', 'forgot_password')
             ->delete();
         $user->save();
+
+        Mail::html("
+        <div style='font-family:Arial,sans-serif; max-width:600px; margin:auto; border:1px solid #ddd;'>
+            <div style='background:#4F46E5; color:white; padding:15px; text-align:center;'>
+                <h2>Total Gadgets</h2>
+            </div>
+            <div style='padding:20px;'>
+                <p>Hi <strong>{$user->name}</strong>,</p>
+                <p>
+                    Your account password has been changed successfully.
+                </p>
+                <p>
+                    If this was you, no further action is required.
+                </p>
+                <p>
+                    Regards,<br>
+                    <strong>Total Gadgets Team</strong>
+                </p>
+            </div>
+            <div style='background:#f1f1f1; text-align:center; padding:10px; font-size:13px; color:#666;'>
+                © ".date('Y')." Total Gadgets. All Rights Reserved.
+            </div>
+        </div>
+        ", function ($message) use ($user) {
+            $message->to($user->email)
+                    ->subject('Password Changed Successfully');
+        });
+
         session()->forget('reset_email');
-
-
         if (Auth::check()) {
             return redirect()
                 ->route('profile.security')
@@ -187,6 +213,7 @@ class OtpController extends Controller
         return redirect()
             ->route('login')
             ->with('success', 'Password updated successfully!. Please login.');
-        }
+
+    }
 
 }
