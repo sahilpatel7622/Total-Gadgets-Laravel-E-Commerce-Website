@@ -172,9 +172,9 @@
         <div class="left-box">
             <div class="box">
                 <h3>Customer Details</h3>
-                <p><strong>Name:</strong> {{ $order->user->name ?? 'N/A' }}</p>
-                <p><strong>Email:</strong> {{ $order->user->email ?? 'N/A' }}</p>
-                <p><strong>Phone:</strong> {{ $order->user->number ?? 'N/A' }}</p>
+                <p><strong>Name:</strong> {{ $order->detail->name ?? 'N/A' }}</p>
+                <p><strong>Email:</strong> {{ $order->detail->email ?? 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ $order->detail->number ?? 'N/A' }}</p>
             </div>
         </div>
 
@@ -197,7 +197,7 @@
 
     <div class="section box" style="width:100%;">
         <h3>Shipping Address</h3>
-        <p>{{ $order->address }}</p>
+        <p>{{ $order->detail->address }}</p>
     </div>
 
     <table>

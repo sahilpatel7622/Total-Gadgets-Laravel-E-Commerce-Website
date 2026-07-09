@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\category;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -18,26 +18,55 @@ class CategoryController extends Controller
         ]);
     }
     
-    public function store(Request $req){
-        $validator = Validator::make($req->all(),
-        [
-            'name'   => 'required|unique:category,name',
-            'slug'   => 'required|unique:category,slug',
+    public function store(Request $req)
+    {
+        // Multiple Insert
+        if ($req->has('categories')) {
+
+            $validator = Validator::make($req->all(), [
+                'categories' => 'required|array',
+                'categories.*.name' => 'required|unique:category,name',
+                'categories.*.slug' => 'required|unique:category,slug',
+                'categories.*.status' => 'required|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'error' => $validator->errors()
+                ], 422);
+            }
+            $data = [];
+            foreach ($req->categories as $category) {
+                $data[] = Category::create($category);
+            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Multiple Categories Created Successfully',
+                'data' => $data
+            ], 201);
+        }
+
+        // Single Insert
+        $validator = Validator::make($req->all(), [
+            'name' => 'required|unique:category,name',
+            'slug' => 'required|unique:category,slug',
             'status' => 'required|boolean',
         ]);
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'error' =>$validator->errors()
+                'error' => $validator->errors()
             ], 422);
         }
 
-        $category = category::create(
-            [
-                'name' => $req->name,
-                'slug' => $req->slug,
-                'status' => $req->status
-            ]);
+        $category = Category::create([
+            'name' => $req->name,
+            'slug' => $req->slug,
+            'status' => $req->status,
+        ]);
+
         return response()->json([
             'status' => true,
             'message' => 'Category Created Successfully',
@@ -47,7 +76,9 @@ class CategoryController extends Controller
 
     public function show($id)
     {
-        $category = category::find($id);
+        $category = Category::with('product')   
+            ->where('id', $id)
+            ->first();        
 
         if (!$category) {
             return response()->json([

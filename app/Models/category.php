@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 
 class category extends Model
@@ -12,4 +11,10 @@ class category extends Model
         'slug',
         'status',
     ];
+
+    public function product()
+    {
+        return $this->hasMany(product::class, 'c_id', 'id');
+    }
+
 }

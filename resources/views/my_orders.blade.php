@@ -69,7 +69,7 @@
 
             <div class="address-box">
                 <strong>Delivery Address</strong>
-                <p>{{ $order->address }}</p>
+                <p>{{ $order->detail->address }}</p>
             </div>
 
             <div class="total-box">

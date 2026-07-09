@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </td>
 
                                 <td>
-                                    <strong>{{ $payment->user->name ?? 'N/A' }}</strong>
+                                    <strong>{{ $payment->order->detail->name ?? 'N/A' }}</strong>
                                 </td>
 
                                 <td>
@@ -131,6 +131,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 </table>
 
             </div>
+
+            {{-- Pagination --}}
+            @if($payments->hasPages())
+            <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top">
+                <small class="text-muted">
+                    Showing {{ $payments->firstItem() }} to {{ $payments->lastItem() }} of {{ $payments->total() }} payments
+                </small>
+                {{ $payments->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
+
         </div>
     </div>
 

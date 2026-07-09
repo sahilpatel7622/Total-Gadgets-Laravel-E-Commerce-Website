@@ -177,6 +177,17 @@ input:checked + .slider:before {
                 </table>
 
             </div>
+
+            {{-- Pagination --}}
+            @if($record->hasPages())
+            <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top">
+                <small class="text-muted">
+                    Showing {{ $record->firstItem() }} to {{ $record->lastItem() }} of {{ $record->total() }} categories
+                </small>
+                {{ $record->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
+
         </div>
     </div>
 

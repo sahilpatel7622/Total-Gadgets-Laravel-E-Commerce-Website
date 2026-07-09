@@ -133,6 +133,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 </table>
 
             </div>
+
+            {{-- Pagination --}}
+            @if($product->hasPages())
+            <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top">
+                <small class="text-muted">
+                    Showing {{ $product->firstItem() }} to {{ $product->lastItem() }} of {{ $product->total() }} products
+                </small>
+                {{ $product->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
+
         </div>
     </div>
 

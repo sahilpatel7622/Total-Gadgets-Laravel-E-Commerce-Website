@@ -10,10 +10,12 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use App\Models\Payment;
+use App\Models\OrderDetail;
 use Razorpay\Api\Api;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Otp;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -140,9 +142,9 @@ class CartController extends Controller
             'number' => 'required|digits:10',
             'address' => 'required|string|max:500',
             'city' => 'required|string|max:100',
-            'state' => 'required|string|max:100',
+            'state' => 'required|string|max:100',   
             'pincode' => 'required|digits:6',
-            'payment_method' => 'required|in:COD,RAZORPAY',
+            'payment_method' => 'required|in:Cash On Delivery,RAZORPAY',
         ]);
 
         if ($request->buy_now_product_id) {
@@ -171,9 +173,11 @@ class CartController extends Controller
             ->where('type', 'order_verify')
             ->delete();
 
+        $user = Auth::user();
+
         Otp::create([
-            'user_id' => Auth::id(),
-            'email' => $request->email,
+            'user_id' => $user->id,
+            'email' => $user->email,
             'otp' => $otp,
             'type' => 'order_verify',
             'expiry' => now()->addMinutes(5),
@@ -183,6 +187,7 @@ class CartController extends Controller
             'order_data' => $request->all()
         ]);
 
+        try {
             Mail::html("
                 <div style='max-width:600px;margin:auto;padding:30px;
                             font-family:Arial,sans-serif;
@@ -196,7 +201,7 @@ class CartController extends Controller
                         </h2>
 
                         <p style='font-size:16px;color:#555;'>
-                            Password Reset OTP
+                            Order Verification OTP
                         </p>
 
                         <div style='margin:30px 0'>
@@ -219,11 +224,13 @@ class CartController extends Controller
                     </div>
 
                 </div>
-        
-        ",function ($message) use ($request) {
-            $message->to($request->email)
-                ->subject('Order Verification OTP');
-        });
+            ", function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('Order Verification OTP - Total Gadgets');
+            });
+        } catch (\Exception $e) {
+            Log::error('OTP email failed: ' . $e->getMessage());
+        }
 
         return back()
         ->with('success', 'OTP sent successfully.')
@@ -302,8 +309,15 @@ class CartController extends Controller
                 'user_id' => Auth::id(),
                 'order_number' => 'TG' . date('YmdHis'),
                 'amount' => $cartTotal,
-                'address' => $fullAddress,
                 'status' => 'Pending',
+            ]);
+
+            OrderDetail::create([
+                'order_id' => $order->id,
+                'name' => $orderData['name'],
+                'number' => $orderData['number'],
+                'email' => $orderData['email'],
+                'address' => $fullAddress,
             ]);
 
             foreach ($cartItems as $item) {
@@ -324,7 +338,7 @@ class CartController extends Controller
                 'razorpay_payment_id' => null,
             ]);
 
-            if ($orderData['payment_method'] == 'COD' && empty($orderData['buy_now_product_id'])) {
+            if ($orderData['payment_method'] == 'Cash On Delivery' && empty($orderData['buy_now_product_id'])) {
                 Cart::where('user_id', Auth::id())->delete();
             }
 
@@ -338,30 +352,35 @@ class CartController extends Controller
                 ]);
             }
 
-            $order->load('items.product');
-            $this->sendOrderConfirmMail(
-                $order,
-                $orderData['email'],
-                $orderData['name'],
-                'Cash On Delivery',
-                'Pending'
-            );
-
-            return redirect()
-                ->route('products')
-                ->with('successe', 'Order placed successfully.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
+
+        // Send order confirmation email OUTSIDE the DB try-catch
+        // so email failure never affects the order or redirect
+        $order->load(['items.product', 'detail']);
+
+        if ($order->detail) {
+            $this->sendOrderConfirmMail(
+                $order,
+                $order->detail->email,
+                $order->detail->name,
+                'Cash On Delivery',
+                'Pending'
+            );
+        }
+
+        return redirect()
+            ->route('products')
+            ->with('successe', 'Order placed successfully.');
     }
 
 
     // My Order
     public function myOrders()
     {
-         $orders = Order::with(['items.product', 'payment'])
+        $orders = Order::with(['items.product', 'payment', 'detail'])
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
@@ -399,10 +418,11 @@ class CartController extends Controller
             'razorpay_payment_id' => $request->razorpay_payment_id,
         ]);
 
+        $order->load('detail');
         $this->sendOrderConfirmMail(
             $order,
-            Auth::user()->email,
-            Auth::user()->name,
+            $order->detail->email,
+            $order->detail->name,
             $payment->payment_method,
             $payment->payment_status
         );
@@ -465,7 +485,7 @@ class CartController extends Controller
             });
         }
         catch (\Exception $e) {
-            dd($e->getMessage());
+            Log::error('Order mail error: ' . $e->getMessage());
         }
     }
 
@@ -476,7 +496,8 @@ class CartController extends Controller
         $order = Order::with([
             'user',
             'items.product',
-            'payment'
+            'payment',
+            'detail'
         ])
         ->where('user_id', Auth::id())
         ->findOrFail($id);

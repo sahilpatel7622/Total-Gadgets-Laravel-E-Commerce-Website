@@ -25,11 +25,46 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
+        $user_id = Auth::id();
+
+        // Multiple cart add
+        if ($request->has('cart')) {
+            $request->validate([
+                'cart' => 'required|array',
+                'cart.*.product_id' => 'required|exists:product,id',
+                'cart.*.quantity' => 'required|integer|min:1',
+            ]);
+            $cartItems = [];
+            foreach ($request->cart as $item) {
+                $cart = Cart::where('user_id', $user_id)
+                    ->where('product_id', $item['product_id'])
+                    ->first();
+
+                if ($cart) {
+                    $cart->quantity += $item['quantity'];
+                    $cart->save();
+                } else {
+                    $cart = Cart::create([
+                        'user_id' => $user_id,
+                        'product_id' => $item['product_id'],
+                        'quantity' => $item['quantity'],
+                    ]);
+                }
+                $cartItems[] = $cart;
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Products added to cart successfully',
+                'cart' => $cartItems,
+            ]);
+        }
+
+        // Single cart add
         $request->validate([
             'product_id' => 'required|exists:product,id',
             'quantity' => 'required|integer|min:1',
         ]);
-        $user_id = Auth::id();
         $cart = Cart::where('user_id', $user_id)
             ->where('product_id', $request->product_id)
             ->first();

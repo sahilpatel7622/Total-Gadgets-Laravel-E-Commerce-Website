@@ -299,7 +299,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>₹{{ number_format($order->amount, 2) }}</td>
 
                             <td>
-                                <span class="status-badge status-pending">{{ $order->payment->payment_status }}</span>
+                                <span class="status-badge status-pending">
+                                    {{ $order->payment->payment_status ?? 'N/A' }}
+                                </span>
                             </td>
 
                             <td>

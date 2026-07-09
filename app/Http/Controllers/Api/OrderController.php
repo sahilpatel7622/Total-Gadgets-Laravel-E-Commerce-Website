@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderDetail;
 use App\Models\Cart;
 use App\Models\product;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,10 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'address' => 'required',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'number' => 'required|digits:10',
+            'address' => 'required|string|max:500',
         ]);
 
         $user_id = Auth::id();
@@ -51,8 +55,15 @@ class OrderController extends Controller
             'user_id' => $user_id,
             'order_number' => 'TG' . date('YmdHis'),
             'amount' => $totalAmount,
-            'address' => $request->address,
             'status' => 'Pending',
+        ]);
+
+        OrderDetail::create([
+            'order_id' => $order->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'number' => $request->number,
+            'address' => $request->address,
         ]);
 
         foreach ($cartItems as $item) {
@@ -65,9 +76,8 @@ class OrderController extends Controller
         }
 
         Cart::where('user_id', $user_id)->delete();
-        $user = Auth::user();
-        $name = $user->name;
-        $email = $user->email;
+        $name = $request->name;
+        $email = $request->email;
         $productNames = $cartItems->pluck('product.name')->implode(', ');
         $totalQuantity = $cartItems->sum('quantity');
 
@@ -182,7 +192,10 @@ class OrderController extends Controller
         $request->validate([
             'product_id' => 'required|exists:product,id',
             'quantity' => 'required|integer|min:1',
-            'address' => 'required',
+            'name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'number' => 'required|digits:10',
+            'address' => 'required|string|max:500',
         ]);
 
         $product = product::findOrFail($request->product_id);
@@ -192,8 +205,15 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'order_number' => 'TG' . time(),
             'amount' => $totalAmount,
-            'address' => $request->address,
             'status' => 'Pending',
+        ]);
+
+        OrderDetail::create([
+            'order_id' => $order->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'number' => $request->number,
+            'address' => $request->address,
         ]);
 
         OrderItem::create([
@@ -203,10 +223,8 @@ class OrderController extends Controller
             'price' => $product->price,
         ]);
 
-        $user = Auth::user();
-
-        $name = $user->name;
-        $email = $user->email;
+        $name = $request->name;
+        $email = $request->email;
         $productNames = $product->name;
 
         Mail::html("

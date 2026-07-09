@@ -69,17 +69,17 @@ class AdminController extends Controller
     
     public function Admin_users(Request $req)
     {
-        $record = User::query();
-        if ($req->filled('search')) {
-            $record->where('name', 'LIKE', '%' . $req->search . '%')
-                ->orWhere('email', 'LIKE', '%' . $req->search . '%')
-                ->orWhere('number', 'LIKE', '%' . $req->search . '%');
+        $record = User::where('role', 'user');
 
+        if ($req->filled('search')) {
+            $record->where(function ($q) use ($req) {
+                $q->where('name', 'LIKE', '%' . $req->search . '%')
+                  ->orWhere('email', 'LIKE', '%' . $req->search . '%')
+                  ->orWhere('number', 'LIKE', '%' . $req->search . '%');
+            });
         }
 
-        $record = User::where('role', 'user')
-            ->latest()
-            ->get();
+        $record = $record->latest()->paginate(10)->withQueryString();
         return view('admin.users', compact('record'));
     } 
 
@@ -161,7 +161,7 @@ class AdminController extends Controller
                 });
         }
 
-        $record = $record->latest()->get();
+        $record = $record->latest()->paginate(10)->withQueryString();
 
         return view('admin.category.index', compact('record'));
     }
@@ -242,7 +242,7 @@ class AdminController extends Controller
                         $q->where('name', 'LIKE', '%'.$req->search.'%');
                     });
         }
-        $product = $product->latest()->get();
+        $product = $product->latest()->paginate(10)->withQueryString();
         return view('admin.product.index', compact('product'));
     }
 
@@ -345,18 +345,29 @@ class AdminController extends Controller
     }
 
     // Order
-    public function Admin_orders()
+    public function Admin_orders(Request $request)
     {
-        $orders = Order::with(['user', 'payment'])
+        $search = $request->search;
+
+        $orders = Order::with(['user', 'payment', 'detail'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('order_number', 'like', '%' . $search . '%')
+                    ->orWhereHas('detail', function ($q2) use ($search) {
+                        $q2->where('name', 'like', '%' . $search . '%');
+                    });
+                });
+            })
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.order.index', compact('orders'));
     }
 
     public function Admin_order_view($id)
     {
-        $order = Order::with('user', 'items.product')
+        $order = Order::with('user', 'items.product', 'detail')
             ->findOrFail($id);
 
         return view('admin.order.order_view', compact('order'));
@@ -378,7 +389,7 @@ class AdminController extends Controller
     // Payment
     public function Admin_payments(Request $request)
     {
-        $payments = Payment::with(['order', 'user'])
+        $payments = Payment::with(['order', 'user', 'detail'])
             ->when($request->search, function ($query) use ($request) {
                 $query->where('payment_method', 'like', '%' . $request->search . '%')
                     ->orWhere('payment_status', 'like', '%' . $request->search . '%')
@@ -390,14 +401,15 @@ class AdminController extends Controller
                     });
             })
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.payment.index', compact('payments'));
     }
 
     public function Admin_payment_view($id)
     {
-        $payment = Payment::with(['order.items.product', 'user'])
+        $payment = Payment::with(['order.items.product', 'user', 'detail'])
             ->findOrFail($id);
 
         return view('admin.payment.view', compact('payment'));

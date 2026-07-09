@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Payment;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
@@ -29,8 +30,6 @@ class PaymentController extends Controller
         $request->validate([
             'order_id' => 'required|exists:orders,id',
             'payment_method' => 'required',
-            'payment_status' => 'required',
-            'razorpay_payment_id' => 'nullable',
         ]);
 
         $order = Order::where('user_id', Auth::id())
@@ -51,17 +50,22 @@ class PaymentController extends Controller
             ], 409);
         }
 
+        $paymentStatus = $request->payment_method == 'Cash On Delivery'
+            ? 'Pending'
+            : 'Paid';
+
         $payment = Payment::create([
             'order_id' => $order->id,
             'user_id' => Auth::id(),
             'amount' => $order->amount,
             'payment_method' => $request->payment_method,
-            'payment_status' => $request->payment_status,
+            'payment_status' => $paymentStatus,
         ]);
 
-        $user = Auth::user();
-        $name = $user->name;
-        $email = $user->email;
+        $orderDetail = OrderDetail::where('order_id', $order->id)->first();
+
+        $name = $orderDetail->name;
+        $email = $orderDetail->email;
         $productNames = $order->Items()
             ->with('product')
             ->get()

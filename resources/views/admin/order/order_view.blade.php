@@ -244,9 +244,9 @@
         <div class="info-card">
             <h3>Customer Details</h3>
 
-            <p><strong>Name:</strong> {{ $order->user->name ?? 'N/A' }}</p>
-            <p><strong>Email:</strong> {{ $order->user->email ?? 'N/A' }}</p>
-            <p><strong>Phone:</strong> {{ $order->user->number ?? 'N/A' }}</p>
+            <p><strong>Name:</strong> {{ $order->detail->name ?? 'N/A' }}</p>
+            <p><strong>Email:</strong> {{ $order->detail->email ?? 'N/A' }}</p>
+            <p><strong>Phone:</strong> {{ $order->detail->number ?? 'N/A' }}</p>
         </div>
 
         <div class="info-card">
@@ -306,7 +306,7 @@
 
     <br><div class="address-card">
         <h3>Shipping Address</h3>
-        <p>{{ $order->address }}</p>
+        <p>{{ $order->detail->address }}</p>
     </div>
 
 @endsection

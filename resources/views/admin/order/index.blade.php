@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </td>
 
                                 <td>
-                                    <strong>{{ $order->user->name ?? 'N/A' }}</strong>
+                                    <strong>{{ $order->detail->name ?? 'N/A' }}</strong>
                                 </td>
 
                                 <td>
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </form>
                                 </td>
 
-                                <td>{{ $order->address }}</td>
+                                <td>{{ $order->detail->address ?? 'N/A' }}</td>
 
                                 <td class="text-center">
                                     <a href="{{ route('admin.order.view', $order->id) }}"
@@ -122,6 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 </table>
 
             </div>
+
+            {{-- Pagination --}}
+            @if($orders->hasPages())
+            <div class="d-flex justify-content-between align-items-center px-3 py-3 border-top">
+                <small class="text-muted">
+                    Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} orders
+                </small>
+                {{ $orders->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
+
         </div>
     </div>
 

@@ -24,4 +24,9 @@ class Payment extends Model
     {
          return $this->belongsTo(User::class, 'user_id');
     }
+    
+    public function detail()
+    {
+        return $this->hasOne(OrderDetail::class, 'order_id', 'id');
+    }
 }

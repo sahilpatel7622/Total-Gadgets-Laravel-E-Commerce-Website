@@ -33,4 +33,9 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class, 'order_id');
     }
+    
+    public function detail()
+    {
+        return $this->hasOne(OrderDetail::class, 'order_id', 'id');
+    }
 }

@@ -102,7 +102,7 @@
 
                         <label class="payment-option">
                             <span>Cash on Delivery (COD)</span>
-                            <input type="radio" name="payment_method" value="COD" checked>
+                            <input type="radio" name="payment_method" value="Cash On Delivery" checked>
                         </label>
 
                         <label class="payment-option">

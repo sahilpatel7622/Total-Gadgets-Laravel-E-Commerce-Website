@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 07, 2026 at 02:49 PM
+-- Generation Time: Jul 08, 2026 at 03:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,7 @@ CREATE TABLE `add_to_cart` (
 --
 
 INSERT INTO `add_to_cart` (`id`, `user_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
-(17, 32, 5, 1, '2026-07-07 03:37:24', '2026-07-07 03:37:24'),
-(18, 32, 7, 1, '2026-07-07 03:37:33', '2026-07-07 03:37:33');
+(20, 32, 5, 2, '2026-07-08 06:01:13', '2026-07-08 06:01:13');
 
 -- --------------------------------------------------------
 
@@ -154,7 +153,7 @@ CREATE TABLE `Maintenance_Mode` (
 --
 
 INSERT INTO `Maintenance_Mode` (`id`, `maintenance_mode`, `created_at`, `updated_at`) VALUES
-(1, 1, '2026-07-03 03:53:47', '2026-07-06 22:55:03');
+(1, 1, '2026-07-03 03:53:47', '2026-07-08 03:31:53');
 
 -- --------------------------------------------------------
 
@@ -210,7 +209,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (35, '2026_07_03_073823_add_to_cart', 30),
 (36, '2026_07_03_090208_maintenance__mode', 31),
 (37, '2026_07_03_132212_create_personal_access_tokens_table', 32),
-(38, '2026_07_07_122841_remove_restrict_on_delete', 33);
+(38, '2026_07_07_122841_remove_restrict_on_delete', 33),
+(39, '2026_07_08_114010_create_order_details_table', 34);
 
 -- --------------------------------------------------------
 
@@ -223,7 +223,6 @@ CREATE TABLE `orders` (
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `order_number` varchar(255) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
-  `address` text NOT NULL,
   `status` enum('Pending','Processing','Confirmed','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'Pending',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -233,12 +232,38 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `order_number`, `amount`, `address`, `status`, `created_at`, `updated_at`) VALUES
-(39, 24, 'TG20260703064300', 52999.00, 'Amreli, Amreli, Gujarat - 464654', 'Cancelled', '2026-07-03 01:13:00', '2026-07-03 01:13:48'),
-(40, 24, 'TG20260703064428', 32999.00, 'Mumbai, Mumbai, Maharastra - 390001', 'Shipped', '2026-07-03 01:14:28', '2026-07-03 02:23:01'),
-(66, 32, 'TG20260707090818', 32999.00, 'Thaltej, Ahedabad, Gujarat - 380059', 'Delivered', '2026-07-07 03:38:18', '2026-07-07 03:40:17'),
-(67, 32, 'TG20260707090947', 159900.00, 'Ishanpur, Ahmedabad, Gujarat - 985496', 'Shipped', '2026-07-07 03:39:47', '2026-07-07 03:40:19'),
-(68, 32, 'TG20260707112708', 37999.00, 'Delhi, Delhi, Delhi - 456654', 'Processing', '2026-07-07 05:57:08', '2026-07-07 05:57:40');
+INSERT INTO `orders` (`id`, `user_id`, `order_number`, `amount`, `status`, `created_at`, `updated_at`) VALUES
+(79, 32, 'TG20260708131223', 52999.00, 'Pending', '2026-07-08 07:42:23', '2026-07-08 07:42:23'),
+(80, 32, 'TG20260708131340', 32999.00, 'Delivered', '2026-07-08 07:43:40', '2026-07-08 07:54:24'),
+(81, 24, 'TG20260708132630', 37999.00, 'Shipped', '2026-07-08 07:56:30', '2026-07-08 07:57:15'),
+(82, 24, 'TG20260708132917', 159900.00, 'Processing', '2026-07-08 07:59:17', '2026-07-08 07:59:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_details`
+--
+
+CREATE TABLE `order_details` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `order_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `number` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `address` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_details`
+--
+
+INSERT INTO `order_details` (`id`, `order_id`, `name`, `number`, `email`, `address`, `created_at`, `updated_at`) VALUES
+(11, 79, 'Sahil', '6359950829', 'dobariyasahil5500@gmail.com', 'Amreli, Amreli, Gujarat - 365550', '2026-07-08 07:42:23', '2026-07-08 07:42:23'),
+(12, 80, 'Sahil Dobariya', '6359950829', 'sahilpatel55500@gmail.com', 'Ahmedabad, Ahmedabad, Gujarat - 380059', '2026-07-08 07:43:40', '2026-07-08 07:43:40'),
+(13, 81, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'ishanpur, Ahmedabad, Gujarat` - 687498', '2026-07-08 07:56:30', '2026-07-08 07:56:30'),
+(14, 82, 'Dhruvi', '9876542564', 'dhruvi12@gmail.com', 'Mumbai, Mumbai, Mumbai - 949846', '2026-07-08 07:59:17', '2026-07-08 07:59:17');
 
 -- --------------------------------------------------------
 
@@ -261,11 +286,10 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`, `updated_at`) VALUES
-(41, 39, 8, 1, 52999.00, '2026-07-03 01:13:00', '2026-07-03 01:13:00'),
-(42, 40, 12, 1, 32999.00, '2026-07-03 01:14:28', '2026-07-03 01:14:28'),
-(67, 66, 12, 1, 32999.00, '2026-07-07 03:38:18', '2026-07-07 03:38:18'),
-(68, 67, 6, 1, 159900.00, '2026-07-07 03:39:47', '2026-07-07 03:39:47'),
-(69, 68, 10, 1, 37999.00, '2026-07-07 05:57:08', '2026-07-07 05:57:08');
+(80, 79, 8, 1, 52999.00, '2026-07-08 07:42:23', '2026-07-08 07:42:23'),
+(81, 80, 12, 1, 32999.00, '2026-07-08 07:43:40', '2026-07-08 07:43:40'),
+(82, 81, 10, 1, 37999.00, '2026-07-08 07:56:30', '2026-07-08 07:56:30'),
+(83, 82, 6, 1, 159900.00, '2026-07-08 07:59:17', '2026-07-08 07:59:17');
 
 -- --------------------------------------------------------
 
@@ -289,8 +313,8 @@ CREATE TABLE `otps` (
 --
 
 INSERT INTO `otps` (`id`, `user_id`, `email`, `otp`, `type`, `expiry`, `created_at`, `updated_at`) VALUES
-(17, 24, 'dhruvi@gmail.com', '674237', 'order_verify', '2026-07-03 01:19:17', '2026-07-03 01:14:17', '2026-07-03 01:14:17'),
-(37, 32, 'sahilpatel55500@gmail.com', '258194', 'order_verify', '2026-07-07 06:01:53', '2026-07-07 05:56:53', '2026-07-07 05:56:53');
+(50, 32, 'sahilpatel55500@gmail.com', '654068', 'order_verify', '2026-07-08 07:48:23', '2026-07-08 07:43:23', '2026-07-08 07:43:23'),
+(52, 24, 'dhruvi@gmail.com', '457929', 'order_verify', '2026-07-08 08:04:03', '2026-07-08 07:59:03', '2026-07-08 07:59:03');
 
 -- --------------------------------------------------------
 
@@ -315,11 +339,10 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `user_id`, `amount`, `payment_method`, `payment_status`, `razorpay_payment_id`, `created_at`, `updated_at`) VALUES
-(38, 39, 24, 52999.00, 'RAZORPAY', 'Failed', NULL, '2026-07-03 01:13:00', '2026-07-03 02:24:09'),
-(39, 40, 24, 32999.00, 'COD', 'Pending', NULL, '2026-07-03 01:14:28', '2026-07-03 01:14:28'),
-(56, 66, 32, 32999.00, 'NETBANKING', 'Paid', 'pay_TAYduX3B47Bv6q', '2026-07-07 03:38:18', '2026-07-07 03:38:48'),
-(57, 67, 32, 159900.00, 'COD', 'Pending', NULL, '2026-07-07 03:39:47', '2026-07-07 03:39:47'),
-(58, 68, 32, 37999.00, 'WALLET', 'Paid', 'pay_TAb0PeNdXyVwu0', '2026-07-07 05:57:08', '2026-07-07 05:57:28');
+(69, 79, 32, 52999.00, 'COD', 'Pending', NULL, '2026-07-08 07:42:23', '2026-07-08 07:42:23'),
+(70, 80, 32, 32999.00, 'NETBANKING', 'Paid', 'pay_TB1M43afw4mPZH', '2026-07-08 07:43:40', '2026-07-08 07:44:00'),
+(71, 81, 24, 37999.00, 'CARDLESS_EMI', 'Paid', 'pay_TB1ZegoKOVOCc7', '2026-07-08 07:56:30', '2026-07-08 07:56:52'),
+(72, 82, 24, 159900.00, 'COD', 'Pending', NULL, '2026-07-08 07:59:17', '2026-07-08 07:59:17');
 
 -- --------------------------------------------------------
 
@@ -346,7 +369,8 @@ CREATE TABLE `personal_access_tokens` (
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
 (20, 'App\\Models\\User', 27, 'myapp', 'f805861f4bfe8801072362a6600706a46b6a324d5fdba95a709a96a7fde937d1', '[\"*\"]', '2026-07-07 00:17:36', NULL, '2026-07-07 00:17:07', '2026-07-07 00:17:36'),
-(21, 'App\\Models\\User', 21, 'myapp', '18b3cd3b661afce1a10e44c2a7355ecac515fd8918a5186568d42f20f03952fe', '[\"*\"]', '2026-07-07 00:50:46', NULL, '2026-07-07 00:18:47', '2026-07-07 00:50:46');
+(21, 'App\\Models\\User', 21, 'myapp', '18b3cd3b661afce1a10e44c2a7355ecac515fd8918a5186568d42f20f03952fe', '[\"*\"]', '2026-07-07 00:50:46', NULL, '2026-07-07 00:18:47', '2026-07-07 00:50:46'),
+(22, 'App\\Models\\User', 32, 'myapp', '619bf814f543a0f151faff0a4450e5d48b2a86d22500e0303af81cd0976bf223', '[\"*\"]', '2026-07-08 06:03:24', NULL, '2026-07-07 23:31:21', '2026-07-08 06:03:24');
 
 -- --------------------------------------------------------
 
@@ -400,8 +424,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('NndHQvWBz8mVQRCWV4oOg25SZ3IkzkxfeYuqPwlf', 32, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZ0ZURHAzaUpHYVJ5N28xRVRrUkpaUURYZXZVZmNDUVduM0lleHZqUyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzI7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6ImdGVERwM2lKR2FSeTdvMUVUa1JKWlFEWGV2VWZjQ1FXbjNJZXh2alMiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoyOiIxMCI7czo0OiJuYW1lIjtzOjU6IlNhaGlsIjtzOjY6Im51bWJlciI7czoxMDoiNjM1OTk1MDgyOSI7czo1OiJlbWFpbCI7czoyNToic2FoaWxwYXRlbDU1NTAwQGdtYWlsLmNvbSI7czo3OiJhZGRyZXNzIjtzOjU6IkRlbGhpIjtzOjQ6ImNpdHkiO3M6NToiRGVsaGkiO3M6NToic3RhdGUiO3M6NToiRGVsaGkiO3M6NzoicGluY29kZSI7czo2OiI0NTY2NTQiO3M6MTQ6InBheW1lbnRfbWV0aG9kIjtzOjg6IlJBWk9SUEFZIjt9fQ==', 1783428392),
-('rmmAnJJJkPzAaVWm5yPySTvNk0tmaBc7WiErt0ep', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV2JaY2ZyeHhGTHdaTndSOXNmN3IwTVdkMUVNa0preWthcFpsdXNxdiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9jYXRlZ29yeSI7czo1OiJyb3V0ZSI7Tjt9czo1MjoibG9naW5fYWRtaW5fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyMzt9', 1783427908);
+('csMxz2HXM0KxNTanw7lEI6U4cT6WVaucMjQe8EkS', 24, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiMXNWN0s0aXNZbjQ3eHBMN010ZzNzYjZ3YUVScVJyRldRNUI5OHl6TCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9pbnZvaWNlLzgyIjtzOjU6InJvdXRlIjtzOjc6Imludm9pY2UiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyNDtzOjEwOiJvcmRlcl9kYXRhIjthOjEwOntzOjY6Il90b2tlbiI7czo0MDoiMXNWN0s0aXNZbjQ3eHBMN010ZzNzYjZ3YUVScVJyRldRNUI5OHl6TCI7czoxODoiYnV5X25vd19wcm9kdWN0X2lkIjtzOjE6IjYiO3M6NDoibmFtZSI7czo2OiJEaHJ1dmkiO3M6NjoibnVtYmVyIjtzOjEwOiI5ODc2NTQyNTY0IjtzOjU6ImVtYWlsIjtzOjE4OiJkaHJ1dmkxMkBnbWFpbC5jb20iO3M6NzoiYWRkcmVzcyI7czo2OiJNdW1iYWkiO3M6NDoiY2l0eSI7czo2OiJNdW1iYWkiO3M6NToic3RhdGUiO3M6NjoiTXVtYmFpIjtzOjc6InBpbmNvZGUiO3M6NjoiOTQ5ODQ2IjtzOjE0OiJwYXltZW50X21ldGhvZCI7czozOiJDT0QiO319', 1783517401),
+('xYN9J8zBAqiipqOjX1QXuGUuiEay8dO3UMI8LOd1', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoieHI3NmJuRE1IZWxSWlQxWVhlUFpzeXNLcGF6b0wxV2lIRjd2YWd1ciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wcm9kdWN0IjtzOjU6InJvdXRlIjtOO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjIzO30=', 1783517411);
 
 -- --------------------------------------------------------
 
@@ -534,6 +558,13 @@ ALTER TABLE `orders`
   ADD KEY `orders_user_id_foreign` (`user_id`);
 
 --
+-- Indexes for table `order_details`
+--
+ALTER TABLE `order_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_details_order_id_foreign` (`order_id`);
+
+--
 -- Indexes for table `order_items`
 --
 ALTER TABLE `order_items`
@@ -609,13 +640,13 @@ ALTER TABLE `user_location_mapping`
 -- AUTO_INCREMENT for table `add_to_cart`
 --
 ALTER TABLE `add_to_cart`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -645,37 +676,43 @@ ALTER TABLE `Maintenance_Mode`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+
+--
+-- AUTO_INCREMENT for table `order_details`
+--
+ALTER TABLE `order_details`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `otps`
 --
 ALTER TABLE `otps`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -693,7 +730,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `user_location_mapping`
@@ -716,6 +753,12 @@ ALTER TABLE `add_to_cart`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `order_details`
+--
+ALTER TABLE `order_details`
+  ADD CONSTRAINT `order_details_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `order_items`
