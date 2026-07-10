@@ -15,7 +15,7 @@ class MaintenanceMode
         $setting = MaintenanceModel::first();
         if ($setting && $setting->maintenance_mode == 0) {
 
-            // Admin routes allow
+            // Admin routes allow   
             if ($request->is('admin*')) {
                 return $next($request);
             }
