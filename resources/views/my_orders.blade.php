@@ -130,20 +130,22 @@
                 <strong>₹{{ number_format($order->amount, 2) }}</strong>
             </div>
 
-            @if(in_array($order->status, ['Pending', 'Processing']))
-                <form action="{{ route('order.cancel', $order->id) }}" method="POST"
-                    onsubmit="return confirm('Are you sure you want to cancel this order?')">
-                    @csrf
-                    <button type="submit" class="cancel-btn">
-                        Cancel Order
-                    </button>
-                </form>
-            @endif
+            <div class="footer-actions" style="grid-column: 1 / -1; display:flex; justify-content:flex-end; align-items:center; gap:15px; flex-wrap:wrap; margin-top:10px;">
+                @if(in_array($order->status, ['Pending', 'Processing']))
+                    <form action="{{ route('order.cancel', $order->id) }}" method="POST"
+                        onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                        @csrf
+                        <button type="submit" class="cancel-btn" style="margin-top:0;">
+                            Cancel Order
+                        </button>
+                    </form>
+                @endif
 
-            <a href="{{ route('invoice',$order->id) }}" class="invoice-btn">
-                <i class="fa-solid fa-file-arrow-down"></i>
-                Download Invoice
-            </a>
+                <a href="{{ route('invoice',$order->id) }}" class="invoice-btn" style="position:static; left:0; width:auto; justify-content:center;">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    Download Invoice
+                </a>
+            </div>
 
         </div>
 
