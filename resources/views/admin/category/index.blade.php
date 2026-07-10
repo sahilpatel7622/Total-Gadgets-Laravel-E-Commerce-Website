@@ -94,6 +94,21 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+.deleted-row > td {
+    background-color: #c5bbc5 !important;
+    color: #ffffff !important;
+}
+
+.deleted-row .slider {
+    background-color: #9ca3af !important;
+    cursor: not-allowed;
+}
+
+.switch input:disabled + .slider {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
 </style>
 <div class="container-fluid">
 
@@ -151,7 +166,7 @@ input:checked + .slider:before {
 
                     <tbody>
                         @forelse($record as $r)
-                        <tr>
+                        <tr class="{{ $r->trashed() ? 'deleted-row' : '' }}">
                             <td style="color:green">#{{$r->id}}</td>
                             <td>{{$r->name}}</td>
                             <td>{{$r->slug}}</td>
@@ -159,19 +174,28 @@ input:checked + .slider:before {
                                 <label class="switch">
                                     <input type="checkbox"
                                         {{ $r->status == 1 ? 'checked' : '' }}
-                                        onchange="window.location='{{ route('category_status', $r->id) }}'">
+                                        {{ $r->trashed() ? 'disabled' : '' }}
+                                        @if(!$r->trashed()) onchange="window.location='{{ route('category_status', $r->id) }}'" @endif>
                                     <span class="slider round"></span>
                                 </label>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('edit_category',$r->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
+                                @if($r->trashed())
+                                    <button type="button"
+                                            class="btn btn-success btn-sm"
+                                            onclick="confirmRestore('{{ route('restore_category', $r->id) }}', '{{ $r->name }}')">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </button>
+                                @else
+                                    <a href="{{ route('edit_category',$r->id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
 
-                                <button type="button" class="btn btn-danger btn-sm"
-                                    onclick="confirmDelete('{{ Route('delete_category', $r->id) }}', '{{ $r->name }}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete('{{ Route('delete_category', $r->id) }}', '{{ $r->name }}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                         @empty
@@ -205,7 +229,7 @@ input:checked + .slider:before {
 function confirmDelete(url, name) {
     Swal.fire({
         title: 'Delete Category?',
-        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">The category will be soft-deleted and can be restored later.</small>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e53935',
@@ -216,6 +240,35 @@ function confirmDelete(url, name) {
         focusCancel: true,
         customClass: {
             popup: 'shadow-lg rounded-4',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+
+<script>
+function confirmRestore(url, name) {
+    Swal.fire({
+        title: 'Restore Category?',
+        html: `Are you sure you want to restore <strong>${name}</strong>?<br>
+        <small class="text-muted">
+            This category will be visible to users again.
+        </small>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText:
+            '<i class="fa-solid fa-rotate-left"></i> Yes, Restore',
+        cancelButtonText:
+            '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4'
         }
     }).then((result) => {
         if (result.isConfirmed) {

@@ -95,6 +95,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'Admin_users']);
     Route::get('/admin/users/delete/{id}', [AdminController::class, 'user_delete'])->name('user_delete');
+    Route::get('/admin/users/restore/{id}', [AdminController::class,'restoreUser'])->name('restore_user');
     Route::get('/admin/data', [AdminController::class, 'Admin_data']);
     Route::get('/admin/data/delete/{id}', [AdminController::class, 'data_delete'])->name('admin_data_delete');
     Route::get('/admin/users/status/{id}', [AdminController::class, 'userStatus'])->name('user.status');
@@ -106,6 +107,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/category/add_category', [AdminController::class, 'Add_category']);
     Route::post('/admin/category/add_category', [AdminController::class, 'Store_category'])->name('store_category');
     Route::get('/admin/category/delete/{id}', [AdminController::class, 'Delete_category'])->name('delete_category');
+    Route::get('/admin/category/restore/{id}', [AdminController::class, 'restoreCategory'])->name('restore_category');
     Route::get('/admin/category/edit_category/{id}', [AdminController::class, 'edit_category'])->name('edit_category');
     Route::post('/admin/category/update/{id}', [AdminController::class, 'Update_category'])->name('update_category');
     Route::get('/admin/category/status/{id}', [AdminController::class, 'changeStatus_category'])->name('category_status');
@@ -115,8 +117,10 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/product/add_product', [AdminController::class, 'Add_product']);
     Route::post('/admin/product/store', [AdminController::class, 'Store_product'])->name('store_product');
     Route::get('/admin/product/delete/{id}', [AdminController::class, 'Delete_product'])->name('delete_product');
+    Route::get('/admin/product/restore/{id}', [AdminController::class, 'restoreProduct'])->name('restore_product');
     Route::get('/admin/product/edit_product/{id}', [AdminController::class, 'edit_product'])->name('edit_product');
     Route::post('/admin/product/update/{id}', [AdminController::class, 'Update_product'])->name('update_product');
+    Route::get('/admin/product/status/{id}', [AdminController::class, 'changeStatus_product'])->name('product_status');
 
     // Order
     Route::get('/admin/orders', [AdminController::class, 'Admin_orders'])->name('admin.orders');

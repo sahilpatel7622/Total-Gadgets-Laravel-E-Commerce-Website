@@ -25,12 +25,12 @@
 
             <div class="header-item">
                 <span>Payment</span>
-                <strong>{{ $order->payment->payment_method }}</strong>
+                <strong>{{ $order->payment?->payment_method ?? 'N/A' }}</strong>
             </div>
 
             <div class="header-item">
                 <span>Payment Status</span>
-                <strong>{{ $order->payment->payment_status }}</strong>
+                <strong>{{ $order->payment?->payment_status ?? 'N/A' }}</strong>
             </div>
 
             <div class="header-item text-right">
@@ -46,18 +46,71 @@
 
             <div class="product-row">
 
-                <div class="product-left">
-                    <img src="{{ asset('product/'.$item->product->image) }}">
-                    <strong>{{ $item->product->name }}</strong>
-                </div>
+                @if($item->product && ($item->product->trashed() || ($item->product->category && $item->product->category->trashed())))
+                    <div class="product-left">
+                        <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            gap:6px;
+                            background:#fee2e2;
+                            color:#dc2626;
+                            font-size:15px;
+                            font-weight:600;
+                            padding:5px 12px;
+                            border-radius:20px;
+                            letter-spacing:0.4px;
+                        ">
+                            🗑 Product Deleted
+                        </span>
+                    </div>
 
-                <div class="product-qty">
-                    Qty : {{ $item->quantity }}
-                </div>
+                    <div class="product-qty">Qty : {{ $item->quantity }}</div>
+                    <div class="product-price" style="color:#9ca3af;">—</div>   
 
-                <div class="product-price">
-                    ₹{{ number_format($item->price * $item->quantity, 2) }}
-                </div>
+                @elseif($item->product && ($item->product->status == 0 || ($item->product->category && $item->product->category->status == 0)))
+
+                    <div class="product-left">
+                        <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            gap:6px;
+                            background:#fef3c7;
+                            color:#d97706;
+                            font-size:15px;
+                            font-weight:600;
+                            padding:5px 12px;
+                            border-radius:20px;
+                            letter-spacing:0.4px;
+                        ">
+                            ⚠️ Product Inactive
+                        </span>
+                    </div>
+
+                    <div class="product-qty">Qty : {{ $item->quantity }}</div>
+                    <div class="product-price" style="color:#9ca3af;">—</div>
+
+                @elseif($item->product)
+
+                    <div class="product-left">
+                        <img src="{{ asset('product/'.$item->product->image) }}">
+                        <strong>{{ $item->product->name }}</strong>
+                    </div>
+
+                    <div class="product-qty">Qty : {{ $item->quantity }}</div>
+
+                    <div class="product-price">
+                        ₹{{ number_format($item->price * $item->quantity, 2) }}
+                    </div>
+
+                @else
+
+                    <div class="product-left">
+                        <span style="color:#9ca3af; font-style:italic;">Product unavailable</span>
+                    </div>
+                    <div class="product-qty">Qty : {{ $item->quantity }}</div>
+                    <div class="product-price" style="color:#9ca3af;">—</div>
+
+                @endif
 
             </div>
 
@@ -69,7 +122,7 @@
 
             <div class="address-box">
                 <strong>Delivery Address</strong>
-                <p>{{ $order->detail->address }}</p>
+                <p>{{ $order->detail?->address ?? 'Address not available' }}</p>
             </div>
 
             <div class="total-box">

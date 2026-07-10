@@ -69,27 +69,40 @@ class AdminController extends Controller
     
     public function Admin_users(Request $req)
     {
-        $record = User::where('role', 'user');
+        $record = User::withTrashed()
+            ->where('role', 'user');
 
         if ($req->filled('search')) {
             $record->where(function ($q) use ($req) {
                 $q->where('name', 'LIKE', '%' . $req->search . '%')
-                  ->orWhere('email', 'LIKE', '%' . $req->search . '%')
-                  ->orWhere('number', 'LIKE', '%' . $req->search . '%');
+                ->orWhere('email', 'LIKE', '%' . $req->search . '%')
+                ->orWhere('number', 'LIKE', '%' . $req->search . '%');
             });
         }
-
-        $record = $record->latest()->paginate(10)->withQueryString();
+        $record = $record
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
         return view('admin.users', compact('record'));
-    } 
+    }
 
     public function user_delete($id)
     {
-        $record = User::find($id);
+        $record = User::findOrFail($id);
         $record->delete();
 
-        return redirect('admin/users')->with('success', 'User Deleted Successfully');
+        return redirect('admin/users')
+            ->with('success', 'User Deleted Successfully');
     }
+
+    public function restoreUser($id)
+    {
+        $record = User::onlyTrashed()->findOrFail($id);
+        $record->restore();
+        return redirect('admin/users')
+            ->with('success', 'User Restored Successfully');
+    }
+    
     
     public function Admin_data()
     {
@@ -142,7 +155,7 @@ class AdminController extends Controller
     // Category
     public function Admin_category(Request $req)
     {
-        $record = category::query();
+        $record = category::withTrashed();
 
         if ($req->filled('search')) {
 
@@ -187,10 +200,18 @@ class AdminController extends Controller
 
     public function Delete_category($id)
     {
-        $record = category::find($id);
+        $record = category::findOrFail($id);
         $record->delete();
 
         return redirect('admin/category')->with('success', 'Category Deleted Successfully');
+    }
+
+    public function restoreCategory($id)
+    {
+        $record = category::onlyTrashed()->findOrFail($id);
+        $record->restore();
+
+        return redirect('admin/category')->with('success', 'Category Restored Successfully');
     }
 
     public function edit_category($id){
@@ -234,7 +255,7 @@ class AdminController extends Controller
     // Products
     public function Admin_product(Request $req)
     {
-        $product = product::with('category');
+        $product = product::withTrashed()->with('category');
         if ($req->filled('search')) {
             $product->where('name', 'LIKE', '%' . $req->search . '%')
                     ->orWhere('price', 'LIKE', '%' . $req->search . '%')
@@ -285,13 +306,18 @@ class AdminController extends Controller
 
     public function Delete_product($id)
     {
-        $record = product::find($id);
-        if ($record->image && file_exists(public_path('product/' . $record->image))) {
-            unlink(public_path('product/' . $record->image));
-        }
-
+        $record = product::findOrFail($id);
         $record->delete();
+
         return redirect('admin/product')->with('success', 'Product Deleted Successfully');
+    }
+
+    public function restoreProduct($id)
+    {
+        $record = product::onlyTrashed()->findOrFail($id);
+        $record->restore();
+
+        return redirect('admin/product')->with('success', 'Product Restored Successfully');
     }
 
     public function edit_product($id){
@@ -344,7 +370,16 @@ class AdminController extends Controller
             ->with('success', 'Product Updated Successfully!');
     }
 
-    // Order
+    public function changeStatus_product($id)
+    {
+        $product = product::findOrFail($id);
+        $product->status = $product->status == 1 ? 0 : 1;
+        $product->save();
+
+        return redirect('/admin/product')->with('success', 'Product status updated successfully');
+    }
+
+
     public function Admin_orders(Request $request)
     {
         $search = $request->search;

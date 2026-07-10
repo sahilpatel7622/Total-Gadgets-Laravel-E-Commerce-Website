@@ -11,6 +11,7 @@ class ProductController extends Controller
     public function products(Request $request)
     {
         $query = product::with('category')
+            ->where('status', 1)
             ->whereHas('category', function ($q) {
                 $q->where('status', 1);
             });
@@ -74,11 +75,13 @@ class ProductController extends Controller
     {
         $product = product::with('category')
             ->where('slug', $slug)
+            ->where('status', 1)
             ->firstOrFail();
 
         $relatedProducts = product::with('category')
             ->where('c_id', $product->c_id)
             ->where('id', '!=', $product->id)
+            ->where('status', 1)
             ->latest()
             ->take(4)
             ->get();

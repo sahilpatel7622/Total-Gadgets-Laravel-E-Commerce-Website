@@ -147,6 +147,18 @@
             color:#3b35c7;
         }
 
+        .login-alert{
+            background:#fee2e2;
+            color:#b91c1c;
+            border:1px solid #fecaca;
+            padding:10px 12px;
+            border-radius:8px;
+            font-size:14px;
+            line-height:1.4;
+            margin-bottom:16px;
+            text-align:left;
+        }
+
     </style>
 
 </head>
@@ -167,8 +179,16 @@
         @endif
 
         @if(session('error'))
-            <div class="error">
+            <div class="login-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
                 {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="login-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                {{ $errors->first() }}
             </div>
         @endif
 
@@ -178,11 +198,6 @@
             value="{{ old('email') }}"
             placeholder="Enter Email"
         >
-        @error('email')
-            <small style="color:red;display:block;margin:-12px 0 12px;">
-                {{ $message }}
-            </small>
-        @enderror
 
         <div class="password-box">
         <input
@@ -191,15 +206,14 @@
             name="password"
             placeholder="Enter Password"
             inputmode="numeric"
-            {{-- oninput="this.value=this.value.replace(/[^0-9]/g,'');" --}}
         >
-        @error('password')
+        {{-- @error('password')
             <small style="color:red;display:block;margin:-12px 0 12px;">
                 {{ $message }}
             </small>
-        @enderror
+        @enderror --}}
             
-                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            <span class="toggle-password" onclick="togglePassword()">👁</span>
         </div>
 
         <div class="forgot-link">

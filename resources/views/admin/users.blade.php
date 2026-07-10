@@ -66,6 +66,25 @@ document.addEventListener('DOMContentLoaded', function () {
     input:checked + .slider:before {
         transform: translateX(26px);
     }
+
+    .switch input:disabled + .slider {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    .deleted-row > td {
+        background-color: #c5bbc5 !important;
+        color: #ffffff !important;
+    }
+
+    .deleted-row .slider {
+        background-color: #9ca3af !important;
+    }
+
+    .deleted-row td:first-child {
+        color: #ffffff !important;
+    }
+
 </style>
 
 <div class="container-fluid">
@@ -120,25 +139,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <tbody>
                         @forelse($record as $r)
-                            <tr>
+                            <tr class="{{ $r->trashed() ? 'deleted-row' : '' }}">
                                 <td style="color:green">#{{ $r->id }}</td>
                                 <td>{{ $r->name }}</td>
                                 <td>{{ $r->email }}</td>
                                 <td>{{ $r->number ?? 'N/A' }}</td>
                                 <td>
                                     <label class="switch">
-                                        <input type="checkbox"
-                                               class="status-toggle"
-                                               data-id="{{ $r->id }}"
-                                               {{ $r->status == 'Active' ? 'checked' : '' }}>
+                                       <input type="checkbox"
+                                            class="status-toggle"
+                                            data-id="{{ $r->id }}"
+                                            {{ $r->status == 'Active' ? 'checked' : '' }}
+                                            {{ $r->trashed() ? 'disabled' : '' }}>
                                         <span class="slider"></span>
                                     </label>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        onclick="confirmDelete('{{ route('user_delete', $r->id) }}', '{{ $r->name }}')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
+                                    @if($r->trashed())
+                                        <button type="button"
+                                                class="btn btn-success btn-sm"
+                                                onclick="confirmRestore('{{ route('restore_user', $r->id) }}', '{{ $r->name }}')">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                        </button>
+                                    @else
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="confirmDelete('{{ route('user_delete', $r->id) }}', '{{ $r->name }}')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -170,15 +199,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-$(document).ready(function () {
-    $('.status-toggle').on('change', function () {
-        let userId = $(this).data('id');
-        window.location.href = "{{ url('/admin/user/status') }}/" + userId;
-    });
-});
-</script>
-
-<script>
 function confirmDelete(url, name) {
     Swal.fire({
         title: 'Delete User?',
@@ -191,7 +211,7 @@ function confirmDelete(url, name) {
         cancelButtonText: '<i class="fa-solid fa-xmark"></i> Cancel',
         reverseButtons: true,
         focusCancel: true,
-        customClass: {
+        customClass: {  
             popup: 'shadow-lg rounded-4',
         }
     }).then((result) => {
@@ -200,6 +220,48 @@ function confirmDelete(url, name) {
         }
     });
 }
+</script>
+
+<script>
+function confirmRestore(url, name) {
+    Swal.fire({
+        title: 'Restore User?',
+        html: `Are you sure you want to restore <strong>${name}</strong>?<br>
+        <small class="text-muted">
+            This user will be able to login again.
+        </small>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText:
+            '<i class="fa-solid fa-rotate-left"></i> Yes, Restore',
+        cancelButtonText:
+            '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+
+<script>
+$(document).ready(function () {
+    $('.status-toggle').on('change', function () {
+        if ($(this).prop('disabled')) {
+            return;
+        }
+        let userId = $(this).data('id');
+        window.location.href =
+            "{{ url('/admin/user/status') }}/" + userId;
+    });
+});
 </script>
 
 @endsection

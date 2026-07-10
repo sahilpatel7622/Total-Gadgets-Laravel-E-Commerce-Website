@@ -98,7 +98,7 @@ class CartController extends Controller
 
     public function buyNow($slug)
     {
-        $product = product::where('slug', $slug)->firstOrFail();
+        $product = product::where('slug', $slug)->where('status', 1)->firstOrFail();
 
         $cartItems = collect([
             (object)[
@@ -380,10 +380,18 @@ class CartController extends Controller
     // My Order
     public function myOrders()
     {
-        $orders = Order::with(['items.product', 'payment', 'detail'])
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $orders = Order::with([
+            'items' => function ($q) {
+                $q->with(['product' => function ($q) {
+                    $q->withTrashed();
+                }]);
+            },
+            'payment',
+            'detail'
+        ])
+        ->where('user_id', Auth::id())
+        ->latest()
+        ->get();
 
         return view('my_orders', compact('orders'));
     }

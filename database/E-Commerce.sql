@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 09, 2026 at 09:30 AM
+-- Generation Time: Jul 10, 2026 at 12:05 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,17 +48,18 @@ CREATE TABLE `category` (
   `slug` varchar(255) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`id`, `name`, `slug`, `status`, `created_at`, `updated_at`) VALUES
-(2, 'Tv', 'tv', 1, '2026-06-19 02:11:29', '2026-06-19 23:34:10'),
-(3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-06-19 23:34:09'),
-(9, 'Laptop', 'laptop', 0, '2026-07-07 07:02:08', '2026-07-07 07:02:08');
+INSERT INTO `category` (`id`, `name`, `slug`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(2, 'Tv', 'tv', 1, '2026-06-19 02:11:29', '2026-07-10 04:30:27', NULL),
+(3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-07-10 04:23:25', NULL),
+(9, 'Laptop', 'laptop', 0, '2026-07-07 07:02:08', '2026-07-10 04:23:31', NULL);
 
 -- --------------------------------------------------------
 
@@ -146,7 +147,7 @@ CREATE TABLE `Maintenance_Mode` (
 --
 
 INSERT INTO `Maintenance_Mode` (`id`, `maintenance_mode`, `created_at`, `updated_at`) VALUES
-(1, 1, '2026-07-03 03:53:47', '2026-07-08 03:31:53');
+(1, 1, '2026-07-03 03:53:47', '2026-07-09 08:06:25');
 
 -- --------------------------------------------------------
 
@@ -203,7 +204,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (36, '2026_07_03_090208_maintenance__mode', 31),
 (37, '2026_07_03_132212_create_personal_access_tokens_table', 32),
 (38, '2026_07_07_122841_remove_restrict_on_delete', 33),
-(39, '2026_07_08_114010_create_order_details_table', 34);
+(39, '2026_07_08_114010_create_order_details_table', 34),
+(40, '2026_07_10_062121_add_status_to_product_table', 35),
+(41, '2026_07_10_071306_add_deleted_at_to_user_table', 36),
+(42, '2026_07_10_091000_add_deleted_at_to_category_table', 37),
+(43, '2026_07_10_091001_add_deleted_at_to_product_table', 37);
 
 -- --------------------------------------------------------
 
@@ -226,10 +231,10 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `order_number`, `amount`, `status`, `created_at`, `updated_at`) VALUES
-(94, 32, 'TG1783577012', 52999.00, 'Pending', '2026-07-09 00:33:32', '2026-07-09 00:33:32'),
-(95, 32, 'TG20260709060625', 32999.00, 'Shipped', '2026-07-09 00:36:25', '2026-07-09 00:36:57'),
 (96, 24, 'TG20260709060858', 37999.00, 'Delivered', '2026-07-09 00:38:58', '2026-07-09 00:39:34'),
-(97, 24, 'TG20260709061013', 54999.00, 'Processing', '2026-07-09 00:40:13', '2026-07-09 00:45:24');
+(97, 24, 'TG20260709061013', 54999.00, 'Processing', '2026-07-09 00:40:13', '2026-07-09 00:45:24'),
+(98, 37, 'TG20260710093753', 32999.00, 'Processing', '2026-07-10 04:07:53', '2026-07-10 04:08:15'),
+(99, 37, 'TG20260710095147', 159900.00, 'Delivered', '2026-07-10 04:21:47', '2026-07-10 04:24:14');
 
 -- --------------------------------------------------------
 
@@ -253,10 +258,10 @@ CREATE TABLE `order_details` (
 --
 
 INSERT INTO `order_details` (`id`, `order_id`, `name`, `number`, `email`, `address`, `created_at`, `updated_at`) VALUES
-(26, 94, 'Sahil', '6352414152', 'sahil25dobariya@gmail.com', 'Ahmedabad, Gujarat - 380001', '2026-07-09 00:33:32', '2026-07-09 00:33:32'),
-(27, 95, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Thaltej, Ahmedabad, Gujarat - 380059', '2026-07-09 00:36:25', '2026-07-09 00:36:25'),
 (28, 96, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Ishanpur, Ahmedabad, Gujarat - 813216', '2026-07-09 00:38:58', '2026-07-09 00:38:58'),
-(29, 97, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Mumbai, Mumbau, Maharastra - 465434', '2026-07-09 00:40:13', '2026-07-09 00:40:13');
+(29, 97, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Mumbai, Mumbai, Maharastra - 465434', '2026-07-09 00:40:13', '2026-07-09 00:40:13'),
+(30, 98, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Thaltej, Ahmedabad, Gujarat - 390059', '2026-07-10 04:07:53', '2026-07-10 04:07:53'),
+(31, 99, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Ishanpur, Ahmedabad, Gujarat - 465416', '2026-07-10 04:21:47', '2026-07-10 04:21:47');
 
 -- --------------------------------------------------------
 
@@ -279,10 +284,10 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`, `updated_at`) VALUES
-(95, 94, 8, 1, 52999.00, '2026-07-09 00:33:32', '2026-07-09 00:33:32'),
-(96, 95, 12, 1, 32999.00, '2026-07-09 00:36:25', '2026-07-09 00:36:25'),
 (97, 96, 10, 1, 37999.00, '2026-07-09 00:38:58', '2026-07-09 00:38:58'),
-(98, 97, 9, 1, 54999.00, '2026-07-09 00:40:13', '2026-07-09 00:40:13');
+(98, 97, 9, 1, 54999.00, '2026-07-09 00:40:13', '2026-07-09 00:40:13'),
+(99, 98, 12, 1, 32999.00, '2026-07-10 04:07:53', '2026-07-10 04:07:53'),
+(100, 99, 6, 1, 159900.00, '2026-07-10 04:21:47', '2026-07-10 04:21:47');
 
 -- --------------------------------------------------------
 
@@ -306,8 +311,8 @@ CREATE TABLE `otps` (
 --
 
 INSERT INTO `otps` (`id`, `user_id`, `email`, `otp`, `type`, `expiry`, `created_at`, `updated_at`) VALUES
-(57, 32, 'sahilpatel55500@gmail.com', '975586', 'order_verify', '2026-07-09 00:40:51', '2026-07-09 00:35:51', '2026-07-09 00:35:51'),
-(59, 24, 'dhruvi@gmail.com', '625800', 'order_verify', '2026-07-09 00:45:02', '2026-07-09 00:40:02', '2026-07-09 00:40:02');
+(59, 24, 'dhruvi@gmail.com', '625800', 'order_verify', '2026-07-09 00:45:02', '2026-07-09 00:40:02', '2026-07-09 00:40:02'),
+(61, 37, 'sahilpatel55500@gmail.com', '436488', 'order_verify', '2026-07-10 04:26:35', '2026-07-10 04:21:35', '2026-07-10 04:21:35');
 
 -- --------------------------------------------------------
 
@@ -332,10 +337,10 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `user_id`, `amount`, `payment_method`, `payment_status`, `razorpay_payment_id`, `created_at`, `updated_at`) VALUES
-(83, 95, 32, 32999.00, 'NETBANKING', 'Paid', 'pay_TBIbrqSFKSpG8F', '2026-07-09 00:36:25', '2026-07-09 00:36:45'),
-(84, 94, 32, 52999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-09 00:37:27', '2026-07-09 00:37:27'),
 (85, 96, 24, 37999.00, 'CARDLESS_EMI', 'Paid', 'pay_TBIea5KBvGLKMa', '2026-07-09 00:38:58', '2026-07-09 00:39:19'),
-(86, 97, 24, 54999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-09 00:40:13', '2026-07-09 00:40:13');
+(86, 97, 24, 54999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-09 00:40:13', '2026-07-09 00:40:13'),
+(87, 98, 37, 32999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-10 04:07:53', '2026-07-10 04:07:53'),
+(88, 99, 37, 159900.00, 'Cash On Delivery', 'Paid', NULL, '2026-07-10 04:21:47', '2026-07-10 04:24:11');
 
 -- --------------------------------------------------------
 
@@ -379,23 +384,25 @@ CREATE TABLE `product` (
   `price` decimal(10,2) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`id`, `c_id`, `name`, `slug`, `price`, `image`, `description`, `created_at`, `updated_at`) VALUES
-(5, 3, 'Samsung Galaxy S26 Ultra 5G', 'samsung-galaxy-s26-ultra-5g', 129999.00, '1783423469.webp', 'Samsung Galaxy S26 Ultra 5G comes with 12GB RAM and 256GB Storage for ultra-fast performance and smooth multitasking. It features a 6.8-inch Dynamic AMOLED 2X 120Hz display, a powerful 200MP + 50MP + 12MP + 10MP quad rear camera, a 12MP front camera, and a 5000mAh battery with 45W fast charging. Powered by the Snapdragon 8 Gen 3 processor, it\'s perfect for gaming, photography, and productivity.', '2026-06-19 06:51:09', '2026-07-07 05:54:29'),
-(6, 3, 'Apple iPhone 17 Pro Max', 'apple-iphone-17-pro-max', 159900.00, '1783423402.webp', 'Apple iPhone 17Pro Max features 8GB RAM and 256GB Storage, powered by the A17 Pro chip for exceptional performance. It includes a 6.7-inch Super Retina XDR OLED display, a 48MP + 12MP + 12MP triple camera system, a 12MP front camera, and a 4441mAh battery with fast charging. Built with a premium titanium design and USB-C connectivity.', '2026-06-19 06:51:50', '2026-07-07 05:53:22'),
-(7, 3, 'OnePlus 15 5G', 'oneplus-15-5g', 64999.00, '1783423332.webp', 'OnePlus 15G is equipped with 12GB RAM and 256GB Storage for flagship performance. It offers a 6.82-inch AMOLED 120Hz display, a 50MP + 64MP + 48MP Hasselblad camera setup, a 32MP selfie camera, and a 5400mAh battery with 100W SUPERVOOC fast charging. Ideal for gaming, photography, and everyday use.', '2026-06-19 07:25:37', '2026-07-07 05:52:12'),
-(8, 3, 'iQOO 15 5G', 'iqoo-15-5g', 52999.00, '1783423286.webp', 'iQOO 15 5G comes with 12GB RAM and 256GB Storage, powered by the Snapdragon 8 Gen 3 processor. It features a 6.78-inch AMOLED 144Hz display, a 50MP + 64MP + 50MP triple rear camera, a 16MP front camera, and a 5000mAh battery with 120W FlashCharge technology for ultra-fast charging and top-tier gaming performance.', '2026-06-22 00:08:30', '2026-07-07 05:51:26'),
-(9, 2, 'Samsung 55\"', 'samsung-55-inch', 54999.00, '1783423233.webp', 'Samsung 55-inch Crystal UHD 4K Smart TV features a stunning 55-inch 4K UHD LED display with HDR10+ support for lifelike picture quality. Powered by Tizen OS, it includes Netflix, Prime Video, YouTube, Disney+ Hotstar, and voice assistant support. Enjoy immersive 20W Dolby Digital sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a sleek bezel-less design.', '2026-06-22 00:58:38', '2026-07-07 05:50:33'),
-(10, 2, 'LG 43\"', 'lg-43-inch', 37999.00, '1783423164.webp', 'LG 43-inch UHD AI ThinQ Smart TV features a 43-inch 4K Ultra HD display with HDR10 and AI Picture technology. Powered by webOS, it offers Netflix, YouTube, Prime Video, Disney+ Hotstar, AI ThinQ voice control, 20W AI Sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a slim modern design.', '2026-06-22 00:59:10', '2026-07-07 05:49:24'),
-(11, 2, 'Sony Bravia 65\"', 'sony-bravia-65', 94999.00, '1783423117.webp', 'Sony Bravia 65-inch 4K Google TV comes with a premium 65-inch 4K HDR LED display powered by the 4K HDR Processor X1. Running on Google TV, it supports Google Assistant, Chromecast built-in, Netflix, YouTube, Prime Video, Dolby Vision, Dolby Atmos, 20W speakers, Wi-Fi, Bluetooth, HDMI, USB ports, and a premium bezel-less design.', '2026-06-22 00:59:46', '2026-07-07 05:48:37'),
-(12, 2, 'TCL 50\"', 'tcl-50-inch', 32999.00, '1783422952.webp', 'TCL 50-inch 4K Android Smart TV features a 50-inch Ultra HD LED display with HDR10 support. Powered by Android TV, it includes Google Assistant, Chromecast built-in, Netflix, Prime Video, YouTube, Dolby Audio 24W speakers, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a stylish bezel-less design.', '2026-06-22 01:00:18', '2026-07-07 05:45:52');
+INSERT INTO `product` (`id`, `c_id`, `name`, `slug`, `price`, `image`, `description`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(5, 3, 'Samsung Galaxy S26 Ultra 5G', 'samsung-galaxy-s26-ultra-5g', 129999.00, '1783423469.webp', 'Samsung Galaxy S26 Ultra 5G comes with 12GB RAM and 256GB Storage for ultra-fast performance and smooth multitasking. It features a 6.8-inch Dynamic AMOLED 2X 120Hz display, a powerful 200MP + 50MP + 12MP + 10MP quad rear camera, a 12MP front camera, and a 5000mAh battery with 45W fast charging. Powered by the Snapdragon 8 Gen 3 processor, it\'s perfect for gaming, photography, and productivity.', 1, '2026-06-19 06:51:09', '2026-07-07 05:54:29', NULL),
+(6, 3, 'Apple iPhone 17 Pro Max', 'apple-iphone-17-pro-max', 159900.00, '1783423402.webp', 'Apple iPhone 17Pro Max features 8GB RAM and 256GB Storage, powered by the A17 Pro chip for exceptional performance. It includes a 6.7-inch Super Retina XDR OLED display, a 48MP + 12MP + 12MP triple camera system, a 12MP front camera, and a 4441mAh battery with fast charging. Built with a premium titanium design and USB-C connectivity.', 1, '2026-06-19 06:51:50', '2026-07-10 01:20:14', NULL),
+(7, 3, 'OnePlus 15 5G', 'oneplus-15-5g', 64999.00, '1783423332.webp', 'OnePlus 15G is equipped with 12GB RAM and 256GB Storage for flagship performance. It offers a 6.82-inch AMOLED 120Hz display, a 50MP + 64MP + 48MP Hasselblad camera setup, a 32MP selfie camera, and a 5400mAh battery with 100W SUPERVOOC fast charging. Ideal for gaming, photography, and everyday use.', 1, '2026-06-19 07:25:37', '2026-07-10 01:20:11', NULL),
+(8, 3, 'iQOO 15 5G', 'iqoo-15-5g', 52999.00, '1783423286.webp', 'iQOO 15 5G comes with 12GB RAM and 256GB Storage, powered by the Snapdragon 8 Gen 3 processor. It features a 6.78-inch AMOLED 144Hz display, a 50MP + 64MP + 50MP triple rear camera, a 16MP front camera, and a 5000mAh battery with 120W FlashCharge technology for ultra-fast charging and top-tier gaming performance.', 1, '2026-06-22 00:08:30', '2026-07-07 05:51:26', NULL),
+(9, 2, 'Samsung 55\"', 'samsung-55-inch', 54999.00, '1783423233.webp', 'Samsung 55-inch Crystal UHD 4K Smart TV features a stunning 55-inch 4K UHD LED display with HDR10+ support for lifelike picture quality. Powered by Tizen OS, it includes Netflix, Prime Video, YouTube, Disney+ Hotstar, and voice assistant support. Enjoy immersive 20W Dolby Digital sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a sleek bezel-less design.', 1, '2026-06-22 00:58:38', '2026-07-07 05:50:33', NULL),
+(10, 2, 'LG 43\"', 'lg-43-inch', 37999.00, '1783423164.webp', 'LG 43-inch UHD AI ThinQ Smart TV features a 43-inch 4K Ultra HD display with HDR10 and AI Picture technology. Powered by webOS, it offers Netflix, YouTube, Prime Video, Disney+ Hotstar, AI ThinQ voice control, 20W AI Sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a slim modern design.', 1, '2026-06-22 00:59:10', '2026-07-10 04:20:59', NULL),
+(11, 2, 'Sony Bravia 65\"', 'sony-bravia-65', 94999.00, '1783423117.webp', 'Sony Bravia 65-inch 4K Google TV comes with a premium 65-inch 4K HDR LED display powered by the 4K HDR Processor X1. Running on Google TV, it supports Google Assistant, Chromecast built-in, Netflix, YouTube, Prime Video, Dolby Vision, Dolby Atmos, 20W speakers, Wi-Fi, Bluetooth, HDMI, USB ports, and a premium bezel-less design.', 1, '2026-06-22 00:59:46', '2026-07-10 01:20:09', NULL),
+(12, 2, 'TCL 50\"', 'tcl-50-inch', 32999.00, '1783598282.webp', 'TCL 50-inch 4K Android Smart TV features a 50-inch Ultra HD LED display with HDR10 support. Powered by Android TV, it includes Google Assistant, Chromecast built-in, Netflix, Prime Video, YouTube, Dolby Audio 24W speakers, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a stylish bezel-less design.', 1, '2026-06-22 01:00:18', '2026-07-10 04:19:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -417,10 +424,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('5T7CEOYBQ4qFvt0FIlR3mYcGZb4ucS3gKDqDhOBy', 32, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibjJnZFQ2ZzJXUjBLUzgwTzdON1JaZnBXbjhVVXBEODh5eUxmTjNGdyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wcm9kdWN0cyI7czo1OiJyb3V0ZSI7czo4OiJwcm9kdWN0cyI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjMyO30=', 1783577716),
-('711gSctdd8LbAQMK0QyGPlfWAJLRUNQ7JtA3GSls', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiMFdQRmRvblg2YTZPWExwM2FkV2hpaHVwSXNFam9pNUhBRWduYWY4bCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjIzO30=', 1783577916),
-('d954zRpEudNDN2PPYpcz63QK6iXojMbazFzgABWx', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibGI0azdhMFNBZHdmV2Q3c2xmM0NIYTAwMmpTOHBuZVE1T1VXN3NSYiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9vcmRlcnMiO3M6NToicm91dGUiO3M6MTI6ImFkbWluLm9yZGVycyI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjM7fQ==', 1783574385),
-('fgQdzuLu8EL27QGqvQmdSIK1ukQEqaJZ1cg3rgQv', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWE5ZYlI2YjBnbmF6eTVVNEdTRzJrRElzWW1HQmk2NUNWSTVLMjV4bSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzY7fQ==', 1783582204);
+('CrNNhWeZXUytSigTCDovxHmwlxwixdh77mH2S7Gr', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiWTNXWFh5UzRabTE3VTJtWFZLcnE4R3h4RmxkZ00xVWxRWU9xRm1iRiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6MTU6ImFkbWluLmRhc2hib2FyZCI7fXM6NTI6ImxvZ2luX2FkbWluXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MzY7fQ==', 1783677929),
+('k4gRIusfQoJGgky3geyUzif1zvPbDYqiiiXCoScW', 37, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiT3pYdVZnV0RQSnQxeXFpcnpBTEJ6Q3FMYk9jMmt2MHdsZlh5NFpCVCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzc7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6Ik96WHVWZ1dEUEp0MXlxaXJ6QUxCekNxTGJPYzJrdjB3bGZYeTRaQlQiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoxOiI2IjtzOjQ6Im5hbWUiO3M6NToiU2FoaWwiO3M6NjoibnVtYmVyIjtzOjEwOiI2MzU5OTUwODI5IjtzOjU6ImVtYWlsIjtzOjI1OiJzYWhpbHBhdGVsNTU1MDBAZ21haWwuY29tIjtzOjc6ImFkZHJlc3MiO3M6ODoiSXNoYW5wdXIiO3M6NDoiY2l0eSI7czo5OiJBaG1lZGFiYWQiO3M6NToic3RhdGUiO3M6NzoiR3VqYXJhdCI7czo3OiJwaW5jb2RlIjtzOjY6IjQ2NTQxNiI7czoxNDoicGF5bWVudF9tZXRob2QiO3M6MTY6IkNhc2ggT24gRGVsaXZlcnkiO319', 1783677923);
 
 -- --------------------------------------------------------
 
@@ -465,18 +470,19 @@ CREATE TABLE `user` (
   `role` enum('user','admin','super_admin') NOT NULL DEFAULT 'user',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active'
+  `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `role`, `created_at`, `updated_at`, `status`) VALUES
-(24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-03 07:28:54', 'Active'),
-(27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-07 03:40:39', 'Inactive'),
-(32, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$.b76vIF3dLhzc3lJ3cxFdOr8R7.Xp1Awz/fjyMAz.rJa9XQSO8byy', 'user', '2026-07-07 01:29:41', '2026-07-07 01:29:41', 'Active'),
-(36, 'Sahil', '1231231230', 'sahil@gmail.com', '$2y$12$LHR.irWTuCUmTqTDQ9Oo/usiYTdRVSksXF1mkW8oTrkujyEFfRsrW', 'admin', '2026-07-09 01:56:11', '2026-07-09 01:56:11', 'Active');
+INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `role`, `created_at`, `updated_at`, `status`, `deleted_at`) VALUES
+(24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-10 04:03:31', 'Active', NULL),
+(27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-10 04:31:52', 'Inactive', NULL),
+(36, 'Sahil', '7622920559', 'sahil@gmail.com', '$2y$12$LHR.irWTuCUmTqTDQ9Oo/usiYTdRVSksXF1mkW8oTrkujyEFfRsrW', 'admin', '2026-07-09 01:56:11', '2026-07-09 07:54:29', 'Active', NULL),
+(37, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$4rqCPmaqmaD37nWuF/SZ8OS3vnaMv4Yxbw6DEQZ.xIic9BemINz1G', 'user', '2026-07-10 01:58:02', '2026-07-10 04:05:53', 'Active', NULL);
 
 -- --------------------------------------------------------
 
@@ -671,37 +677,37 @@ ALTER TABLE `Maintenance_Mode`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
 -- AUTO_INCREMENT for table `otps`
 --
 ALTER TABLE `otps`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -725,7 +731,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `user_location_mapping`

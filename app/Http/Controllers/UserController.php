@@ -70,9 +70,17 @@ class UserController extends Controller
             'password.min' => 'Password must be at least 6 characters.',
         ]);
 
-        $user = User::where('email', $req->email)->first();
+        $user = User::withTrashed()
+            ->where('email', $req->email)
+            ->first();
         if (!$user) {
             return back()->with('error', 'Email or Password is Wrong')->withInput();
+        }
+
+        if ($user->trashed()) {
+            return back()->withErrors([
+                'email' => 'Your account has been deleted. Please contact the administrator.'
+            ]);
         }
 
         // Inactive User Check
@@ -131,6 +139,10 @@ class UserController extends Controller
                 'product.*',
                 DB::raw('SUM(order_items.quantity) as total_sales')
             )
+            ->where('status', 1)
+            ->whereHas('category', function ($q) {
+                $q->where('status', 1);
+            })
             ->join('order_items', 'product.id', '=', 'order_items.product_id')
             ->groupBy(
                 'product.id',
@@ -140,6 +152,8 @@ class UserController extends Controller
                 'product.price',
                 'product.image',
                 'product.description',
+                'product.status',
+                'product.deleted_at',
                 'product.created_at',
                 'product.updated_at'
             )

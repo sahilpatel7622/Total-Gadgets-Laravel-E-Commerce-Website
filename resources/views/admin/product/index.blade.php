@@ -46,6 +46,70 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 @endif
 
+<style>
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background: #fff;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.deleted-row > td {
+    background-color: #c5bbc5 !important;
+    color: #ffffff !important;
+}
+
+.deleted-row .slider {
+    background-color: #9ca3af !important;
+    cursor: not-allowed;
+}
+
+.switch input:disabled + .slider {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+</style>
 <div class="container-fluid">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -94,18 +158,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             <th width="60">Id</th>
                             <th width="40">C_Name</th>
                             <th width="80">Name</th>
-                            <th width="70">Slug</th>
-                            <th width="80">Price</th>
-                            <th width="400">Description</th>
+                            <th width="50">Slug</th>
+                            <th width="70">Price</th>
+                            <th width="600">Description</th>
                             <th width="100">Image</th>
-                            <th width="120" class="text-center">Action</th>
+                            <th width="100" class="text-center">Status</th>
+                            <th width="100" class="text-center">Action</th>
                         </tr>
                     </thead>
-                        @forelse($product as $p)
                     <tbody>
-                        <tr>
+                        @forelse($product as $p)
+                        <tr class="{{ $p->trashed() ? 'deleted-row' : '' }}">
                             <td style="color:green">#{{ $p->id }}</td>
-                               <td>{{ $p->category->name ?? 'No Category' }}</td>                            <td>{{ $p->name }}</td>
+                            <td>{{ $p->category->name ?? 'No Category' }}</td>
+                            <td>{{ $p->name }}</td>
                             <td>{{ $p->slug }}</td>
                             <td>{{ $p->price }}</td>
                             <td>{{ $p->description }}</td>
@@ -119,23 +185,40 @@ document.addEventListener('DOMContentLoaded', function () {
                                 @endif
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('edit_product', $p->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
+                                <label class="switch">
+                                    <input type="checkbox"
+                                        {{ $p->status == 1 ? 'checked' : '' }}
+                                        {{ $p->trashed() ? 'disabled' : '' }}
+                                        @if(!$p->trashed()) onchange="window.location='{{ route('product_status', $p->id) }}'" @endif>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                            <td class="text-center">
+                                @if($p->trashed())
+                                    <button type="button"
+                                            class="btn btn-success btn-sm"
+                                            onclick="confirmRestore('{{ route('restore_product', $p->id) }}', '{{ $p->name }}')">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </button>
+                                @else
+                                    <a href="{{ route('edit_product', $p->id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a><br><br>
 
-                                <button type="button" class="btn btn-danger btn-sm"
-                                    onclick="confirmDelete('{{ route('delete_product', $p->id) }}', '{{ $p->name }}')">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="confirmDelete('{{ route('delete_product', $p->id) }}', '{{ $p->name }}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted">
+                            <td colspan="9" class="text-center text-muted">
                                 No Product Found
                             </td>
                         </tr>
-                         @endforelse
+                        @endforelse
                     </tbody>
                 </table>
 
@@ -162,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function confirmDelete(url, name) {
     Swal.fire({
         title: 'Delete Product?',
-        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">This action cannot be undone.</small>`,
+        html: `Are you sure you want to delete <strong>${name}</strong>?<br><small class="text-muted">The product will be soft-deleted and can be restored later.</small>`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e53935',
@@ -173,6 +256,35 @@ function confirmDelete(url, name) {
         focusCancel: true,
         customClass: {
             popup: 'shadow-lg rounded-4',
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+
+<script>
+function confirmRestore(url, name) {
+    Swal.fire({
+        title: 'Restore Product?',
+        html: `Are you sure you want to restore <strong>${name}</strong>?<br>
+        <small class="text-muted">
+            This product will be visible to users again.
+        </small>`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText:
+            '<i class="fa-solid fa-rotate-left"></i> Yes, Restore',
+        cancelButtonText:
+            '<i class="fa-solid fa-xmark"></i> Cancel',
+        reverseButtons: true,
+        focusCancel: true,
+        customClass: {
+            popup: 'shadow-lg rounded-4'
         }
     }).then((result) => {
         if (result.isConfirmed) {
