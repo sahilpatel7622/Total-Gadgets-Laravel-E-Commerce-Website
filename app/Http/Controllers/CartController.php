@@ -447,7 +447,7 @@ class CartController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Razorpay Error: ' . $e->getMessage());
+            Log::error('Razorpay Error: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
         }
 
