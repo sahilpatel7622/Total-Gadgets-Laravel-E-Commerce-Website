@@ -40,17 +40,22 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <strong>Amount:</strong>
-                    <p>₹{{ number_format($payment->amount, 2) }}</p>
+                    <strong>Coupon Discount:</strong>
+                    <p>₹{{ number_format($payment->order->coupon_discount ?? 0, 2) }}</p>
                 </div>
 
                 <div class="col-md-6">
-                    <strong>Payment Method:</strong>
-                    <p>{{ $payment->payment_method }}</p>
+                    <strong>Total Amount:</strong>
+                    <p>₹{{ number_format($payment->amount, 2) }}</p>
                 </div>
             </div>
 
             <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Payment Method:</strong>
+                    <p>{{ $payment->payment_method }}</p>
+                </div>
+
                 <div class="col-md-6">
                     <strong>Payment Status:</strong>
                     <p>{{ $payment->payment_status ?? 'N/A' }}</p>
@@ -69,7 +74,6 @@
             <p><strong>Order Status:</strong> {{ $payment->order->status ?? 'N/A' }}</p>
             <p><strong>Address:</strong> {{ $payment->order->detail->address ?? 'N/A' }}</p>
             <p><strong>Payment Date:</strong> {{ $payment->created_at->format('d M Y, h:i A') }}</p>
-
         </div>
     </div>
 

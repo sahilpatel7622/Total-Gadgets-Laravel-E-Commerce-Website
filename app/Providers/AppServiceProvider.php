@@ -21,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
             $cartItems = collect();
             $cartCount = 0;
             $cartTotal = 0;
+            
+            $wishlistCount = 0;
+            $wishlistProductIds = [];
 
             if (Auth::check()) {
                 $cartItems = Cart::with('product')
@@ -35,12 +38,18 @@ class AppServiceProvider extends ServiceProvider
                         ? $item->product->price * $item->quantity
                         : 0;
                 });
+                
+                $wishlists = \App\Models\Wishlist::where('user_id', Auth::id())->get();
+                $wishlistCount = $wishlists->count();
+                $wishlistProductIds = $wishlists->pluck('product_id')->toArray();
             }
 
             $view->with([
                 'cartItems' => $cartItems,
                 'cartCount' => $cartCount,
                 'cartTotal' => $cartTotal,
+                'wishlistCount' => $wishlistCount,
+                'wishlistProductIds' => $wishlistProductIds,
             ]);
         });
     }

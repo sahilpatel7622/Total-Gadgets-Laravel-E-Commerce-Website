@@ -161,17 +161,6 @@
     <h2>Forgot Password</h2>
     <p>Enter your email to receive OTP.</p>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <form id="forgotForm" action="{{ route('send.otp') }}" method="POST">
         @csrf
@@ -208,6 +197,31 @@
     </div>
     @endif
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: "{{ session('success') }}",
+    timer: 3000,
+    showConfirmButton: false
+});
+</script>
+@endif
+
+@if(session('error'))
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: "{{ session('error') }}",
+    timer: 3000,
+    showConfirmButton: false
+});
+</script>
+@endif
 
 </body>
 

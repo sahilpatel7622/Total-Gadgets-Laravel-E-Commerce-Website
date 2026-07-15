@@ -80,7 +80,7 @@ class OtpController extends Controller
         ", function ($message) use ($user) {
 
             $message->to($user->email)
-                    ->subject('Password Reset OTP');
+                    ->subject('Password Reset OTP - Total Gadgets');
         });
 
         session([
@@ -200,7 +200,7 @@ class OtpController extends Controller
         </div>
         ", function ($message) use ($user) {
             $message->to($user->email)
-                    ->subject('Password Changed Successfully');
+                    ->subject('Password Changed Successfully - Total Gadgets');
         });
 
         session()->forget('reset_email');

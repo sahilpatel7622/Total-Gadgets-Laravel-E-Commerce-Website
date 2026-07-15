@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\product;
 use App\Models\category;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Wishlist;
 
 class ProductController extends Controller
 {
@@ -61,14 +63,21 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get();
 
+        $wishlistProductIds = [];
+        if (Auth::check()) {
+            $wishlistProductIds = Wishlist::where('user_id', Auth::id())
+                ->pluck('product_id')
+                ->toArray();
+        }
+
         if ($request->ajax()) {
             return response()->json([
-                'html' => view('product_ajax', compact('product'))->render(),
+                'html' => view('product_ajax', compact('product', 'wishlistProductIds'))->render(),
                 'count' => $product->count()
             ]);
         }
 
-        return view('products', compact('product', 'categories'));
+        return view('products', compact('product', 'categories', 'wishlistProductIds'));
     }
 
     public function productDetail($slug)
@@ -86,6 +95,13 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('product_detail', compact('product', 'relatedProducts'));
+        $wishlistProductIds = [];
+        if (Auth::check()) {
+            $wishlistProductIds = Wishlist::where('user_id', Auth::id())
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        return view('product_detail', compact('product', 'relatedProducts', 'wishlistProductIds'));
     }
 }

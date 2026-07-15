@@ -12,6 +12,7 @@ use App\Models\category;
 use App\Models\product;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Coupon;
 use App\Models\MaintenanceModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,7 @@ class AdminController extends Controller
         $pendingOrders = Order::where('status', 'Pending')->count();
         $completedOrders = Order::where('status', 'Delivered')->count();
         $totalRevenue = Payment::where('payment_status', 'paid')->sum('amount');
+        $totalCoupons = Coupon::count();
         $latestOrders = Order::with('user', 'payment')
             ->whereHas('user', function ($q) {
                 $q->where('role', 'user')
@@ -46,6 +48,7 @@ class AdminController extends Controller
             'completedOrders',
             'totalRevenue',
             'latestOrders',
+            'totalCoupons'
         ));
     }
 

@@ -6,6 +6,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OtpController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\CouponController;
 
     Route::get('/', function () {
         return redirect()->route('dashboard');
@@ -67,7 +69,16 @@ Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
     Route::get('/profile/security', [UserController::class, 'profile_security'])->name('profile.security');
     Route::post('/profile/update-password', [UserController::class, 'updatePassword'])->name('profile.updatePassword');
 
-});
+    // Wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/toggle/{id}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::post('/wishlist/move-to-cart', [WishlistController::class, 'moveToCart'])->name('cart.move');
+
+    // Coupon
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+    Route::post('/remove-coupon', [CouponController::class, 'removeCoupon'])->name('remove.coupon');
+
+}); 
 
     // About
     Route::get('/about', [UserController::class, 'about'])->name('about'); 
@@ -91,6 +102,7 @@ Route::get('/reset-password', [OtpController::class,'resetPasswordForm'])->name(
 Route::post('/reset-password', [OtpController::class,'resetPassword']);
 
 
+// Admin Routes
 Route::middleware('admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'Admin_users']);
@@ -139,5 +151,16 @@ Route::middleware('admin')->group(function () {
 
     // Maintenance Mode
     Route::get('/admin/maintenance', [AdminController::class, 'maintenance'])->name('maintenance');
+
+    // Coupon
+    Route::get('/admin/coupons', [CouponController::class, 'index'])->name('coupons.index');
+    Route::get('/admin/coupons/create', [CouponController::class, 'create'])->name('coupons.create');
+    Route::post('/admin/coupons/store', [CouponController::class, 'store'])->name('coupons.store');
+    Route::get('/admin/coupons/edit/{id}', [CouponController::class, 'edit'])->name('coupons.edit');
+    Route::put('/admin/coupons/update/{id}', [CouponController::class, 'update'])->name('coupons.update');
+    Route::get('/admin/coupons/status/{id}', [CouponController::class, 'changeStatus'])->name('coupons.status');
+    Route::delete('/admin/coupons/delete/{id}', [CouponController::class, 'destroy'])->name('coupons.delete');
+    Route::get('/admin/coupons/generate-code',[CouponController::class, 'generateCode'])->name('coupons.generateCode');
+    Route::get('/admin/coupons/view/{id}', [CouponController::class, 'show'])->name('coupons.view');
 
 });

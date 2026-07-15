@@ -42,6 +42,18 @@
             box-shadow: 5px 0 25px rgba(0,0,0,0.15);
         }
 
+        /* Custom scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #4caf50;
+            border-radius: 10px;
+        }
+
         .main-content {
             margin-left: 250px;
             width: calc(100% - 250px);
@@ -49,8 +61,8 @@
         }
 
         .brand{
-            margin-bottom:35px;
-            padding-bottom:20px;
+            margin-bottom:20px;
+            padding-bottom:15px;
             border-bottom:1px solid #34344a;
         }
 
@@ -64,8 +76,8 @@
         }
 
         .brand img{
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             object-fit: contain;
             flex-shrink: 0;
         }
@@ -81,7 +93,7 @@
         }
 
         .sidebar ul li {
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         }
 
         .sidebar a,
@@ -89,12 +101,12 @@
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 13px 15px;
-            border-radius: 10px;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
             color: #b8b8d4;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 17px;
             border: none;
             background: transparent;
             cursor: pointer;
@@ -110,7 +122,7 @@
 
         .sidebar-footer {
             border-top: 1px solid #34344a;
-            padding-top: 18px;
+            padding-top: 12px;
         }
 
         .logout-link {
@@ -298,7 +310,7 @@
         <div class="brand" style="position: relative; right: 2px;">
             <a href="{{ url('/admin/dashboard') }}" class="brand-logo">
                 <img src="{{ asset('images/tg-logo.png') }}" alt="Total Gadgets Logo">
-                <span style="font-size: 22px">Total Gadgets</span>
+                <span style="font-size: 20px">Total Gadgets</span>
             </a>
         </div>
 
@@ -336,6 +348,12 @@
                     <i class="fa-solid fa-credit-card"></i> Payments                
                 </a>
             </li>
+
+                <li>
+                    <a href="{{ route('coupons.index') }}"class="{{ Request::is('admin/coupon*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-ticket"></i> Coupons
+                    </a>
+                </li>
 
             {{--
             <li>

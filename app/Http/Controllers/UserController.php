@@ -195,7 +195,7 @@ class UserController extends Controller
             'gender' => $req->gender,
             'image' => $imageName,
         ]);
-
+        
         location_mapping::create([
             'user_id' => Auth::id(),
             'data_id' => $member->id,

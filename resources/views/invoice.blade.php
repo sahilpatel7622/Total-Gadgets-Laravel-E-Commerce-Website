@@ -200,7 +200,6 @@
                 <th>Product</th>
                 <th width="80">Qty</th>
                 <th width="120">Price</th>
-                <th width="140" class="text-right">Total</th>
             </tr>
         </thead>
 
@@ -210,15 +209,19 @@
                     <td>{{ $item->product->name ?? 'N/A' }}</td>
                     <td>{{ $item->quantity }}</td>
                     <td>Rs. {{ number_format($item->price, 2) }}</td>
-                    <td class="text-right">
-                        Rs. {{ number_format($item->price * $item->quantity, 2) }}
-                    </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
     <div class="total-box">
+        @if($order->coupon_discount > 0)
+        <div class="total-row" style="margin-bottom: 12px; color: #16a34a; font-size: 12px;">
+            <span>Discount</span>
+            <span>- Rs. {{ number_format($order->coupon_discount, 2) }}</span>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 12px 0;">
+        @endif
         <div class="total-row">
             <span>Grand Total</span>
             <span>Rs. {{ number_format($order->amount, 2) }}</span>

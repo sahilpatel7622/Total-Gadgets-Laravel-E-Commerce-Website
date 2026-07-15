@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\WishlistController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -28,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/buy-now', [OrderController::class, 'buyNow']);
     Route::apiResource('payments', PaymentController::class);
     Route::get('/my-orders', [OrderController::class, 'myOrders']);
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+    Route::delete('/wishlist/{wishlistId}', [WishlistController::class, 'destroy']);
 }); 
 
 Route::apiResource('users', UserController::class);

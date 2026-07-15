@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         icon: 'success',
         title: "{{ session('success') }}",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 1500,
         timerProgressBar: true,
         background: '#ffffff',
         color: '#333',

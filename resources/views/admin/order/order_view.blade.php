@@ -258,6 +258,9 @@
                 <span class="badge badge-success">{{ $order->status }}</span>
             </p>
             <p><strong>Payment Method:</strong> {{ $order->payment->payment_method ?? 'N/A' }}</p>
+            <p><strong>Coupon ID:</strong> <a style="color: green">#{{ $order->coupon_id ?? 'N/A' }}</a></p>
+            <p><strong>Coupon Code:</strong> {{ $order->coupon_code ?? 'N/A' }}</p>
+            {{-- <p><strong>Coupon Discount:</strong> {{ $order->coupon_discount ?? 'N/A' }}</p> --}}
         </div>
 
     </div>
@@ -290,12 +293,15 @@
 
         @endforeach
 
-        <div class="order-total">
+        <div class="order-total" style="font-size: 18px; font-weight: 600; color: #475569; margin-top: 15px; padding-top: 15px;">
+            <span>Coupon Discount</span>
+            <strong style="color: #ef4444;">-₹{{ number_format($order->coupon_discount, 2) }}</strong>
+        </div>  
+
+        <div class="order-total" style="font-size: 24px; border-top: 2px solid #e5e7eb; margin-top: 15px; padding-top: 20px;">
             <span>Grand Total</span>
-            <strong>₹{{ number_format($order->amount,2) }}</strong>
+            <strong>₹{{ number_format($order->amount, 2) }}</strong>
         </div>
-
-
 
     </div>
 

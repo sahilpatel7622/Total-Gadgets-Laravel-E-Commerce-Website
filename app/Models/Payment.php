@@ -29,4 +29,5 @@ class Payment extends Model
     {
         return $this->hasOne(OrderDetail::class, 'order_id', 'id');
     }
+
 }

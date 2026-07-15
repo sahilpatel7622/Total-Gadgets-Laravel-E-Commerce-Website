@@ -39,6 +39,10 @@
     <div class="right-menu">
 
         @auth
+            <a href="{{ route('wishlist.index') }}" class="cart wishlist-nav">
+                ❤️ Wishlist (<span id="wishlistCount">{{ $wishlistCount ?? 0 }}</span>)            
+            </a>
+            
             <a href="#" class="cart open-cart">
                 🛒 Cart (<span id="cartCount">{{ $cartCount ?? 0 }}</span>)            
             </a>
@@ -59,7 +63,13 @@
                             @if($item->product)
                                 <div class="cart-item" id="cartItem{{ $item->id }}">
                                     <a href="{{ route('product.detail', $item->product->slug) }}">
-                                        <img src="{{ asset('product/'.$item->product->image) }}" class="cart-item-img">
+                                        @if($item->product->image)
+                                            <img src="{{ asset('product/'.$item->product->image) }}" class="cart-item-img" alt="{{ $item->product->name }}">
+                                        @else
+                                            <div class="cart-item-img" style="background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;text-align:center;border-radius:8px;">
+                                                No Image
+                                            </div>
+                                        @endif
                                     </a>
                                     <div class="cart-item-info">
 
@@ -137,10 +147,8 @@
 
                 <div class="profile-menu">
                     <a href="{{ route('profile') }}">👤 Profile</a>
-                    <a href="{{ route('my.orders') }}"">📦 My Orders</a>
-
+                    <a href="{{ route('my.orders') }}">📦 My Orders</a>
                     <hr>
-
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit">↪ Logout</button>
@@ -160,13 +168,14 @@
 
 <div class="cart-overlay" id="cartOverlay"></div>
 
-@if(session('successe'))
+@if(session('successe') || session('success'))
 <script>
 Swal.fire({
-    icon:'success',
-    title:'Success!',
-    text:'{{ session("successe") }}',
-    confirmButtonText:'OK'
+    icon: 'success',
+    title: 'Success!',
+    text: '{{ session("successe") ?? session("success") }}',
+    timer: 3000,
+    showConfirmButton: false
 });
 </script>
 @endif
@@ -179,6 +188,7 @@ Swal.fire({
     !request()->is('profile*') &&
     !request()->routeIs('checkout') &&
     !request()->routeIs('my.orders') &&
+    !request()->routeIs('wishlist.index') &&
     !request()->routeIs('buy.now')
 )
 <footer class="footer">
@@ -318,6 +328,83 @@ document.addEventListener('submit', function(e){
         }
     })
     .catch(err => console.log(err));
+});
+
+document.addEventListener('click', function(e){
+    let btn = e.target.closest('.wishlist-toggle');
+    if(!btn) return;
+    
+    e.preventDefault();
+    
+    let productId = btn.dataset.id;
+    let url = `/wishlist/toggle/${productId}`;
+    let csrf = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrf
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            document.getElementById('wishlistCount').innerText = data.wishlistCount;
+            
+            if(data.status === 'added') {
+                if(btn.innerText.includes('Wishlist')) {
+                    btn.innerHTML = '❤️ Remove from Wishlist';
+                } else {
+                    btn.innerHTML = '❤️'; 
+                }
+                btn.classList.add('active');
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product added to wishlist.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                if(btn.innerText.includes('Wishlist')) {
+                    btn.innerHTML = '🤍 Add to Wishlist';
+                } else {
+                    btn.innerHTML = '🤍';
+                }
+                btn.classList.remove('active');
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product removed from wishlist.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                
+                // If we are on the wishlist page, remove the card
+                let card = document.getElementById('wishlist-item-' + productId);
+                if(card) {
+                    card.remove();
+                    // If no items left, reload to show empty state
+                    if(data.wishlistCount == 0) {
+                        window.location.reload();
+                    }
+                }
+            }
+        } else if (data.message === "Unauthenticated.") {
+            window.location.href = "{{ route('login') }}";
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        if(err.message.includes('Unexpected token')) {
+            window.location.href = "{{ route('login') }}";
+        }
+    });
 });
 </script>
 

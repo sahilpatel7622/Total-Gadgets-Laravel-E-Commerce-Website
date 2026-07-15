@@ -10,8 +10,8 @@ Swal.fire({
     icon: 'success',
     title: 'Success!',
     text: '{{ session("success") }}',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#6c5ce7',
+    timer: 3000,
+    showConfirmButton: false,
     allowOutsideClick: false,
     allowEscapeKey: false,
     customClass: {
@@ -29,7 +29,8 @@ Swal.fire({
     icon: 'info',
     title: 'No Changes',
     text: '{{ session("error") }}',
-    confirmButtonColor: '#6c5ce7'
+    timer: 3000,
+    showConfirmButton: false
 });
 </script>
 @endif  

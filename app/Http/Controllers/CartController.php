@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\product;
 use App\Models\Order;
+use App\Models\Coupon;
+use Carbon\Carbon;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use App\Models\Payment;
@@ -98,6 +100,10 @@ class CartController extends Controller
 
     public function buyNow($slug)
     {
+        if (!session()->has('errors') && !session()->has('error') && !session()->has('show_otp_modal')) {
+            session()->forget('applied_coupon');
+        }
+
         $product = product::where('slug', $slug)->where('status', 1)->firstOrFail();
 
         $cartItems = collect([
@@ -110,18 +116,52 @@ class CartController extends Controller
 
         $cartTotal = $product->price;
         $buyNowProductId = $product->id;
+        $this->validateAndRecalculateCoupon($cartTotal);
+
+        $userId = Auth::id();
+        $today = now()->toDateString();
+        $availableCoupons = Coupon::where('status', 1)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
+            ->where('minimum_order_amount', '<=', $cartTotal)
+            ->where(function ($query) use ($userId) {
+                $query->where('user_type', 'all')
+                    ->orWhere(function ($q) use ($userId) {
+                        $q->where('user_type', 'selected')
+                            ->whereHas('users', function ($user) use ($userId) {
+                                $user->where('user_id', $userId);
+                            });
+                    });
+            })
+            ->get()
+            ->filter(function ($coupon) use ($userId) {
+                $totalUsed = Order::where('coupon_id', $coupon->id)->count();
+                $userUsed = Order::where('coupon_id', $coupon->id)
+                    ->where('user_id', $userId)
+                    ->count();
+                $overallOk = is_null($coupon->usage_limit)
+                    || $totalUsed < $coupon->usage_limit;
+                $userOk = is_null($coupon->per_user_limit)
+                    || $userUsed < $coupon->per_user_limit;
+                return $overallOk && $userOk;
+            });
 
         return view('checkout', compact(
             'cartItems',
             'cartTotal',
-            'buyNowProductId'
+            'buyNowProductId',
+            'availableCoupons'
         ));
     }
 
     // Checkout
-    
+
     public function checkout()
     {
+        if (!session()->has('errors') && !session()->has('error') && !session()->has('show_otp_modal')) {
+            session()->forget('applied_coupon');
+        }
+
         $cartItems = Cart::with('product')
             ->where('user_id', Auth::id())
             ->get();
@@ -129,8 +169,42 @@ class CartController extends Controller
         $cartTotal = $cartItems->sum(function ($item) {
             return $item->product ? $item->product->price * $item->quantity : 0;
         });
+        
+        $this->validateAndRecalculateCoupon($cartTotal);
 
-        return view('checkout', compact('cartItems', 'cartTotal'));
+        $userId = Auth::id();
+        $today = now()->toDateString();
+        $availableCoupons = Coupon::where('status', 1)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
+            ->where('minimum_order_amount', '<=', $cartTotal)
+            ->where(function ($query) use ($userId) {
+                $query->where('user_type', 'all')
+                    ->orWhere(function ($q) use ($userId) {
+                        $q->where('user_type', 'selected')
+                            ->whereHas('users', function ($user) use ($userId) {
+                                $user->where('user_id', $userId);
+                            });
+                    });
+            })
+            ->get()
+            ->filter(function ($coupon) use ($userId) {
+                $totalUsed = Order::where('coupon_id', $coupon->id)->count();
+                $userUsed = Order::where('coupon_id', $coupon->id)
+                    ->where('user_id', $userId)
+                    ->count();
+                $overallOk = is_null($coupon->usage_limit)
+                    || $totalUsed < $coupon->usage_limit;
+                $userOk = is_null($coupon->per_user_limit)
+                    || $userUsed < $coupon->per_user_limit;
+                return $overallOk && $userOk;
+            });
+
+        return view('checkout', compact(
+            'cartItems',
+            'cartTotal',
+            'availableCoupons'
+        ));
     }
 
     // Place Order - OTP Send
@@ -299,17 +373,36 @@ class CartController extends Controller
             $cartTotal = $cartItems->sum(function ($item) {
                 return $item->product ? $item->product->price * $item->quantity : 0;
             });
+            
+            $this->validateAndRecalculateCoupon($cartTotal);
+
+            if (session()->has('applied_coupon')) {
+                $discount = session('applied_coupon')['discount'] ?? 0;
+                $cartTotal -= $discount;
+                if ($cartTotal < 0) {
+                    $cartTotal = 0;
+                }
+            }
 
             $fullAddress = $orderData['address'] . ', ' .
                 $orderData['city'] . ', ' .
                 $orderData['state'] . ' - ' .
                 $orderData['pincode'];
 
+            $orderNumber = 'TG' . date('YmdHis');
+
+            $appliedCoupon = session('applied_coupon');
+
             $order = Order::create([
                 'user_id' => Auth::id(),
-                'order_number' => 'TG' . date('YmdHis'),
+                'order_number' => $orderNumber,
                 'amount' => $cartTotal,
                 'status' => 'Pending',
+
+                'coupon_id'       => $appliedCoupon['id'] ?? null,
+                'coupon_code'     => $appliedCoupon['code'] ?? null,
+                'coupon_discount' => $appliedCoupon['discount'] ?? 0,
+
             ]);
 
             OrderDetail::create([
@@ -354,6 +447,7 @@ class CartController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Razorpay Error: ' . $e->getMessage());
             return back()->with('error', $e->getMessage());
         }
 
@@ -370,6 +464,8 @@ class CartController extends Controller
                 'Pending'
             );
         }
+
+        session()->forget('applied_coupon');
 
         return redirect()
             ->route('products')
@@ -438,6 +534,8 @@ class CartController extends Controller
         if (!$request->buy_now_product_id) {
             Cart::where('user_id', Auth::id())->delete();
         }
+
+        session()->forget('applied_coupon');
 
         return redirect()
             ->route('products')
@@ -511,6 +609,30 @@ class CartController extends Controller
         ->findOrFail($id);
         $pdf = Pdf::loadView('invoice', compact('order'));
         return $pdf->download('In   voice-'.$order->order_number.'.pdf');
+    }
+
+    private function validateAndRecalculateCoupon($cartTotal)
+    {
+        if (session()->has('applied_coupon')) {
+            $appliedCoupon = session('applied_coupon');
+            $coupon = \App\Models\Coupon::where('code', $appliedCoupon['code'])
+                ->where('status', 1)
+                ->whereDate('start_date', '<=', now()->toDateString())
+                ->whereDate('end_date', '>=', now()->toDateString())
+                ->where('minimum_order_amount', '<=', $cartTotal)
+                ->first();
+
+            if ($coupon) {
+                $discountAmount = $coupon->type === 'fixed' 
+                    ? $coupon->discount_value 
+                    : ($cartTotal * $coupon->discount_value) / 100;
+                
+                $appliedCoupon['discount'] = $discountAmount;
+                session(['applied_coupon' => $appliedCoupon]);
+            } else {
+                session()->forget('applied_coupon');
+            }
+        }
     }
 
 }

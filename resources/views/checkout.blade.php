@@ -102,7 +102,7 @@
 
                         <label class="payment-option">
                             <span>Cash on Delivery (COD)</span>
-                            <input type="radio" name="payment_method" value="Cash On Delivery" checked>
+                            <input type="radio" name="payment_method" value="Cash On Delivery">
                         </label>
 
                         <label class="payment-option">
@@ -124,9 +124,70 @@
 
                     <div class="summary-body">
 
+                        @if(isset($cartItems) && count($cartItems) > 0)
+                            <div class="checkout-items-list" style="margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                                @foreach($cartItems as $item)
+                                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                        <div style="width: 50%; font-size: 14px; font-weight: 500; color: #333; line-height: 1.4; padding-right: 10px;">
+                                            {{ $item->product->name }}
+                                        </div>
+                                        <div style="width: 25%; text-align: center; font-size: 13px; color: #666; white-space: nowrap;">
+                                            Qty: {{ $item->quantity }}
+                                        </div>
+                                        <div style="width: 25%; text-align: right; font-size: 14px; font-weight: 600; color: #111; white-space: nowrap;">
+                                            ₹{{ number_format(($item->product->price * $item->quantity), 2) }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        @php
+                            $appliedCoupon = session('applied_coupon');
+                            $discountAmount = $appliedCoupon ? $appliedCoupon['discount'] : 0;
+                            $finalTotal = $cartTotal - $discountAmount;
+                            if ($finalTotal < 0) $finalTotal = 0;
+                        @endphp
+
+                        <div class="coupon-section" style="margin-bottom: 20px;">
+                            @if(isset($availableCoupons) && $availableCoupons->count() > 0)
+                                <div style="margin-bottom: 10px;">
+                                    <select id="available_coupons_select" onchange="document.getElementById('coupon_code_input').value = this.value; if(this.value) { applyCoupon(); } else { removeCoupon(); }" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">-- Select an Available Coupon --</option>
+                                        @foreach($availableCoupons as $coupon)
+                                            <option value="{{ $coupon->code }}" {{ ($appliedCoupon && $appliedCoupon['code'] == $coupon->code) ? 'selected' : '' }}>
+                                                {{ $coupon->code }} - 
+                                                @if($coupon->type == 'fixed')
+                                                    ₹{{ $coupon->discount_value }} OFF
+                                                @else
+                                                    {{ $coupon->discount_value }}% OFF
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="coupon_code_input" placeholder="Enter Coupon Code" 
+                                       value="{{ $appliedCoupon ? $appliedCoupon['code'] : '' }}" 
+                                       style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;"
+                                       {{ $appliedCoupon ? 'disabled' : '' }}>
+                                
+                                <button type="button" id="coupon_action_btn" onclick="{{ $appliedCoupon ? 'removeCoupon()' : 'applyCoupon()' }}" style="padding: 8px 15px; background: {{ $appliedCoupon ? '#dc3545' : '#4f46e5' }}; color: white; border: none; border-radius: 4px; cursor: pointer;">{{ $appliedCoupon ? 'Remove' : 'Apply' }}</button>
+                            </div>
+                            <small id="coupon_message" style="display: block; margin-top: 5px; color: #dc3545;"></small>
+                        </div>
+
+                        <hr>
+
                         <div class="summary-row">
                             <span>Items Subtotal</span>
                             <strong>₹{{ number_format($cartTotal,2) }}</strong>
+                        </div>
+
+                        <div class="summary-row" id="discount_row" style="color: #28a745; display: {{ $appliedCoupon ? 'flex' : 'none' }};">
+                            <span id="discount_label">Coupon Discount ({{ $appliedCoupon ? $appliedCoupon['code'] : '' }})</span>
+                            <strong id="discount_amount" style="color: #28a745;">- ₹{{ number_format($discountAmount, 2) }}</strong>
                         </div>
 
                         <div class="summary-row">
@@ -143,7 +204,7 @@
 
                         <div class="grand-total">
                             <span>Grand Total</span>
-                            <strong>₹{{ number_format($cartTotal,2) }}</strong>
+                            <strong id="grand_total_amount">₹{{ number_format($finalTotal,2) }}</strong>
                         </div>
 
                         <button type="submit" class="place-btn">
@@ -179,17 +240,7 @@
         <div class="otp-popup-body">
             <p>Enter the OTP sent to your email.</p>
 
-            @if(session('success'))
-                <div class="otp-success">
-                    {{ session('success') }}
-                </div>
-            @endif
 
-            @if(session('error'))
-                <div class="otp-error text-center">
-                    {{ session('error') }}
-                </div>
-            @endif
 
             <form id="otpForm" action="{{ route('order.otp.verify') }}" method="POST">
                 @csrf
@@ -256,4 +307,122 @@ document.getElementById("forgotForm").addEventListener("submit", function () {
     btn.disabled = true;
     btn.innerHTML = "Sending...";
 });
+</script>
+
+@if(session('success'))
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: "{{ session('success') }}",
+    timer: 3000,
+    showConfirmButton: false
+});
+</script>
+@endif
+
+@if(session('error'))
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: "{{ session('error') }}",
+    timer: 3000,
+    showConfirmButton: false
+});
+</script>
+@endif
+
+<script>
+function applyCoupon() {
+    const code = document.getElementById('coupon_code_input').value;
+    const msg = document.getElementById('coupon_message');
+    msg.style.color = '#dc3545';
+    if (!code) {
+        msg.innerText = 'Please enter a coupon code';
+        return;
+    }
+    msg.innerText = 'Applying...';
+    
+    fetch('{{ route('apply.coupon') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ 
+            coupon_code: code,
+            buy_now_product_id: '{{ $buyNowProductId ?? "" }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('discount_row').style.display = 'flex';
+            document.getElementById('discount_label').innerText = 'Coupon Discount (' + data.code + ')';
+            document.getElementById('discount_amount').innerText = '- ₹' + parseFloat(data.discount).toFixed(2);
+            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toFixed(2);
+            
+            document.getElementById('coupon_code_input').disabled = true;
+            let select = document.getElementById('available_coupons_select');
+            if (select) {
+                select.value = data.code;
+            }
+
+            let btn = document.getElementById('coupon_action_btn');
+            btn.innerText = 'Remove';
+            btn.style.background = '#dc3545';
+            btn.onclick = removeCoupon;
+            
+            msg.innerText = '';
+        } else {
+            msg.innerText = data.message;
+        }
+    })
+    .catch(error => {
+        msg.innerText = 'Something went wrong';
+    });
+}
+
+function removeCoupon() {
+    const msg = document.getElementById('coupon_message');
+    msg.innerText = 'Removing...';
+    msg.style.color = '#333';
+    
+    fetch('{{ route('remove.coupon') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('discount_row').style.display = 'none';
+            document.getElementById('grand_total_amount').innerText = '₹{{ number_format($cartTotal, 2) }}';
+            
+            let input = document.getElementById('coupon_code_input');
+            input.disabled = false;
+            input.value = '';
+            
+            let select = document.getElementById('available_coupons_select');
+            if (select) {
+                select.disabled = false;
+                select.value = '';
+            }
+            
+            let btn = document.getElementById('coupon_action_btn');
+            btn.innerText = 'Apply';
+            btn.style.background = '#4f46e5';
+            btn.onclick = applyCoupon;
+            
+            msg.innerText = '';
+        }
+    })
+    .catch(error => {
+        msg.innerText = 'Something went wrong';
+        msg.style.color = '#dc3545';
+    });
+}
 </script>

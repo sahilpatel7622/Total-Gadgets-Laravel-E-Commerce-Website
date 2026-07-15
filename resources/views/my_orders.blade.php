@@ -92,7 +92,11 @@
                 @elseif($item->product)
 
                     <div class="product-left">
-                        <img src="{{ asset('product/'.$item->product->image) }}">
+                        @if($item->product->image)
+                            <img src="{{ asset('product/'.$item->product->image) }}">
+                        @else
+                            <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image">
+                        @endif
                         <strong>{{ $item->product->name }}</strong>
                     </div>
 
@@ -120,14 +124,23 @@
 
         <div class="order-footer">
 
-            <div class="address-box">
+            <div class="address-box" style="position: relative;top: 20px">
                 <strong>Delivery Address</strong>
                 <p>{{ $order->detail?->address ?? 'Address not available' }}</p>
             </div>
 
-            <div class="total-box">
-                <span>Total Amount</span>
-                <strong>₹{{ number_format($order->amount, 2) }}</strong>
+            <div>
+                @if($order->coupon_discount > 0)
+                <div style="margin-bottom: 15px; background: #f0fdf4; border-color: #bbf7d0;">
+                    <span style="color: red">Coupon Discount </span>
+                    <strong style="color: red; font-size: 18px;"> - ₹{{ number_format($order->coupon_discount, 2) }}</strong>
+                </div>
+                @endif
+
+                <div class="total-box">
+                    <span>Total Amount</span>
+                    <strong>₹{{ number_format($order->amount, 2) }}</strong>
+                </div>
             </div>
 
             <div class="footer-actions" style="grid-column: 1 / -1; display:flex; justify-content:flex-end; align-items:center; gap:15px; flex-wrap:wrap; margin-top:10px;">

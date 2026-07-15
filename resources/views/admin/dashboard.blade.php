@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         icon: 'success',
         title: "{{ session('success') }}",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 1500,
         timerProgressBar: true,
         background: '#ffffff',
         color: '#333',
@@ -158,6 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
         background: #fee2e2;
         color: #991b1b;
     }
+    .bg-pink{
+        background: linear-gradient(135deg, #ff4d6d, #c9184a);
+        color: #fff;
+    }
 
     .product-img {
         width: 48px;
@@ -264,6 +268,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 <i class="fa-solid fa-circle-check"></i>
             </div>
         </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-pink">
+                <h4>{{ $totalCoupons }}</h4>
+                <p>Total Coupons</p>
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+        </div>
 
     </div>
 
@@ -324,14 +336,14 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 
 
-    @if(session('successe'))
+    @if(session('successe') && !session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
                     icon: 'success',
                     title: 'Congrats!',
-                    text: '{{ session("successe") }}',
+                    text: '{!! session("successe") !!}',
                     confirmButtonText: 'OK'
                 });
             });

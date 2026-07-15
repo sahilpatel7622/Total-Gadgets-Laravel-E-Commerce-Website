@@ -117,6 +117,10 @@
         border-radius: 25px;
     }
 
+    .wishlist-nav {
+        background: #fdf2f8;
+    }
+
     .avatar {
         width: 44px;
         height: 44px;

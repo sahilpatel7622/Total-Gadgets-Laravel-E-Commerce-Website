@@ -2,6 +2,9 @@
 
 <article class="product-card">
     <div class="product-img-box">
+        <button class="wishlist-toggle {{ in_array($p->id, $wishlistProductIds ?? []) ? 'active' : '' }}" data-id="{{ $p->id }}">
+            {{ in_array($p->id, $wishlistProductIds ?? []) ? '❤️' : '🤍' }}
+        </button>
         @if($p->image)
             <a href="{{ route('product.detail', $p->slug) }}">
                 <img src="{{ asset('product/'.$p->image) }}"
@@ -9,9 +12,7 @@
                     class="product-image">
             </a>
         @else
-            <div class="product-img-placeholder">
-                No Image
-            </div>
+            <img src="https://via.placeholder.com/400x300?text=No+Image" alt="No Image" class="product-image">
         @endif
     </div>
 

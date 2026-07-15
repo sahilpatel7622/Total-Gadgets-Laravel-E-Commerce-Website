@@ -17,6 +17,10 @@ class Order extends Model
         'amount',
         'address',
         'status',
+
+        'coupon_id',
+        'coupon_code',
+        'coupon_discount',
     ];
 
     public function user()

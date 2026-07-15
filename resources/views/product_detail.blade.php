@@ -6,12 +6,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if(session('successe'))
+@if(session('successe') || session('success'))
 <script>
 Swal.fire({
     icon: 'success',
     title: 'Success',
-    text: "{{ session('successe') }}",
+    text: "{!! session('successe') ?? session('success') !!}",
+    timer: 3000,
+    showConfirmButton: false
 });
 </script>
 @endif
@@ -327,9 +329,10 @@ Swal.fire({
                          class="detail-image"
                          alt="{{ $product->name }}">
                 @else
-                    <div>No product image available</div>
+                    <img src="https://via.placeholder.com/400x300?text=No+Image" class="detail-image" alt="No Image">
                 @endif
             </div>
+            
 
             <div class="detail-info">
 
@@ -346,6 +349,11 @@ Swal.fire({
                 @if($product->category)
                     <span class="category-badge">{{ $product->category->name }}</span>
                 @endif
+
+
+                <button style="position: relative;left: 400px;bottom: 50px" type="button" class="btn-outline-custom wishlist-toggle {{ in_array($product->id, $wishlistProductIds ?? []) ? 'active' : '' }}" data-id="{{ $product->id }}">
+                    {{ in_array($product->id, $wishlistProductIds ?? []) ? '❤️' : '🤍' }}
+                </button>
 
                 <h1 class="detail-title">{{ $product->name }}</h1>
 
@@ -399,6 +407,8 @@ Swal.fire({
                             <img src="{{ asset('product/'.$related->image) }}"
                                  class="related-img"
                                  alt="{{ $related->name }}">
+                        @else
+                            <img src="https://via.placeholder.com/400x300?text=No+Image" class="related-img" alt="No Image">
                         @endif
                     </div>
 

@@ -121,12 +121,12 @@
         }
     </style>
 
-@if(session('successe'))
+@if(session('successe') || session('success'))
 <script>
     Swal.fire({
         icon: 'success',
         title: 'Congrats!',
-        text: '{{ session("successe") }}',
+        text: '{!! session("successe") ?? session("success") !!}',
         confirmButtonText: 'OK'
     });
 </script>
