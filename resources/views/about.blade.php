@@ -12,7 +12,7 @@
 }
 
 .hero{
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+       background:linear-gradient(135deg,#2563eb,#7c3aed);
     color:#fff;
     padding:70px 50px;
     border-radius:20px;

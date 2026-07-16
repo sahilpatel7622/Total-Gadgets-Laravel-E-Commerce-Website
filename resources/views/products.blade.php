@@ -20,16 +20,17 @@
     padding:35px 40px;
     border-radius:18px;
     margin-bottom:25px;
+    text-align: center
 }
 
 .products-hero h1{
-    font-size:34px;
+    font-size:38px;
     margin-bottom:8px;
     font-weight:700;
 }
 
 .products-hero p{
-    font-size:15px;
+    font-size:17px;
 }
 
 /* Toolbar */

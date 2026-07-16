@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
+use App\Models\Wishlist;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                         : 0;
                 });
                 
-                $wishlists = \App\Models\Wishlist::where('user_id', Auth::id())->get();
+                $wishlists = Wishlist::where('user_id', Auth::id())->get();
                 $wishlistCount = $wishlists->count();
                 $wishlistProductIds = $wishlists->pluck('product_id')->toArray();
             }

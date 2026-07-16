@@ -135,6 +135,9 @@ class CartController extends Controller
             })
             ->get()
             ->filter(function ($coupon) use ($userId) {
+                if (now()->lt($coupon->start_date) || now()->gt($coupon->end_date)) {
+                    return false;
+                }
                 $totalUsed = Order::where('coupon_id', $coupon->id)->count();
                 $userUsed = Order::where('coupon_id', $coupon->id)
                     ->where('user_id', $userId)
@@ -166,6 +169,11 @@ class CartController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Your cart is empty. Please add products before checking out.');
+        }
+
         $cartTotal = $cartItems->sum(function ($item) {
             return $item->product ? $item->product->price * $item->quantity : 0;
         });
@@ -189,6 +197,9 @@ class CartController extends Controller
             })
             ->get()
             ->filter(function ($coupon) use ($userId) {
+                if (now()->lt($coupon->start_date) || now()->gt($coupon->end_date)) {
+                    return false;
+                }
                 $totalUsed = Order::where('coupon_id', $coupon->id)->count();
                 $userUsed = Order::where('coupon_id', $coupon->id)
                     ->where('user_id', $userId)

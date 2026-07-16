@@ -30,16 +30,12 @@ class AdminController extends Controller
         $completedOrders = Order::where('status', 'Delivered')->count();
         $totalRevenue = Payment::where('payment_status', 'paid')->sum('amount');
         $totalCoupons = Coupon::count();
-        $latestOrders = Order::with('user', 'payment')
-            ->whereHas('user', function ($q) {
-                $q->where('role', 'user')
-                ->where('status', 'Active');
-            })
+        $latestOrders = Order::with('user', 'detail', 'payment')
             ->latest()
-            ->take(5)
+            ->take(4)
             ->get();
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboard.index', compact(
             'totalCustomers',
             'totalCategories',
             'totalProducts',
@@ -84,9 +80,9 @@ class AdminController extends Controller
         }
         $record = $record
             ->latest()
-            ->paginate(10)
+            ->paginate($req->input('per_page', 10))
             ->withQueryString();
-        return view('admin.users', compact('record'));
+        return view('admin.user.index', compact('record'));
     }
 
     public function user_delete($id)
@@ -177,7 +173,7 @@ class AdminController extends Controller
                 });
         }
 
-        $record = $record->latest()->paginate(10)->withQueryString();
+        $record = $record->latest()->paginate($req->input('per_page', 10))->withQueryString();
 
         return view('admin.category.index', compact('record'));
     }
@@ -266,7 +262,7 @@ class AdminController extends Controller
                         $q->where('name', 'LIKE', '%'.$req->search.'%');
                     });
         }
-        $product = $product->latest()->paginate(10)->withQueryString();
+        $product = $product->latest()->paginate($req->input('per_page', 10))->withQueryString();
         return view('admin.product.index', compact('product'));
     }
 
@@ -397,7 +393,7 @@ class AdminController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10)
+            ->paginate($request->input('per_page', 10))
             ->withQueryString();
 
         return view('admin.order.index', compact('orders'));
@@ -439,7 +435,7 @@ class AdminController extends Controller
                     });
             })
             ->latest()
-            ->paginate(10)
+            ->paginate($request->input('per_page', 10))
             ->withQueryString();
 
         return view('admin.payment.index', compact('payments'));
@@ -470,7 +466,7 @@ class AdminController extends Controller
     public function admin_profile()
     {
         $admin = Auth::guard('admin')->user();
-        return view('admin.profile', compact('admin'));
+        return view('admin.profile.index', compact('admin'));
     }
 
     public function profileUpdate(Request $request)

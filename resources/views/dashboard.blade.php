@@ -11,7 +11,7 @@
 }
 
 .dashboard-hero{
-    background:linear-gradient(135deg,#0d6efd 0%,#6610f2 55%,#7c2cff 100%);
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
     color:#fff;
     padding:44px 48px;
     border-radius:24px;

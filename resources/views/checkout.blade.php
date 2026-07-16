@@ -13,7 +13,7 @@
 </div>
 
     <div class="order-page">
-        <h1 class="checkout-title" style="position: relative; bottom: 40px">Checkout</h1>
+        <h1 class="checkout-title" style="position: relative; bottom: 25px">Checkout</h1>
         <form id="forgotForm" action="{{ route('place.order') }}" method="POST" novalidate>
             @csrf
 

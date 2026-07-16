@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\ReportController;
 
     Route::get('/', function () {
         return redirect()->route('dashboard');
@@ -20,18 +21,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [UserController::class, 'login_store'])->name('login_store');
 });
 
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
-
 Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
-    Route::get('/crud', [UserController::class, 'index'])->name('crud');
-    Route::get('/crud/view', [UserController::class, 'view'])->name('view');
-    Route::get('/crud/insert', [UserController::class, 'index'])->name('insert.form');
-    Route::get('/crud/insert/states/{country_id}', [UserController::class, 'getStates']);
-    Route::get('/crud/insert/cities/{state_id}', [UserController::class, 'getCities']);
-    Route::post('/crud/insert', [UserController::class, 'insert_i'])->name('insert');
-    Route::get('/crud/delete/{id}', [UserController::class, 'delete'])->name('delete');
-    Route::get('/crud/edit/{id}', [UserController::class, 'edit'])->name('edit');
-    Route::post('/crud/update/{id}', [UserController::class, 'update'])->name('update');  
+   
+    // Logout
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     
     // Cart
@@ -80,6 +72,9 @@ Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
 
 }); 
 
+    // Dashboard
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+
     // About
     Route::get('/about', [UserController::class, 'about'])->name('about'); 
     
@@ -90,21 +85,25 @@ Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
     Route::get('/products', [ProductController::class, 'products'])->name('products');
     Route::get('/products/{slug}', [ProductController::class, 'productDetail'])->name('product.detail');
 
-
-
-// Forget Password
-
-Route::get('/forgot-password', [OtpController::class,'forgotPassword'])->name('forgot.password');
-Route::post('/send-otp', [OtpController::class,'sendOtp'])->name('send.otp');
-Route::get('/verify-otp', [OtpController::class,'verifyOtpForm'])->name('verify.otp');
-Route::post('/verify-otp', [OtpController::class,'verifyOtp']);
-Route::get('/reset-password', [OtpController::class,'resetPasswordForm'])->name('reset.password');
-Route::post('/reset-password', [OtpController::class,'resetPassword']);
+    // Forget Password
+    Route::get('/forgot-password', [OtpController::class,'forgotPassword'])->name('forgot.password');
+    Route::post('/send-otp', [OtpController::class,'sendOtp'])->name('send.otp');
+    Route::get('/verify-otp', [OtpController::class,'verifyOtpForm'])->name('verify.otp');
+    Route::post('/verify-otp', [OtpController::class,'verifyOtp']);
+    Route::get('/reset-password', [OtpController::class,'resetPasswordForm'])->name('reset.password');
+    Route::post('/reset-password', [OtpController::class,'resetPassword']);
 
 
 // Admin Routes
 Route::middleware('admin')->group(function () {
+
+    // Dashboard
     Route::get('/admin/dashboard', [AdminController::class, 'admin_dashboard'])->name('admin.dashboard');
+
+    // Logout
+    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin_logout');
+
+    // Users
     Route::get('/admin/users', [AdminController::class, 'Admin_users']);
     Route::get('/admin/users/delete/{id}', [AdminController::class, 'user_delete'])->name('user_delete');
     Route::get('/admin/users/restore/{id}', [AdminController::class,'restoreUser'])->name('restore_user');
@@ -112,7 +111,6 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/data/delete/{id}', [AdminController::class, 'data_delete'])->name('admin_data_delete');
     Route::get('/admin/users/status/{id}', [AdminController::class, 'userStatus'])->name('user.status');
     Route::get('/admin/user/status/{id}', [AdminController::class, 'changeStatus'])->name('user.change_status');
-    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin_logout');
 
     // Category 
     Route::get('/admin/category', [AdminController::class, 'Admin_category']);
@@ -162,5 +160,15 @@ Route::middleware('admin')->group(function () {
     Route::delete('/admin/coupons/delete/{id}', [CouponController::class, 'destroy'])->name('coupons.delete');
     Route::get('/admin/coupons/generate-code',[CouponController::class, 'generateCode'])->name('coupons.generateCode');
     Route::get('/admin/coupons/view/{id}', [CouponController::class, 'show'])->name('coupons.view');
+
+    // Report
+    Route::get('/admin/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/admin/orders/export', [ReportController::class,'ordersExport'])->name('admin.orders.export');
+    Route::get('/admin/users/export', [ReportController::class,'usersExport'])->name('admin.users.export');
+    Route::get('/admin/category/export', [ReportController::class,'categoriesExport'])->name('admin.category.export');
+    Route::get('/admin/product/export', [ReportController::class,'productsExport'])->name('admin.product.export');
+    Route::get('/admin/payments/export', [ReportController::class,'paymentsExport'])->name('admin.payments.export');
+    Route::get('/admin/coupons/export', [ReportController::class,'couponsExport'])->name('admin.coupons.export');   
+    Route::get('/admin/reports/date-wise/export', [ReportController::class, 'dateWiseExport'])->name('admin.reports.date-wise.export');
 
 });

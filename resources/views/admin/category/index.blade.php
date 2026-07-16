@@ -126,26 +126,40 @@ input:checked + .slider:before {
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="fa-solid fa-layer-group"></i> Category List
+                <i class="fa-solid fa-layer-group"></i> Category List ({{ $record->total() }})
             </h5>
 
-            <form action="{{ url('/admin/category') }}" method="GET" class="d-flex">
-                <input type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Search ID, Name or Status..."
-                    value="{{ request('search') }}"
-                    style="width:250px;">
+            <form action="{{ url('/admin/category') }}" method="GET" class="d-flex align-items-center" style="gap: 20px;">
+                <div class="d-flex align-items-center gap-3">
+                    <select name="per_page" class="form-select" style="width: 80px;">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
 
-                <button type="submit" class="btn btn-primary ms-2">
-                    <i class="fa-solid fa-search"></i>
-                </button>
+                    <a href="{{ route('admin.category.export') }}" class="btn btn-success text-nowrap">
+                        Export Excel
+                    </a>
+                </div>
 
-                @if(request('search'))
-                <a href="{{ url('/admin/category') }}" class="btn btn-secondary ms-2">
-                    <i class="fa-solid fa-xmark"></i> Reset
-                </a>
-                @endif
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search ID, Name or Status..."
+                        value="{{ request('search') }}"
+                        style="width:250px;">
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+
+                    @if(request('search'))
+                    <a href="{{ url('/admin/category') }}" class="btn btn-secondary">
+                        <i class="fa-solid fa-xmark"></i> Reset
+                    </a>
+                    @endif
+                </div>
             </form>
             
         </div>

@@ -136,6 +136,9 @@
         }
 
         .top-navbar{
+            position: sticky;
+            top: 0;
+            z-index: 1000;
             height:70px;
             background:#fff;
             padding:0 30px;
@@ -355,6 +358,12 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('reports.index') }}"class="{{ Request::is('admin/reports*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+
             {{--
             <li>
                 <a href="{{ url('/admin/data') }}" class="{{ Request::is('admin/data') ? 'active' : '' }}">
@@ -421,6 +430,75 @@
         @yield('content')
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Intercept form submission for search/per_page
+    document.addEventListener('submit', function(e) {
+        if(e.target.tagName === 'FORM' && e.target.querySelector('select[name="per_page"]')) {
+            e.preventDefault();
+            const url = e.target.action + '?' + new URLSearchParams(new FormData(e.target)).toString();
+            fetchData(url);
+        }
+    });
+
+    // Intercept per_page change
+    document.addEventListener('change', function(e) {
+        if(e.target.name === 'per_page') {
+            e.preventDefault();
+            const form = e.target.closest('form');
+            if(form) {
+                const url = form.action + '?' + new URLSearchParams(new FormData(form)).toString();
+                fetchData(url);
+            }
+        }
+    });
+
+    // Intercept pagination clicks
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('.pagination a');
+        if(link) {
+            e.preventDefault();
+            fetchData(link.href);
+        }
+    });
+
+    function fetchData(url) {
+        const cardBody = document.querySelector('.card-body');
+        if(cardBody) {
+            cardBody.style.opacity = '0.5';
+            cardBody.style.pointerEvents = 'none';
+        }
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.querySelector('.card-body');
+            
+            if(newContent && cardBody) {
+                cardBody.innerHTML = newContent.innerHTML;
+                cardBody.style.opacity = '1';
+                cardBody.style.pointerEvents = 'auto';
+                window.history.pushState(null, '', url);
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching data:', err);
+            if(cardBody) {
+                cardBody.style.opacity = '1';
+                cardBody.style.pointerEvents = 'auto';
+            }
+        });
+    }
+});
+</script>
 
 @yield('script')
 </body>

@@ -18,6 +18,7 @@
 
     <button type="button" class="mobile-btn" id="mobileBtn">☰</button>
 
+    @if (!request()->routeIs('checkout') && !request()->routeIs('buy.now'))
     <div class="nav-menu">
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
             Home
@@ -127,7 +128,7 @@
 
                 </div>
 
-                <div class="cart-sidebar-footer">
+                <div class="cart-sidebar-footer" id="cartFooter" style="{{ isset($cartItems) && $cartItems->count() > 0 ? '' : 'display: none;' }}">
                     <div class="cart-total">
                         <span>Total</span>
                         <strong>₹<span id="cartTotal">{{ number_format($cartTotal ?? 0, 2) }}</span></strong>                    
@@ -163,6 +164,9 @@
         @endguest
 
     </div>
+    @else
+
+    @endif
 
 </nav>
 
@@ -211,14 +215,15 @@ Swal.fire({
             <a href="{{ route('dashboard') }}">Home</a>
             <a href="{{ route('products') }}">Products</a>
             <a href="{{ route('about') }}">About Us</a>
+            <a href="{{ route('contact') }}">Contact Us</a>
         </div>
 
         <div class="footer-col">
             <h3>Categories</h3>
-            <a href="#">Mobiles</a>
-            <a href="#">Laptops</a>
-            <a href="#">Smart TVs</a>
-            <a href="#">Accessories</a>
+            <a href="{{ route('products') }}?category=mobiles">Mobiles</a>
+            <a href="{{ route('products') }}?category=laptops">Laptops</a>
+            <a href="{{ route('products') }}?category=smart-tvs">Smart TVs</a>
+            <a href="{{ route('products') }}?category=accessories">Accessories</a>
         </div>
 
         <div class="footer-col">
@@ -322,6 +327,8 @@ document.addEventListener('submit', function(e){
                         <p>Add products to your cart.</p>
                     </div>
                 `;
+                let cartFooter = document.getElementById('cartFooter');
+                if (cartFooter) cartFooter.style.display = 'none';
             }
         }else{
             document.getElementById('qty-' + data.cartId).innerText = data.quantity;

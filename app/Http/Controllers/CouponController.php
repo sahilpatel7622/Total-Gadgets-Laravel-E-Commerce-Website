@@ -33,7 +33,7 @@ class CouponController extends Controller
                 }
             });
         }
-        $coupons = $query->latest()->paginate(10);
+        $coupons = $query->latest()->paginate($request->input('per_page', 10))->withQueryString();
         return view('admin.coupons.index', compact('coupons'));
     }
 

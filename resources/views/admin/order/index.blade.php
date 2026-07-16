@@ -40,26 +40,40 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="fa-solid fa-cart-shopping"></i> Orders List
+                <i class="fa-solid fa-cart-shopping"></i> Orders List ({{ $orders->total() }})
             </h5>
 
-            <form action="{{ route('admin.orders') }}" method="GET" class="d-flex">
-                <input type="text"
-                       name="search"
-                       class="form-control"
-                       placeholder="Search Order, Customer..."
-                       value="{{ request('search') }}"
-                       style="width:250px;">
+            <form action="{{ route('admin.orders') }}" method="GET" class="d-flex align-items-center" style="gap: 20px;">
+                <div class="d-flex align-items-center gap-3">
+                    <select name="per_page" class="form-select" style="width: 80px;">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                    
+                    <a href="{{ route('admin.orders.export') }}" class="btn btn-success text-nowrap">
+                        Export Excel
+                    </a>
+                </div>
 
-                <button type="submit" class="btn btn-primary ms-2">
-                    <i class="fa-solid fa-search"></i>
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search Order, Customer..."
+                           value="{{ request('search') }}"
+                           style="width:250px;">
 
-                @if(request('search'))
-                <a href="{{ route('admin.orders') }}" class="btn btn-secondary ms-2">
-                    <i class="fa-solid fa-xmark"></i> Reset
-                </a>
-                @endif
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+
+                    @if(request('search'))
+                    <a href="{{ route('admin.orders') }}" class="btn btn-secondary">
+                        <i class="fa-solid fa-xmark"></i> Reset
+                    </a>
+                    @endif
+                </div>
             </form>
         </div>
 

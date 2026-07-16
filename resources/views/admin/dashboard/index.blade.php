@@ -210,18 +210,18 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="row g-4 mb-4">
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card bg-blue">
-                <h4>{{ $totalOrders }}</h4>
-                <p>Total Orders</p>
-                <i class="fa-solid fa-cart-shopping"></i>
+            <div class="stat-card bg-purple">
+                <h4>{{ $totalCustomers }}</h4>
+                <p>Total Users</p>
+                <i class="fa-solid fa-users"></i>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card bg-green">
-                <h4>₹{{ number_format($totalRevenue, 2) }}</h4>
-                <p>Total Revenue</p>
-                <i class="fa-solid fa-indian-rupee-sign"></i>
+            <div class="stat-card bg-dark">
+                <h4>{{ $totalCategories }}</h4>
+                <p>Total Categories</p>
+                <i class="fa-solid fa-layer-group"></i>
             </div>
         </div>
 
@@ -234,10 +234,10 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card bg-purple">
-                <h4>{{ $totalCustomers }}</h4>
-                <p>Total Users</p>
-                <i class="fa-solid fa-users"></i>
+            <div class="stat-card bg-green">
+                <h4>₹{{ number_format($totalRevenue, 2) }}</h4>
+                <p>Total Revenue</p>
+                <i class="fa-solid fa-indian-rupee-sign"></i>
             </div>
         </div>
 
@@ -246,10 +246,10 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="row g-4 mb-4">
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card bg-dark">
-                <h4>{{ $totalCategories }}</h4>
-                <p>Total Categories</p>
-                <i class="fa-solid fa-layer-group"></i>
+            <div class="stat-card bg-blue">
+                <h4>{{ $totalOrders }}</h4>
+                <p>Total Orders</p>
+                <i class="fa-solid fa-cart-shopping"></i>
             </div>
         </div>
 
@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <strong>{{ $order->order_number ?? '#ORD'.$order->id }}</strong>
                             </td>
 
-                            <td>{{ $order->user->name ?? 'Guest User' }}</td>
+                            <td>{{ $order->detail?->name ?? $order->user?->name ?? 'Guest User' }}</td>
 
                             <td>₹{{ number_format($order->amount, 2) }}</td>
 
