@@ -560,6 +560,7 @@ class CartController extends Controller
             $productNames = $order->items
                 ->pluck('product.name')
                 ->implode(', ');
+            $totalQuantity = $order->items->sum('quantity');
 
             Mail::html("
                 <div style='max-width:600px;margin:auto;padding:30px;
@@ -581,9 +582,8 @@ class CartController extends Controller
 
                         <p><b>Order Number:</b> {$order->order_number}</p>
                         <p><b>Product:</b> {$productNames}</p>
+                        <p><b>Quantity:</b> {$totalQuantity}</p>
                         <p><b>Total Amount:</b> ₹" . number_format($order->amount, 2) . "</p>
-                        <p><b>Payment Method:</b> {$paymentMethod}</p>
-                        <p><b>Payment Status:</b> {$paymentStatus}</p>
 
                         <hr>
 
@@ -598,7 +598,7 @@ class CartController extends Controller
                 </div>
             ", function ($message) use ($email) {
                 $message->to($email)
-                        ->subject('Order Confirmation - Total Gadget');
+                        ->subject('Order Placed Successfully - Total Gadgets');
             });
         }
         catch (\Exception $e) {

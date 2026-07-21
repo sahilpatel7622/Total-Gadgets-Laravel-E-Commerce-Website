@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
@@ -11,71 +10,66 @@ class WishlistController extends Controller
 {
     public function index(Request $request)
     {
-        $wishlist = Wishlist::with('product')
+        $wishlist = Wishlist::with('product.category')
             ->where('user_id', $request->user()->id)
-            ->when($request->product_id, function ($query) use ($request) {
-                $query->where('product_id', $request->product_id);
-            })
             ->latest()
             ->get();
 
         return response()->json([
             'status' => true,
-            'message' => 'Wishlist fetched successfully.',
-            'data' => $wishlist,
+            'message' => 'Wishlist fetched successfully',
+            'data' => $wishlist
         ], 200);
     }
 
     public function toggle(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required|exists:product,id',
         ]);
 
-        $productId = $request->product_id;
         $wishlist = Wishlist::where('user_id', $request->user()->id)
-            ->where('product_id', $productId)
+            ->where('product_id', $validated['product_id'])
             ->first();
 
         if ($wishlist) {
             $wishlist->delete();
+
             return response()->json([
                 'status' => true,
-                'is_wishlisted' => false,
-                'message' => 'Product removed from wishlist.',
+                'message' => 'Product removed from wishlist'
             ], 200);
         }
 
-        Wishlist::create([
+        $wishlist = Wishlist::create([
             'user_id' => $request->user()->id,
-            'product_id' => $productId,
+            'product_id' => $validated['product_id'],
         ]);
 
         return response()->json([
             'status' => true,
-            'is_wishlisted' => true,
-            'message' => 'Product added to wishlist.',
+            'message' => 'Product added to wishlist',
+            'data' => $wishlist->load('product.category')
         ], 201);
     }
 
-    public function destroy(Request $request, $wishlistId)
+    public function destroy(Request $request, $id)
     {
-        $wishlist = Wishlist::where('id', $wishlistId)
-            ->where('user_id', $request->user()->id)
-            ->first();
+        $wishlist = Wishlist::where('user_id', $request->user()->id)
+            ->find($id);
 
         if (!$wishlist) {
             return response()->json([
                 'status' => false,
-                'message' => 'Wishlist item not found.',
+                'message' => 'Wishlist item not found'
             ], 404);
         }
 
         $wishlist->delete();
+
         return response()->json([
             'status' => true,
-            'message' => 'Wishlist item deleted successfully.',
+            'message' => 'Product removed from wishlist'
         ], 200);
     }
-
 }
