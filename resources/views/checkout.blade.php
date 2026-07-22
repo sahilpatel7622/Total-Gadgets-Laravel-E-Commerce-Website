@@ -143,10 +143,26 @@
                         @endif
 
                         @php
+                            $tax = $taxSettings ?? null;
                             $appliedCoupon = session('applied_coupon');
                             $discountAmount = $appliedCoupon ? $appliedCoupon['discount'] : 0;
-                            $finalTotal = $cartTotal - $discountAmount;
-                            if ($finalTotal < 0) $finalTotal = 0;
+                            
+                            $afterDiscountTotal = $cartTotal - $discountAmount;
+                            if ($afterDiscountTotal < 0) $afterDiscountTotal = 0;
+
+                            $taxAmount = 0;
+                            $deliveryChargeAmount = 0;
+                            
+                            if($tax) {
+                                $taxAmount = ($afterDiscountTotal * $tax->tax_percentage) / 100;
+                                if($tax->free_delivery_above !== null && $afterDiscountTotal >= $tax->free_delivery_above) {
+                                    $deliveryChargeAmount = 0;
+                                } else {
+                                    $deliveryChargeAmount = $tax->delivery_charge ?? 0;
+                                }
+                            }
+                            
+                            $finalTotal = $afterDiscountTotal + $taxAmount + $deliveryChargeAmount;
                         @endphp
 
                         <div class="coupon-section" style="margin-bottom: 20px;">
@@ -192,12 +208,18 @@
 
                         <div class="summary-row">
                             <span>Estimated Tax</span>
-                            <strong>₹0.00</strong>
+                            <strong id="tax_amount">₹{{ number_format($taxAmount, 2) }}</strong>
                         </div>
 
                         <div class="summary-row">
                             <span>Standard Delivery</span>
-                            <strong>FREE</strong>
+                            <strong id="delivery_amount">
+                                @if($deliveryChargeAmount == 0)
+                                    <span class="text-success">FREE</span>
+                                @else
+                                    ₹{{ number_format($deliveryChargeAmount, 2) }}
+                                @endif
+                            </strong>
                         </div>
 
                         <hr>
@@ -362,6 +384,12 @@ function applyCoupon() {
             document.getElementById('discount_label').innerText = 'Coupon Discount (' + data.code + ')';
             document.getElementById('discount_amount').innerText = '- ₹' + parseFloat(data.discount).toFixed(2);
             document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toFixed(2);
+            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toFixed(2);
+            if(parseFloat(data.delivery_charge) === 0) {
+                document.getElementById('delivery_amount').innerHTML = '<span class="text-success">FREE</span>';
+            } else {
+                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toFixed(2);
+            }
             
             document.getElementById('coupon_code_input').disabled = true;
             let select = document.getElementById('available_coupons_select');
@@ -394,13 +422,22 @@ function removeCoupon() {
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        }
+        },
+        body: JSON.stringify({ 
+            buy_now_product_id: '{{ $buyNowProductId ?? "" }}'
+        })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             document.getElementById('discount_row').style.display = 'none';
-            document.getElementById('grand_total_amount').innerText = '₹{{ number_format($cartTotal, 2) }}';
+            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toFixed(2);
+            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toFixed(2);
+            if(parseFloat(data.delivery_charge) === 0) {
+                document.getElementById('delivery_amount').innerHTML = '<span class="text-success">FREE</span>';
+            } else {
+                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toFixed(2);
+            }
             
             let input = document.getElementById('coupon_code_input');
             input.disabled = false;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 15, 2026 at 03:22 PM
+-- Generation Time: Jul 22, 2026 at 10:50 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,7 @@ CREATE TABLE `add_to_cart` (
 --
 
 INSERT INTO `add_to_cart` (`id`, `user_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
-(51, 37, 5, 1, '2026-07-15 07:45:13', '2026-07-15 07:45:13'),
-(52, 37, 9, 1, '2026-07-15 07:45:18', '2026-07-15 07:45:18');
+(67, 37, 11, 1, '2026-07-21 07:41:26', '2026-07-21 07:41:26');
 
 -- --------------------------------------------------------
 
@@ -66,8 +65,8 @@ CREATE TABLE `category` (
 
 INSERT INTO `category` (`id`, `name`, `slug`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (2, 'Tv', 'tv', 1, '2026-06-19 02:11:29', '2026-07-10 04:30:27', NULL),
-(3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-07-10 04:23:25', NULL),
-(9, 'Laptop', 'laptop', 0, '2026-07-07 07:02:08', '2026-07-14 23:53:33', NULL);
+(3, 'Mobile', 'mobile', 1, '2026-06-19 02:11:58', '2026-07-16 04:58:06', NULL),
+(9, 'Laptop', 'laptop', 0, '2026-07-07 07:02:08', '2026-07-22 01:03:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -145,9 +144,9 @@ CREATE TABLE `coupons` (
 --
 
 INSERT INTO `coupons` (`id`, `code`, `type`, `discount_value`, `user_type`, `minimum_order_amount`, `usage_limit`, `per_user_limit`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(21, 'TGCHYJ8T', 'percentage', 10.00, 'all', 15000.00, 5, 1, '2026-07-15 00:00:00', '2026-08-30 00:00:00', 1, '2026-07-15 01:05:21', '2026-07-15 06:25:09'),
-(22, 'TGV4OFOE', 'fixed', 1000.00, 'selected', 10000.00, 4, 1, '2026-07-15 00:00:00', '2026-07-20 00:00:00', 1, '2026-07-15 01:08:34', '2026-07-15 07:50:22'),
-(23, 'TG2ZUXM3', 'fixed', 2000.00, 'selected', 30000.00, 10, 2, '2026-07-15 00:00:00', '2027-01-01 00:00:00', 1, '2026-07-15 07:46:23', '2026-07-15 07:48:06');
+(21, 'TGCHYJ8T', 'percentage', 10.00, 'all', 15000.00, 5, 1, '2026-07-15 00:00:00', '2026-08-15 00:00:00', 1, '2026-07-15 01:05:21', '2026-07-16 03:31:20'),
+(22, 'TGV4OFOE', 'fixed', 1000.00, 'selected', 10000.00, 4, 1, '2026-07-15 00:00:00', '2026-07-16 00:00:00', 1, '2026-07-15 01:08:34', '2026-07-16 04:18:34'),
+(23, 'TG2ZUXM3', 'fixed', 2000.00, 'selected', 30000.00, 10, 2, '2026-07-15 00:00:00', '2026-07-18 00:00:00', 1, '2026-07-15 07:46:23', '2026-07-16 04:17:58');
 
 -- --------------------------------------------------------
 
@@ -233,7 +232,7 @@ CREATE TABLE `Maintenance_Mode` (
 --
 
 INSERT INTO `Maintenance_Mode` (`id`, `maintenance_mode`, `created_at`, `updated_at`) VALUES
-(1, 1, '2026-07-03 03:53:47', '2026-07-15 02:34:35');
+(1, 1, '2026-07-03 03:53:47', '2026-07-22 01:04:09');
 
 -- --------------------------------------------------------
 
@@ -299,7 +298,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (45, '2026_07_14_105615_create_coupons_table', 39),
 (46, '2026_07_14_114622_create_coupon_users_table', 40),
 (47, '2026_07_15_054617_create_jobs_table', 41),
-(48, '2026_07_15_101202_add_coupon_columns_to_orders_table', 42);
+(48, '2026_07_15_101202_add_coupon_columns_to_orders_table', 42),
+(49, '2026_07_22_064939_tax', 43),
+(50, '2026_07_22_072923_add_tax_and_delivery_to_orders_table', 44);
 
 -- --------------------------------------------------------
 
@@ -313,6 +314,8 @@ CREATE TABLE `orders` (
   `coupon_id` bigint(20) UNSIGNED DEFAULT NULL,
   `coupon_code` varchar(255) DEFAULT NULL,
   `coupon_discount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tax_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `delivery_charge` decimal(10,2) NOT NULL DEFAULT 0.00,
   `order_number` varchar(255) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `status` enum('Pending','Processing','Confirmed','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'Pending',
@@ -324,11 +327,12 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `coupon_id`, `coupon_code`, `coupon_discount`, `order_number`, `amount`, `status`, `created_at`, `updated_at`) VALUES
-(109, 37, 21, 'TGCHYJ8T', 15990.00, 'TG20260715115616', 143910.00, 'Processing', '2026-07-15 06:26:16', '2026-07-15 06:54:27'),
-(132, 37, 22, 'TGV4OFOE', 1000.00, 'TG20260715131438', 31999.00, 'Pending', '2026-07-15 07:44:38', '2026-07-15 07:44:38'),
-(133, 24, 22, 'TGV4OFOE', 1000.00, 'TG20260715131858', 36999.00, 'Pending', '2026-07-15 07:48:58', '2026-07-15 07:48:58'),
-(134, 24, 21, 'TGCHYJ8T', 12999.90, 'TG20260715132101', 116999.10, 'Pending', '2026-07-15 07:51:01', '2026-07-15 07:51:01');
+INSERT INTO `orders` (`id`, `user_id`, `coupon_id`, `coupon_code`, `coupon_discount`, `tax_amount`, `delivery_charge`, `order_number`, `amount`, `status`, `created_at`, `updated_at`) VALUES
+(132, 37, 22, 'TGV4OFOE', 1000.00, 0.00, 0.00, 'TG20260715131438', 31999.00, 'Pending', '2026-07-15 07:44:38', '2026-07-15 07:44:38'),
+(133, 24, 22, 'TGV4OFOE', 1000.00, 0.00, 0.00, 'TG20260715131858', 36999.00, 'Delivered', '2026-07-15 07:48:58', '2026-07-16 01:59:41'),
+(134, 24, 21, 'TGCHYJ8T', 12999.90, 0.00, 0.00, 'TG20260715132101', 116999.10, 'Shipped', '2026-07-15 07:51:01', '2026-07-16 01:59:43'),
+(158, 37, NULL, NULL, 0.00, 0.00, 0.00, 'TG20260721105828', 52999.00, 'Shipped', '2026-07-21 05:28:28', '2026-07-21 07:37:29'),
+(162, 37, 21, 'TGCHYJ8T', 3299.90, 148.50, 99.00, 'TG20260722073728', 29946.60, 'Processing', '2026-07-22 02:07:28', '2026-07-22 03:19:30');
 
 -- --------------------------------------------------------
 
@@ -352,10 +356,11 @@ CREATE TABLE `order_details` (
 --
 
 INSERT INTO `order_details` (`id`, `order_id`, `name`, `number`, `email`, `address`, `created_at`, `updated_at`) VALUES
-(40, 109, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Thaltej, Ahmedabad, Gujarat - 380059', '2026-07-15 06:26:16', '2026-07-15 06:26:16'),
 (63, 132, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Ishanpur, Ahmedabad, Gujarat - 786786', '2026-07-15 07:44:38', '2026-07-15 07:44:38'),
 (64, 133, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Mumbai, Mumbai, Maharastra - 378386', '2026-07-15 07:48:58', '2026-07-15 07:48:58'),
-(65, 134, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Delhi, Delhi, Delhi - 868676', '2026-07-15 07:51:01', '2026-07-15 07:51:01');
+(65, 134, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', 'Delhi, Delhi, Delhi - 868676', '2026-07-15 07:51:01', '2026-07-15 07:51:01'),
+(86, 158, 'Sahil Patel', '6359950829', 'sahilpatel55500@gmail.com', 'Ahmedabad, Gujarat', '2026-07-21 05:28:28', '2026-07-21 05:28:28'),
+(90, 162, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', 'Jantar Mantar, Delhi, Delhi - 647661', '2026-07-22 02:07:28', '2026-07-22 02:07:28');
 
 -- --------------------------------------------------------
 
@@ -378,10 +383,11 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`, `updated_at`) VALUES
-(110, 109, 6, 1, 159900.00, '2026-07-15 06:26:16', '2026-07-15 06:26:16'),
 (133, 132, 12, 1, 32999.00, '2026-07-15 07:44:38', '2026-07-15 07:44:38'),
 (134, 133, 10, 1, 37999.00, '2026-07-15 07:48:58', '2026-07-15 07:48:58'),
-(135, 134, 5, 1, 129999.00, '2026-07-15 07:51:01', '2026-07-15 07:51:01');
+(135, 134, 5, 1, 129999.00, '2026-07-15 07:51:01', '2026-07-15 07:51:01'),
+(154, 158, 8, 1, 52999.00, '2026-07-21 05:28:28', '2026-07-21 05:28:28'),
+(158, 162, 12, 1, 32999.00, '2026-07-22 02:07:28', '2026-07-22 02:07:28');
 
 -- --------------------------------------------------------
 
@@ -405,8 +411,8 @@ CREATE TABLE `otps` (
 --
 
 INSERT INTO `otps` (`id`, `user_id`, `email`, `otp`, `type`, `expiry`, `created_at`, `updated_at`) VALUES
-(92, 37, 'sahilpatel55500@gmail.com', '288035', 'order_verify', '2026-07-15 07:49:25', '2026-07-15 07:44:25', '2026-07-15 07:44:25'),
-(94, 24, 'dhruvi@gmail.com', '543532', 'order_verify', '2026-07-15 07:55:49', '2026-07-15 07:50:49', '2026-07-15 07:50:49');
+(94, 24, 'dhruvi@gmail.com', '543532', 'order_verify', '2026-07-15 07:55:49', '2026-07-15 07:50:49', '2026-07-15 07:50:49'),
+(98, 37, 'sahilpatel55500@gmail.com', '224784', 'order_verify', '2026-07-22 02:12:16', '2026-07-22 02:07:16', '2026-07-22 02:07:16');
 
 -- --------------------------------------------------------
 
@@ -431,10 +437,11 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `order_id`, `user_id`, `amount`, `payment_method`, `payment_status`, `razorpay_payment_id`, `created_at`, `updated_at`) VALUES
-(97, 109, 37, 143910.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-15 06:26:16', '2026-07-15 06:26:16'),
 (120, 132, 37, 31999.00, 'CARDLESS_EMI', 'Paid', 'pay_TDn6wcIb8rxsj9', '2026-07-15 07:44:38', '2026-07-15 07:44:59'),
 (121, 133, 24, 36999.00, 'NETBANKING', 'Paid', 'pay_TDnBXcw6c1p86f', '2026-07-15 07:48:58', '2026-07-15 07:49:25'),
-(122, 134, 24, 116999.10, 'Cash On Delivery', 'Pending', NULL, '2026-07-15 07:51:01', '2026-07-15 07:51:01');
+(122, 134, 24, 116999.10, 'Cash On Delivery', 'Pending', NULL, '2026-07-15 07:51:01', '2026-07-15 07:51:01'),
+(139, 158, 37, 52999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-21 06:17:44', '2026-07-21 07:45:20'),
+(143, 162, 37, 29946.60, 'Cash On Delivery', 'Pending', NULL, '2026-07-22 02:07:28', '2026-07-22 02:07:28');
 
 -- --------------------------------------------------------
 
@@ -463,7 +470,11 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (20, 'App\\Models\\User', 27, 'myapp', 'f805861f4bfe8801072362a6600706a46b6a324d5fdba95a709a96a7fde937d1', '[\"*\"]', '2026-07-07 00:17:36', NULL, '2026-07-07 00:17:07', '2026-07-07 00:17:36'),
 (21, 'App\\Models\\User', 21, 'myapp', '18b3cd3b661afce1a10e44c2a7355ecac515fd8918a5186568d42f20f03952fe', '[\"*\"]', '2026-07-07 00:50:46', NULL, '2026-07-07 00:18:47', '2026-07-07 00:50:46'),
 (22, 'App\\Models\\User', 32, 'myapp', '619bf814f543a0f151faff0a4450e5d48b2a86d22500e0303af81cd0976bf223', '[\"*\"]', '2026-07-09 00:37:27', NULL, '2026-07-07 23:31:21', '2026-07-09 00:37:27'),
-(23, 'App\\Models\\User', 37, 'myapp', '4a77f85157a870be52aec4f934f2a31b5f6244268bd17b3a8a2eddd37b8659ef', '[\"*\"]', '2026-07-14 04:10:45', NULL, '2026-07-13 23:40:40', '2026-07-14 04:10:45');
+(24, 'App\\Models\\User', 50, 'user-token', '5ed2e0ce3e24d83e6b3c45386604ccf499bf55e721b4833c7b4417468d3367d5', '[\"*\"]', NULL, NULL, '2026-07-19 23:51:56', '2026-07-19 23:51:56'),
+(29, 'App\\Models\\User', 51, 'user-token', '543c5da0fc9d5c098e9aaa0901d5f9f24f22392f163de3a5ff2f688a8191b706', '[\"*\"]', '2026-07-21 03:59:31', NULL, '2026-07-21 03:22:44', '2026-07-21 03:59:31'),
+(31, 'App\\Models\\User', 37, 'user-token', 'b7001013013d1157ace32988993d9c5bcb649dd682e098773dac021159d6bbd1', '[\"*\"]', NULL, NULL, '2026-07-21 06:30:24', '2026-07-21 06:30:24'),
+(34, 'App\\Models\\User', 36, 'Admin Token', '7c05ba11724f20670e8a3475c7b8df90d03dc138bfcfe600f7f93f38c5ed5776', '[\"*\"]', NULL, NULL, '2026-07-21 06:39:54', '2026-07-21 06:39:54'),
+(35, 'App\\Models\\User', 36, 'Admin Token', 'e37968b3274b937838441b383f10d9ccc14db12cbc142bb0399c5c2ce7c4b99c', '[\"*\"]', '2026-07-21 07:45:15', NULL, '2026-07-21 07:04:08', '2026-07-21 07:45:15');
 
 -- --------------------------------------------------------
 
@@ -495,9 +506,9 @@ INSERT INTO `product` (`id`, `c_id`, `name`, `slug`, `price`, `image`, `descript
 (7, 3, 'OnePlus 15 5G', 'oneplus-15-5g', 64999.00, '1783423332.webp', 'OnePlus 15G is equipped with 12GB RAM and 256GB Storage for flagship performance. It offers a 6.82-inch AMOLED 120Hz display, a 50MP + 64MP + 48MP Hasselblad camera setup, a 32MP selfie camera, and a 5400mAh battery with 100W SUPERVOOC fast charging. Ideal for gaming, photography, and everyday use.', 1, '2026-06-19 07:25:37', '2026-07-10 01:20:11', NULL),
 (8, 3, 'iQOO 15 5G', 'iqoo-15-5g', 52999.00, '1783423286.webp', 'iQOO 15 5G comes with 12GB RAM and 256GB Storage, powered by the Snapdragon 8 Gen 3 processor. It features a 6.78-inch AMOLED 144Hz display, a 50MP + 64MP + 50MP triple rear camera, a 16MP front camera, and a 5000mAh battery with 120W FlashCharge technology for ultra-fast charging and top-tier gaming performance.', 1, '2026-06-22 00:08:30', '2026-07-07 05:51:26', NULL),
 (9, 2, 'Samsung 55\"', 'samsung-55-inch', 54999.00, '1783423233.webp', 'Samsung 55-inch Crystal UHD 4K Smart TV features a stunning 55-inch 4K UHD LED display with HDR10+ support for lifelike picture quality. Powered by Tizen OS, it includes Netflix, Prime Video, YouTube, Disney+ Hotstar, and voice assistant support. Enjoy immersive 20W Dolby Digital sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a sleek bezel-less design.', 1, '2026-06-22 00:58:38', '2026-07-07 05:50:33', NULL),
-(10, 2, 'LG 43\"', 'lg-43-inch', 37999.00, '1783423164.webp', 'LG 43-inch UHD AI ThinQ Smart TV features a 43-inch 4K Ultra HD display with HDR10 and AI Picture technology. Powered by webOS, it offers Netflix, YouTube, Prime Video, Disney+ Hotstar, AI ThinQ voice control, 20W AI Sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a slim modern design.', 1, '2026-06-22 00:59:10', '2026-07-10 04:20:59', NULL),
-(11, 2, 'Sony Bravia 65\"', 'sony-bravia-65', 94999.00, '1783423117.webp', 'Sony Bravia 65-inch 4K Google TV comes with a premium 65-inch 4K HDR LED display powered by the 4K HDR Processor X1. Running on Google TV, it supports Google Assistant, Chromecast built-in, Netflix, YouTube, Prime Video, Dolby Vision, Dolby Atmos, 20W speakers, Wi-Fi, Bluetooth, HDMI, USB ports, and a premium bezel-less design.', 1, '2026-06-22 00:59:46', '2026-07-10 01:20:09', NULL),
-(12, 2, 'TCL 50\"', 'tcl-50-inch', 32999.00, '1783598282.webp', 'TCL 50-inch 4K Android Smart TV features a 50-inch Ultra HD LED display with HDR10 support. Powered by Android TV, it includes Google Assistant, Chromecast built-in, Netflix, Prime Video, YouTube, Dolby Audio 24W speakers, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a stylish bezel-less design.', 1, '2026-06-22 01:00:18', '2026-07-14 05:50:25', NULL);
+(10, 2, 'LG 43\"', 'lg-43-inch', 37999.00, '1783423164.webp', 'LG 43-inch UHD AI ThinQ Smart TV features a 43-inch 4K Ultra HD display with HDR10 and AI Picture technology. Powered by webOS, it offers Netflix, YouTube, Prime Video, Disney+ Hotstar, AI ThinQ voice control, 20W AI Sound, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a slim modern design.', 1, '2026-06-22 00:59:10', '2026-07-16 04:58:16', NULL),
+(11, 2, 'Sony Bravia 65\"', 'sony-bravia-65', 94999.00, '1783423117.webp', 'Sony Bravia 65-inch 4K Google TV comes with a premium 65-inch 4K HDR LED display powered by the 4K HDR Processor X1. Running on Google TV, it supports Google Assistant, Chromecast built-in, Netflix, YouTube, Prime Video, Dolby Vision, Dolby Atmos, 20W speakers, Wi-Fi, Bluetooth, HDMI, USB ports, and a premium bezel-less design.', 1, '2026-06-22 00:59:46', '2026-07-16 04:58:14', NULL),
+(12, 2, 'TCL 50\"', 'tcl-50-inch', 32999.00, '1783598282.webp', 'TCL 50-inch 4K Android Smart TV features a 50-inch Ultra HD LED display with HDR10 support. Powered by Android TV, it includes Google Assistant, Chromecast built-in, Netflix, Prime Video, YouTube, Dolby Audio 24W speakers, Wi-Fi, Bluetooth, HDMI, USB connectivity, and a stylish bezel-less design.', 1, '2026-06-22 01:00:18', '2026-07-16 05:40:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -519,8 +530,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('BPGqwKv7hTsRCpb3Wj6RAN2KDv7IcvABUL5wmKlP', 37, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiamVNbWxsQWtXcHJhSnEwNWdRaGVMOER5Ukc4eEp3TUE0V0lndTNaMyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9kYXNoYm9hcmQiO3M6NToicm91dGUiO3M6OToiZGFzaGJvYXJkIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzc7fQ==', 1784121709),
-('Du04Wv2DwtemlwGuMvRqEoooH5lXZPtSZujvj6WR', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiV0dEc3ljY2VjZlN3UEk4bFhOeFFXbUNzcWZlTWRiWDB4SWdqRTFrRyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wcm9kdWN0IjtzOjU6InJvdXRlIjtOO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM2O30=', 1784121723);
+('XFDHfjQWJP2KAgXs6v1XFm1WTZBvmuuT5kBeoiKY', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiVTF5am5qRHVIVjhHc1RkeWRScFJtT1JDbmxEYU5WY1FyZ3N0ekF4aSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9yZXBvcnRzIjtzOjU6InJvdXRlIjtzOjEzOiJyZXBvcnRzLmluZGV4Ijt9czo1MjoibG9naW5fYWRtaW5fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozNjtzOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjM0OiJodHRwOi8vbG9jYWxob3N0OjgwMDAvdGF4LXNldHRpbmdzIjt9fQ==', 1784710244),
+('zDw8HvK1H4SM9XW8A34x5SA9EcjhS4UIfDEo6xx2', 37, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiY0dGcUZJeTN2VVRZUE5WTFdwQVJiUnVKS2F4TGlIaTM5bGo0MTdHbCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9teS1vcmRlcnMiO3M6NToicm91dGUiO3M6OToibXkub3JkZXJzIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzc7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6ImNHRnFGSXkzdlVUWVBOVkxXcEFSYlJ1SktheExpSGkzOWxqNDE3R2wiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoyOiIxMiI7czo0OiJuYW1lIjtzOjU6IlNhaGlsIjtzOjY6Im51bWJlciI7czoxMDoiNjM1OTk1MDgyOSI7czo1OiJlbWFpbCI7czoyNToic2FoaWxwYXRlbDU1NTAwQGdtYWlsLmNvbSI7czo3OiJhZGRyZXNzIjtzOjEzOiJKYW50YXIgTWFudGFyIjtzOjQ6ImNpdHkiO3M6NToiRGVsaGkiO3M6NToic3RhdGUiO3M6NToiRGVsaGkiO3M6NzoicGluY29kZSI7czo2OiI2NDc2NjEiO3M6MTQ6InBheW1lbnRfbWV0aG9kIjtzOjE2OiJDYXNoIE9uIERlbGl2ZXJ5Ijt9fQ==', 1784710195);
 
 -- --------------------------------------------------------
 
@@ -553,6 +564,28 @@ INSERT INTO `states` (`id`, `country_id`, `name`, `created_at`, `updated_at`) VA
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tax`
+--
+
+CREATE TABLE `tax` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `tax_percentage` decimal(8,2) NOT NULL DEFAULT 0.00,
+  `delivery_charge` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `free_delivery_above` decimal(10,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tax`
+--
+
+INSERT INTO `tax` (`id`, `tax_percentage`, `delivery_charge`, `free_delivery_above`, `created_at`, `updated_at`) VALUES
+(1, 0.50, 199.00, 50000.00, '2026-07-22 01:31:11', '2026-07-22 02:18:55');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user`
 --
 
@@ -574,10 +607,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `role`, `created_at`, `updated_at`, `status`, `deleted_at`) VALUES
-(24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-10 04:03:31', 'Active', NULL),
-(27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-15 07:46:58', 'Inactive', NULL),
-(36, 'Sahil', '7622920559', 'sahil@gmail.com', '$2y$12$LHR.irWTuCUmTqTDQ9Oo/usiYTdRVSksXF1mkW8oTrkujyEFfRsrW', 'admin', '2026-07-09 01:56:11', '2026-07-09 07:54:29', 'Active', NULL),
-(37, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$4rqCPmaqmaD37nWuF/SZ8OS3vnaMv4Yxbw6DEQZ.xIic9BemINz1G', 'user', '2026-07-10 01:58:02', '2026-07-14 01:24:16', 'Active', NULL);
+(24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-21 07:11:17', 'Active', NULL),
+(27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-16 05:29:26', 'Inactive', NULL),
+(36, 'Sahil', '7622920559', 'sahil@gmail.com', '$2y$12$eS/YHGH1YQ1fY5ZgCF5yNO4nWrVnmSEZfCloclLyvOrg4z2O9jshm', 'admin', '2026-07-09 01:56:11', '2026-07-16 07:23:30', 'Active', NULL),
+(37, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$4rqCPmaqmaD37nWuF/SZ8OS3vnaMv4Yxbw6DEQZ.xIic9BemINz1G', 'user', '2026-07-10 01:58:02', '2026-07-22 01:44:29', 'Active', NULL);
 
 -- --------------------------------------------------------
 
@@ -613,8 +646,8 @@ CREATE TABLE `wishlists` (
 --
 
 INSERT INTO `wishlists` (`id`, `user_id`, `product_id`, `created_at`, `updated_at`) VALUES
-(108, 37, 8, '2026-07-15 06:21:16', '2026-07-15 06:21:16'),
-(109, 37, 9, '2026-07-15 07:45:20', '2026-07-15 07:45:20');
+(109, 37, 9, '2026-07-15 07:45:20', '2026-07-15 07:45:20'),
+(114, 37, 8, '2026-07-21 04:44:02', '2026-07-21 04:44:02');
 
 --
 -- Indexes for dumped tables
@@ -760,6 +793,12 @@ ALTER TABLE `states`
   ADD KEY `states_country_id_foreign` (`country_id`);
 
 --
+-- Indexes for table `tax`
+--
+ALTER TABLE `tax`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
@@ -788,13 +827,13 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `add_to_cart`
 --
 ALTER TABLE `add_to_cart`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -842,49 +881,49 @@ ALTER TABLE `Maintenance_Mode`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=135;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
 
 --
 -- AUTO_INCREMENT for table `otps`
 --
 ALTER TABLE `otps`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -893,10 +932,16 @@ ALTER TABLE `states`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `tax`
+--
+ALTER TABLE `tax`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `user_location_mapping`
@@ -908,7 +953,7 @@ ALTER TABLE `user_location_mapping`
 -- AUTO_INCREMENT for table `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
 
 --
 -- Constraints for dumped tables

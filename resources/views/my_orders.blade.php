@@ -9,7 +9,7 @@
 
 <div class="orders-page">
 
-    <h1 class="page-title">My Orders</h1>
+    <h1 class="page-title"><i class="fa-solid fa-bag-shopping" style="color: #4f46e5; margin-right: 10px;"></i> My Orders</h1>
 
     @forelse($orders as $order)
 
@@ -18,29 +18,39 @@
         <div class="order-header">
 
             <div class="header-item">
-                <span>Order No</span>
+                <span><i class="fa-solid fa-hashtag"></i> Order No</span>
                 <strong>{{ $order->order_number }}</strong>
                 <small>{{ $order->created_at->format('d M Y, h:i A') }}</small>
             </div>
 
             <div class="header-item">
-                <span>Payment</span>
+                <span><i class="fa-regular fa-credit-card"></i> Payment</span>
                 <strong>{{ $order->payment?->payment_method ?? 'N/A' }}</strong>
             </div>
 
             <div class="header-item">
-                <span>Payment Status</span>
+                <span><i class="fa-solid fa-money-check-dollar"></i> Payment Status</span>
                 <strong>{{ $order->payment?->payment_status ?? 'N/A' }}</strong>
             </div>
 
             <div class="header-item text-right">
-                <span>Status</span>
-                <div class="status">{{ $order->status }}</div>
+                <span style="justify-content: flex-end"><i class="fa-solid fa-signal"></i> Status</span>
+                <div class="status">
+                    @if(strtolower($order->status) == 'pending') <i class="fa-solid fa-clock" style="margin-right: 6px;"></i>
+                    @elseif(strtolower($order->status) == 'processing') <i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i>
+                    @elseif(strtolower($order->status) == 'shipped') <i class="fa-solid fa-truck-fast" style="margin-right: 6px;"></i>
+                    @elseif(strtolower($order->status) == 'delivered') <i class="fa-solid fa-check-circle" style="margin-right: 6px;"></i>
+                    @elseif(strtolower($order->status) == 'cancelled') <i class="fa-solid fa-xmark-circle" style="margin-right: 6px;"></i>
+                    @endif
+                    {{ $order->status }}
+                </div>
             </div>
 
         </div>
 
-        <div class="products-list">
+        <div class="order-body">
+            <div class="order-body-left">
+                <div class="products-list">
 
             @foreach($order->items as $item)
 
@@ -120,47 +130,77 @@
 
             @endforeach
 
-        </div>
-
-        <div class="order-footer">
-
-            <div class="address-box" style="position: relative;top: 20px">
-                <strong>Delivery Address</strong>
-                <p>{{ $order->detail?->address ?? 'Address not available' }}</p>
+                </div>
+                
+                <div class="address-box">
+                    <strong><i class="fa-solid fa-location-dot"></i> Delivery Address</strong>
+                    <p>{{ $order->detail?->address ?? 'Address not available' }}</p>
+                </div>
             </div>
 
-            <div>
+            <div class="order-body-right">
+
+            <div class="summary-wrapper">
+                @php
+                    $subTotal = 0;
+                    foreach($order->items as $item) {
+                        $subTotal += $item->price * $item->quantity;
+                    }
+                @endphp
+                
+                <h4 class="summary-title"><i class="fa-solid fa-receipt"></i> Order Summary</h4>
+                
+                <div class="summary-line">
+                    <span class="summary-label"><i class="fa-solid fa-cart-shopping"></i> Subtotal</span>
+                    <span class="summary-value">₹{{ number_format($subTotal, 2) }}</span>
+                </div>
+
                 @if($order->coupon_discount > 0)
-                <div style="margin-bottom: 15px; background: #f0fdf4; border-color: #bbf7d0;">
-                    <span style="color: red">Coupon Discount </span>
-                    <strong style="color: red; font-size: 18px;"> - ₹{{ number_format($order->coupon_discount, 2) }}</strong>
+                <div class="summary-line highlight-discount">
+                    <span class="summary-label"><i class="fa-solid fa-tags"></i> Coupon ({{ $order->coupon_code }})</span>
+                    <span class="summary-value">-₹{{ number_format($order->coupon_discount, 2) }}</span>
                 </div>
                 @endif
 
-                <div class="total-box">
-                    <span>Total Amount</span>
-                    <strong>₹{{ number_format($order->amount, 2) }}</strong>
+                <div class="summary-line">
+                    <span class="summary-label"><i class="fa-solid fa-building-columns"></i> Estimated Tax</span>
+                    <span class="summary-value">₹{{ number_format($order->tax_amount, 2) }}</span>
+                </div>
+
+                <div class="summary-line">
+                    <span class="summary-label"><i class="fa-solid fa-truck-fast"></i> Delivery</span>
+                    <span class="summary-value">
+                        @if($order->delivery_charge == 0)
+                            <span class="free-badge">FREE</span>
+                        @else
+                            ₹{{ number_format($order->delivery_charge, 2) }}
+                        @endif
+                    </span>
+                </div>
+
+                <div class="summary-total">
+                    <span class="total-label">Grand Total</span>
+                    <span class="total-value">₹{{ number_format($order->amount, 2) }}</span>
                 </div>
             </div>
+            </div>
+        </div>
 
-            <div class="footer-actions" style="grid-column: 1 / -1; display:flex; justify-content:flex-end; align-items:center; gap:15px; flex-wrap:wrap; margin-top:10px;">
+        <div class="footer-actions">
                 @if(in_array($order->status, ['Pending', 'Processing']))
                     <form action="{{ route('order.cancel', $order->id) }}" method="POST"
                         onsubmit="return confirm('Are you sure you want to cancel this order?')">
                         @csrf
-                        <button type="submit" class="cancel-btn" style="margin-top:0;">
-                            Cancel Order
+                        <button type="submit" class="cancel-btn">
+                            <i class="fa-solid fa-xmark" style="margin-right: 5px;"></i> Cancel Order
                         </button>
                     </form>
                 @endif
 
-                <a href="{{ route('invoice',$order->id) }}" class="invoice-btn" style="position:static; left:0; width:auto; justify-content:center;">
-                    <i class="fa-solid fa-file-arrow-down"></i>
-                    Download Invoice
+                <a href="{{ route('invoice',$order->id) }}" class="invoice-btn">
+                    <i class="fa-solid fa-file-arrow-down"></i> Download Invoice
                 </a>
             </div>
-
-        </div>
 
     </div>
 

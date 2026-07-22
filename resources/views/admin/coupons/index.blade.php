@@ -79,11 +79,19 @@ document.addEventListener('DOMContentLoaded', function () {
             <small class="text-muted">Dashboard / Coupons</small>
         </div>
 
-        <a href="{{ route('coupons.create') }}"
-           class="btn btn-primary">
-            <i class="fa-solid fa-plus me-1"></i>
-            Add Coupon
-        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('admin.tax.index') }}"
+            class="btn btn-warning">
+                <i class="fa-solid fa-percent me-1"></i>
+                Tax & Delivery
+            </a>
+
+            <a href="{{ route('coupons.create') }}"
+            class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add Coupon
+            </a>
+        </div>
     </div>
 
     <div class="card shadow-sm border-0">

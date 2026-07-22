@@ -169,7 +169,7 @@
 
                         <label class="form-label">
                             Minimum Order Amount
-                            <span class="required">*</span>
+                            <span class="required"></span>
                         </label>
 
                         <div class="input-group">
@@ -199,7 +199,7 @@
 
                         <label class="form-label">
                             Apply Coupon For
-                            <span class="required">*</span>
+                            <span class="required"></span>
                         </label>
 
                         <select name="user_type"
@@ -253,7 +253,7 @@
 
                         <label class="form-label">
                             Per User Limit
-                            <span class="required">*</span>
+                            <span class="required"></span>
                         </label>
 
                         <input type="number"
@@ -319,7 +319,7 @@
 
                         <label class="form-label">
                             Status
-                            <span class="required">*</span>
+                            <span class="required"></span>
                         </label>
 
                         <select name="status"

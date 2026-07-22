@@ -167,6 +167,40 @@
     color:#2563eb;
 }
 
+.summary-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    padding-top: 10px;
+}
+
+.summary-box {
+    width: 380px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    color: #475569;
+    margin-bottom: 12px;
+}
+
+.summary-row.grand-total {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.summary-row strong {
+    color: #111827;
+    font-weight: 700;
+}
+
 .product-item img{
     width:75px;
     height:75px;
@@ -195,22 +229,6 @@
 .address-card p{
     font-size:18px;
     color:#1f2937;
-}
-
-.order-total{
-    margin-top:20px;
-    padding-top:18px;
-    border-top:2px solid #e5e7eb;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:22px;
-    font-weight:800;
-    border-top: none;
-}
-
-.order-total strong{
-    color:#2563eb;
 }
 
 @media(max-width:900px){
@@ -293,14 +311,44 @@
 
         @endforeach
 
-        <div class="order-total" style="font-size: 18px; font-weight: 600; color: #475569; margin-top: 15px; padding-top: 15px;">
-            <span>Coupon Discount</span>
-            <strong style="color: #ef4444;">-₹{{ number_format($order->coupon_discount, 2) }}</strong>
-        </div>  
+        @php
+            $subTotal = 0;
+            foreach($order->items as $item) {
+                $subTotal += $item->price * $item->quantity;
+            }
+        @endphp
 
-        <div class="order-total" style="font-size: 24px; border-top: 2px solid #e5e7eb; margin-top: 15px; padding-top: 20px;">
-            <span>Grand Total</span>
-            <strong>₹{{ number_format($order->amount, 2) }}</strong>
+        <div class="summary-container">
+            <div class="summary-box">
+                
+                @if($order->coupon_discount > 0)
+                <div class="summary-row">
+                    <span>Coupon Discount</span>
+                    <strong style="color: #ef4444;">-₹{{ number_format($order->coupon_discount, 2) }}</strong>
+                </div>
+                @endif
+                
+                <div class="summary-row">
+                    <span>Estimated Tax</span>
+                    <strong>₹{{ number_format($order->tax_amount, 2) }}</strong>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Delivery Charge</span>
+                    <strong>
+                        @if($order->delivery_charge == 0)
+                            <span style="color: #10b981;">FREE</span>
+                        @else
+                            ₹{{ number_format($order->delivery_charge, 2) }}
+                        @endif
+                    </strong>
+                </div>
+                
+                <div class="summary-row grand-total">
+                    <span>Grand Total</span>
+                    <strong style="color: #2563eb;">₹{{ number_format($order->amount, 2) }}</strong>
+                </div>
+            </div>
         </div>
 
     </div>

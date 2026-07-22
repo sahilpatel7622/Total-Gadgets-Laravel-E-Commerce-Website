@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\TaxController;
 use App\Http\Controllers\ReportController;
 
     Route::get('/', function () {
@@ -170,5 +171,9 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/payments/export', [ReportController::class,'paymentsExport'])->name('admin.payments.export');
     Route::get('/admin/coupons/export', [ReportController::class,'couponsExport'])->name('admin.coupons.export');   
     Route::get('/admin/reports/date-wise/export', [ReportController::class, 'dateWiseExport'])->name('admin.reports.date-wise.export');
+
+    // Tax
+    Route::get('/admin/tax', [TaxController::class, 'index'])->name('admin.tax.index');
+    Route::put('/admin/tax', [TaxController::class, 'update'])->name('admin.tax.update');
 
 });

@@ -19,6 +19,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Otp;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\tax;
 
 class CartController extends Controller
 {
@@ -149,11 +150,14 @@ class CartController extends Controller
                 return $overallOk && $userOk;
             });
 
+        $taxSettings = \App\Models\Tax::first();
+
         return view('checkout', compact(
             'cartItems',
             'cartTotal',
             'buyNowProductId',
-            'availableCoupons'
+            'availableCoupons',
+            'taxSettings'
         ));
     }
 
@@ -211,10 +215,13 @@ class CartController extends Controller
                 return $overallOk && $userOk;
             });
 
+        $taxSettings = Tax::first();
+
         return view('checkout', compact(
             'cartItems',
             'cartTotal',
-            'availableCoupons'
+            'availableCoupons',
+            'taxSettings'
         ));
     }
 
@@ -395,6 +402,19 @@ class CartController extends Controller
                 }
             }
 
+            $tax = \App\Models\Tax::first();
+            $taxAmount = 0;
+            $deliveryChargeAmount = 0;
+            if ($tax) {
+                $taxAmount = ($cartTotal * $tax->tax_percentage) / 100;
+                if ($tax->free_delivery_above !== null && $cartTotal >= $tax->free_delivery_above) {
+                    $deliveryChargeAmount = 0;
+                } else {
+                    $deliveryChargeAmount = $tax->delivery_charge ?? 0;
+                }
+            }
+            $cartTotal = $cartTotal + $taxAmount + $deliveryChargeAmount;
+
             $fullAddress = $orderData['address'] . ', ' .
                 $orderData['city'] . ', ' .
                 $orderData['state'] . ' - ' .
@@ -413,6 +433,8 @@ class CartController extends Controller
                 'coupon_id'       => $appliedCoupon['id'] ?? null,
                 'coupon_code'     => $appliedCoupon['code'] ?? null,
                 'coupon_discount' => $appliedCoupon['discount'] ?? 0,
+                'tax_amount'      => $taxAmount,
+                'delivery_charge' => $deliveryChargeAmount,
 
             ]);
 

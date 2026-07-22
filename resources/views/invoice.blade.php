@@ -211,22 +211,42 @@
                     <td>Rs. {{ number_format($item->price, 2) }}</td>
                 </tr>
             @endforeach
+            @php
+                $subTotal = 0;
+                foreach($order->items as $item) {
+                    $subTotal += $item->price * $item->quantity;
+                }
+            @endphp
+
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Estimated Tax</td>
+                <td>Rs. {{ number_format($order->tax_amount, 2) }}</td>
+            </tr>
+
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Delivery Charge</td>
+                <td>
+                    @if($order->delivery_charge == 0)
+                        <span style="color: #10b981; font-weight: bold;">FREE</span>
+                    @else
+                        Rs. {{ number_format($order->delivery_charge, 2) }}
+                    @endif
+                </td>
+            </tr>
+
+            @if($order->coupon_discount > 0)
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold; color: #ef4444;">Coupon Discount</td>
+                <td style="color: #ef4444;">- Rs. {{ number_format($order->coupon_discount, 2) }}</td>
+            </tr>
+            @endif
+
+            <tr>
+                <td colspan="2" style="text-align: right; font-weight: bold; font-size: 16px;">Grand Total</td>
+                <td style="font-weight: bold; font-size: 16px;">Rs. {{ number_format($order->amount, 2) }}</td>
+            </tr>
         </tbody>
     </table>
-
-    <div class="total-box">
-        @if($order->coupon_discount > 0)
-        <div class="total-row" style="margin-bottom: 12px; color: #16a34a; font-size: 12px;">
-            <span>Discount</span>
-            <span>- Rs. {{ number_format($order->coupon_discount, 2) }}</span>
-        </div>
-        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 12px 0;">
-        @endif
-        <div class="total-row">
-            <span>Grand Total</span>
-            <span>Rs. {{ number_format($order->amount, 2) }}</span>
-        </div>
-    </div>
 
     <div class="footer">
         <p>Thank you for shopping with Total Gadgets.</p>

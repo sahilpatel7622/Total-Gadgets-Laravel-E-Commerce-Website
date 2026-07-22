@@ -389,6 +389,22 @@ class CouponController extends Controller
             $discountAmount = $cartTotal;
         }
 
+        $afterDiscount = $cartTotal - $discountAmount;
+        if ($afterDiscount < 0) $afterDiscount = 0;
+
+        $tax = \App\Models\Tax::first();
+        $taxAmount = 0;
+        $deliveryChargeAmount = 0;
+        if ($tax) {
+            $taxAmount = ($afterDiscount * $tax->tax_percentage) / 100;
+            if ($tax->free_delivery_above !== null && $afterDiscount >= $tax->free_delivery_above) {
+                $deliveryChargeAmount = 0;
+            } else {
+                $deliveryChargeAmount = $tax->delivery_charge ?? 0;
+            }
+        }
+        $finalTotal = $afterDiscount + $taxAmount + $deliveryChargeAmount;
+
         session([
             'applied_coupon' => [
                 'id' => $coupon->id,
@@ -403,14 +419,49 @@ class CouponController extends Controller
             'success' => true, 
             'message' => 'Coupon applied successfully!',
             'discount' => $discountAmount,
-            'new_total' => $cartTotal - $discountAmount,
+            'new_total' => $finalTotal,
+            'tax_amount' => $taxAmount,
+            'delivery_charge' => $deliveryChargeAmount,
             'code' => $coupon->code
         ]);
     }
 
-    public function removeCoupon()
+    public function removeCoupon(Request $request)
     {
         session()->forget('applied_coupon');
-        return response()->json(['success' => true, 'message' => 'Coupon removed successfully.']);
+        
+        $cartTotal = 0;
+        if ($request->buy_now_product_id) {
+            $product = \App\Models\product::find($request->buy_now_product_id);
+            if ($product) {
+                $cartTotal = $product->price;
+            }
+        } else {
+            $cartItems = \App\Models\Cart::with('product')->where('user_id', Auth::id())->get();
+            $cartTotal = $cartItems->sum(function ($item) {
+                return $item->product ? $item->product->price * $item->quantity : 0;
+            });
+        }
+        
+        $tax = \App\Models\Tax::first();
+        $taxAmount = 0;
+        $deliveryChargeAmount = 0;
+        if ($tax) {
+            $taxAmount = ($cartTotal * $tax->tax_percentage) / 100;
+            if ($tax->free_delivery_above !== null && $cartTotal >= $tax->free_delivery_above) {
+                $deliveryChargeAmount = 0;
+            } else {
+                $deliveryChargeAmount = $tax->delivery_charge ?? 0;
+            }
+        }
+        $finalTotal = $cartTotal + $taxAmount + $deliveryChargeAmount;
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Coupon removed successfully.',
+            'new_total' => $finalTotal,
+            'tax_amount' => $taxAmount,
+            'delivery_charge' => $deliveryChargeAmount
+        ]);
     }
 }
