@@ -295,7 +295,7 @@ Swal.fire({
                     type="text"
                     name="name"
                     value="{{ old('name', Auth::user()->name) }}"
-                    maxlength="50"
+                    maxlength="30"
                     pattern="[A-Za-z ]+"
                     oninput="this.value=this.value.replace(/[^A-Za-z ]/g,'')"
                 >

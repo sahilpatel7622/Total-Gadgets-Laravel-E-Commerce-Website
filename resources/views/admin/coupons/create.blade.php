@@ -146,8 +146,9 @@
                                 ₹
                             </span>
 
-                            <input type="number"
+                            <input type="text"
                                    name="discount_value"
+                                    maxlength="5    "
                                    class="form-control @error('discount_value') is-invalid @enderror"
                                    value="{{ old('discount_value') }}"
                                    min="0.01"

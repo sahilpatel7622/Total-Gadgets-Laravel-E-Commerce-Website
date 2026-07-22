@@ -157,7 +157,7 @@
             </div>
         @endif
 
-        <input type="text" name="name" value="{{ old('name') }}" placeholder="Enter Name">
+        <input type="text" name="name"  maxlength="25   " value="{{ old('name') }}" placeholder="Enter Name">
 
         <input type="email" name="email" value="{{ old('email') }}" placeholder="Enter Email">
 
@@ -168,15 +168,10 @@
                 type="password"
                 id="password"
                 name="password"
+                maxlength="15"
                 placeholder="Enter Password"
             >
             <span class="toggle-password" onclick="togglePassword()">👁</span>
-            @error('password')
-                <small style="color:red;display:block;margin:-12px 0 12px;">
-                    {{ $message }}
-                </small>
-            @enderror
-
         </div>
         <button type="submit" name="register">Register</button>
 

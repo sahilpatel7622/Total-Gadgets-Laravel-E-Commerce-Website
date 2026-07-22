@@ -178,6 +178,18 @@
 
 
 
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form id="forgotForm" action="{{ route('reset.password') }}" method="POST">
         @csrf
 
@@ -187,6 +199,7 @@
                 id="password"
                 name="password"
                 class="form-control @error('password') is-invalid @enderror"
+                maxlength="15"
                 placeholder="Enter New Password"
             >
 
@@ -209,6 +222,7 @@
                 id="password_confirmation"
                 name="password_confirmation"
                 class="form-control"
+                maxlength="15"
                 placeholder="Confirm Password"
             >
 
@@ -237,29 +251,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@if(session('success'))
-<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Success',
-    text: "{{ session('success') }}",
-    timer: 3000,
-    showConfirmButton: false
-});
-</script>
-@endif
 
-@if(session('error'))
-<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: "{{ session('error') }}",
-    timer: 3000,
-    showConfirmButton: false
-});
-</script>
-@endif
 
 </body>
 

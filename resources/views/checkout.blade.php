@@ -31,7 +31,7 @@
                         <div class="two-col">
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" name="name" value="{{ old('name', Auth::user()->name) }}">
+                                <input type="text" maxlength="30" name="name" value="{{ old('name', Auth::user()->name) }}">
                                 @error('name')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -39,7 +39,7 @@
 
                             <div class="form-group">
                                 <label>Mobile Number</label>
-                                <input type="text" name="number" value="{{ old('number', Auth::user()->number) }}">
+                                <input type="text" maxlength="10" name="number" value="{{ old('number', Auth::user()->number) }}">
                                 @error('number')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -65,7 +65,7 @@
                         <div class="three-col">
                             <div class="form-group">
                                 <label>City</label>
-                                <input type="text" name="city" value="{{ old('city') }}" placeholder="Mumbai">
+                                <input type="text" maxlength="30" name="city" value="{{ old('city') }}" placeholder="Mumbai">
                                 @error('city')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -73,7 +73,7 @@
 
                             <div class="form-group">
                                 <label>State</label>
-                                <input type="text" name="state" value="{{ old('state') }}" placeholder="Maharastra">
+                                <input type="text" maxlength="30" name="state" value="{{ old('state') }}" placeholder="Maharastra">
                                 @error('state')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
@@ -184,7 +184,7 @@
                                 </div>
                             @endif
                             <div style="display: flex; gap: 10px;">
-                                <input type="text" id="coupon_code_input" placeholder="Enter Coupon Code" 
+                                <input type="text" id="coupon_code_input" maxlength="20" placeholder="Enter Coupon Code" 
                                        value="{{ $appliedCoupon ? $appliedCoupon['code'] : '' }}" 
                                        style="flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;"
                                        {{ $appliedCoupon ? 'disabled' : '' }}>

@@ -32,6 +32,7 @@
                     <label class="form-label">Category Name <span class="text-danger">*</span></label>
                     <input type="text" 
                            name="name" 
+                           maxlength="25"
                            class="form-control @error('name') is-invalid @enderror"
                            placeholder="Enter category name"
                            value="{{ old('name') }}">
@@ -45,6 +46,7 @@
                     <label class="form-label">Slug <span class="text-danger">*</span></label>
                     <input type="text" 
                            name="slug" 
+                           maxlength="25"
                            class="form-control @error('slug') is-invalid @enderror"
                            placeholder="enter-category-slug"
                            value="{{ old('slug') }}">

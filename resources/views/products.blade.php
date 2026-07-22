@@ -489,6 +489,7 @@ text-align:center;
                 <input type="text"
                        name="search"
                        id="searchInput"
+                         maxlength="30"
                        placeholder="Search by product or category..."
                        value="{{ request('search') }}">
 

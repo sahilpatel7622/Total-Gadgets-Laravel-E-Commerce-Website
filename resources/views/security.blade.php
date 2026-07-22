@@ -243,7 +243,7 @@ Swal.fire({
                 <div class="form-group">
                     <label>Current Password</label>
                     <div class="password-box">
-                        <input type="password" id="current_password" name="current_password"
+                        <input type="password" id="current_password"  maxlength="15" name="current_password"
                             placeholder="Enter current password" inputmode="numeric"
                             autocomplete="new-password"
                             >
@@ -257,7 +257,7 @@ Swal.fire({
                 <div class="form-group">
                     <label>New Password</label>
                     <div class="password-box">
-                        <input type="password" id="password" name="password"
+                        <input type="password" id="password" maxlength="15" name="password"
                             placeholder="Create new password" inputmode="numeric"
                             autocomplete="new-password"
                             >
@@ -271,7 +271,7 @@ Swal.fire({
                 <div class="form-group">
                     <label>Confirm New Password</label>
                     <div class="password-box">
-                        <input type="password" id="password_confirmation" name="password_confirmation"
+                        <input type="password" id="password_confirmation" maxlength="15" name="password_confirmation"
                             placeholder="Confirm your new password" inputmode="numeric"
                             autocomplete="new-password"
                             >

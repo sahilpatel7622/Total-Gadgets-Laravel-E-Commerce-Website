@@ -204,6 +204,7 @@
             type="password"
             id="password"
             name="password"
+            maxlength="15"
             placeholder="Enter Password"
             inputmode="numeric"
         >

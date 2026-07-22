@@ -36,6 +36,7 @@
 
                     <input type="text"
                            name="name"
+                           maxlength="30"
                            class="form-control @error('name') is-invalid @enderror"
                            placeholder="Enter product name"
                            value="{{ old('name') }}">
@@ -51,6 +52,7 @@
 
                     <input type="text"
                            name="slug"
+                           maxlength="30"
                            class="form-control @error('slug') is-invalid @enderror"
                            placeholder="enter-product-slug"
                            value="{{ old('slug') }}">
@@ -64,8 +66,9 @@
                 <div class="mb-3">
                     <label class="form-label">Price <span class="text-danger">*</span></label>
 
-                    <input type="number"
+                    <input type="text"
                            name="price"
+                           maxlength="9"
                            class="form-control @error('price') is-invalid @enderror"
                            placeholder="Enter price"
                            value="{{ old('price') }}"
