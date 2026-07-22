@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Wishlist;
+use App\Models\category;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -46,12 +47,15 @@ class AppServiceProvider extends ServiceProvider
                 $wishlistProductIds = $wishlists->pluck('product_id')->toArray();
             }
 
+            $footerCategories = category::where('status', 1)->take(5)->get();
+
             $view->with([
                 'cartItems' => $cartItems,
                 'cartCount' => $cartCount,
                 'cartTotal' => $cartTotal,
                 'wishlistCount' => $wishlistCount,
                 'wishlistProductIds' => $wishlistProductIds,
+                'footerCategories' => $footerCategories,
             ]);
         });
     }

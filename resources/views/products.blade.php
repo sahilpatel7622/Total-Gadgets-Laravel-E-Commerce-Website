@@ -412,6 +412,10 @@ grid-template-columns:repeat(2,1fr);
 }
 
 @media(max-width:768px){
+.products-toolbar{
+    position:static;
+}
+
 .toolbar-row{
     flex-direction:column;
     align-items:stretch;

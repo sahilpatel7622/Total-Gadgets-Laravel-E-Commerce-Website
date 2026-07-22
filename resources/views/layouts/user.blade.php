@@ -16,9 +16,9 @@
         <span>Total Gadgets</span>
     </a>
 
+    @if (!request()->routeIs('checkout') && !request()->routeIs('buy.now'))
     <button type="button" class="mobile-btn" id="mobileBtn">☰</button>
 
-    @if (!request()->routeIs('checkout') && !request()->routeIs('buy.now'))
     <div class="nav-menu">
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
             Home
@@ -220,10 +220,11 @@ Swal.fire({
 
         <div class="footer-col">
             <h3>Categories</h3>
-            <a href="{{ route('products') }}?category=mobiles">Mobiles</a>
-            <a href="{{ route('products') }}?category=laptops">Laptops</a>
-            <a href="{{ route('products') }}?category=smart-tvs">Smart TVs</a>
-            <a href="{{ route('products') }}?category=accessories">Accessories</a>
+            @forelse($footerCategories ?? [] as $category)
+                <a href="{{ route('products', ['category' => $category->slug]) }}">{{ $category->name }}</a>
+            @empty
+                <a href="{{ route('products') }}">All Products</a>
+            @endforelse
         </div>
 
         <div class="footer-col">

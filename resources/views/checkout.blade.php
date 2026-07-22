@@ -382,13 +382,13 @@ function applyCoupon() {
         if (data.success) {
             document.getElementById('discount_row').style.display = 'flex';
             document.getElementById('discount_label').innerText = 'Coupon Discount (' + data.code + ')';
-            document.getElementById('discount_amount').innerText = '- ₹' + parseFloat(data.discount).toFixed(2);
-            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toFixed(2);
-            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toFixed(2);
+            document.getElementById('discount_amount').innerText = '- ₹' + parseFloat(data.discount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             if(parseFloat(data.delivery_charge) === 0) {
                 document.getElementById('delivery_amount').innerHTML = '<span class="text-success">FREE</span>';
             } else {
-                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toFixed(2);
+                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
             
             document.getElementById('coupon_code_input').disabled = true;
@@ -431,12 +431,12 @@ function removeCoupon() {
     .then(data => {
         if (data.success) {
             document.getElementById('discount_row').style.display = 'none';
-            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toFixed(2);
-            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toFixed(2);
+            document.getElementById('grand_total_amount').innerText = '₹' + parseFloat(data.new_total).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('tax_amount').innerText = '₹' + parseFloat(data.tax_amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             if(parseFloat(data.delivery_charge) === 0) {
                 document.getElementById('delivery_amount').innerHTML = '<span class="text-success">FREE</span>';
             } else {
-                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toFixed(2);
+                document.getElementById('delivery_amount').innerText = '₹' + parseFloat(data.delivery_charge).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
             
             let input = document.getElementById('coupon_code_input');

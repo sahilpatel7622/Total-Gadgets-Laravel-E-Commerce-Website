@@ -173,7 +173,7 @@ input:checked + .slider:before {
                             <th width="70">Id</th>
                             <th>Name</th>
                             <th>Slug</th>
-                            <th width="120">Status</th>
+                            <th width="120" class="text-center">Status</th>
                             <th width="170" class="text-center">Action</th>
                         </tr>
                     </thead>

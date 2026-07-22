@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <th>Name</th>
                             <th>Email</th>
                             <th>Number</th>
-                            <th width="120">Status</th>
+                            <th width="120" class="text-center">Status</th>
                             <th width="170" class="text-center">Action</th>
                         </tr>
                     </thead>
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td>{{ $r->name }}</td>
                                 <td>{{ $r->email }}</td>
                                 <td>{{ $r->number ?? 'N/A' }}</td>
-                                <td>
+                                <td class="text-center">
                                     <label class="switch">
                                        <input type="checkbox"
                                             class="status-toggle"
