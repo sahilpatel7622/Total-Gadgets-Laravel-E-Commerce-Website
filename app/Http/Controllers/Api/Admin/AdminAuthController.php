@@ -31,7 +31,7 @@ class AdminAuthController extends Controller
             ], 401);
         }
 
-        $admin = Auth::user();
+        $admin = User::find(Auth::id());
 
         if ($admin->role != 'admin') {
 
