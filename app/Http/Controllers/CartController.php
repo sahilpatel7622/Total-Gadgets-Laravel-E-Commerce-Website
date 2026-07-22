@@ -578,7 +578,7 @@ class CartController extends Controller
     private function sendOrderConfirmMail($order, $email, $name, $paymentMethod, $paymentStatus)
     {
         try {
-            $order->load('items.product');
+            $order->load(['items.product', 'detail']);
             $productNames = $order->items
                 ->pluck('product.name')
                 ->implode(', ');
@@ -606,6 +606,7 @@ class CartController extends Controller
                         <p><b>Product:</b> {$productNames}</p>
                         <p><b>Quantity:</b> {$totalQuantity}</p>
                         <p><b>Total Amount:</b> ₹" . number_format($order->amount, 2) . "</p>
+                        <p><b>Delivery Address:</b> " . ($order->detail->address ?? 'N/A') . "</p>
 
                         <hr>
 
