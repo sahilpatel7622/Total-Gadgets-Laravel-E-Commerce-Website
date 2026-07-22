@@ -19,7 +19,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Otp;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use App\Models\tax;
+use App\Models\Tax;
 
 class CartController extends Controller
 {
