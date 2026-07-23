@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 22, 2026 at 10:50 AM
+-- Generation Time: Jul 23, 2026 at 11:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,8 @@ CREATE TABLE `add_to_cart` (
 --
 
 INSERT INTO `add_to_cart` (`id`, `user_id`, `product_id`, `quantity`, `created_at`, `updated_at`) VALUES
-(67, 37, 11, 1, '2026-07-21 07:41:26', '2026-07-21 07:41:26');
+(68, 37, 11, 1, '2026-07-22 03:26:37', '2026-07-22 03:27:19'),
+(69, 37, 8, 1, '2026-07-22 05:48:06', '2026-07-22 05:48:06');
 
 -- --------------------------------------------------------
 
@@ -144,7 +145,7 @@ CREATE TABLE `coupons` (
 --
 
 INSERT INTO `coupons` (`id`, `code`, `type`, `discount_value`, `user_type`, `minimum_order_amount`, `usage_limit`, `per_user_limit`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(21, 'TGCHYJ8T', 'percentage', 10.00, 'all', 15000.00, 5, 1, '2026-07-15 00:00:00', '2026-08-15 00:00:00', 1, '2026-07-15 01:05:21', '2026-07-16 03:31:20'),
+(21, 'TGCHYJ8T', 'percentage', 10.00, 'all', 15000.00, 5, 2, '2026-07-15 00:00:00', '2026-08-15 00:00:00', 1, '2026-07-15 01:05:21', '2026-07-22 03:28:53'),
 (22, 'TGV4OFOE', 'fixed', 1000.00, 'selected', 10000.00, 4, 1, '2026-07-15 00:00:00', '2026-07-16 00:00:00', 1, '2026-07-15 01:08:34', '2026-07-16 04:18:34'),
 (23, 'TG2ZUXM3', 'fixed', 2000.00, 'selected', 30000.00, 10, 2, '2026-07-15 00:00:00', '2026-07-18 00:00:00', 1, '2026-07-15 07:46:23', '2026-07-16 04:17:58');
 
@@ -212,7 +213,9 @@ CREATE TABLE `jobs` (
 
 INSERT INTO `jobs` (`id`, `queue`, `payload`, `attempts`, `reserved_at`, `available_at`, `created_at`) VALUES
 (23, 'default', '{\"uuid\":\"40d66903-9a69-4ec7-a0fd-da23a1544c7f\",\"displayName\":\"App\\\\Mail\\\\CouponCreatedMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":17:{s:8:\\\"mailable\\\";O:26:\\\"App\\\\Mail\\\\CouponCreatedMail\\\":4:{s:6:\\\"coupon\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:17:\\\"App\\\\Models\\\\Coupon\\\";s:2:\\\"id\\\";i:23;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:4:\\\"user\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:15:\\\"App\\\\Models\\\\User\\\";s:2:\\\"id\\\";i:24;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:16:\\\"dhruvi@gmail.com\\\";}}s:6:\\\"mailer\\\";s:4:\\\"smtp\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:12:\\\"messageGroup\\\";N;s:12:\\\"deduplicator\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:3:\\\"job\\\";N;}\",\"batchId\":null},\"createdAt\":1784121384,\"delay\":null}', 0, NULL, 1784121384, 1784121384),
-(24, 'default', '{\"uuid\":\"1dd8ffc4-50a2-4850-9ee6-ac60c34c4836\",\"displayName\":\"App\\\\Mail\\\\CouponCreatedMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":17:{s:8:\\\"mailable\\\";O:26:\\\"App\\\\Mail\\\\CouponCreatedMail\\\":4:{s:6:\\\"coupon\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:17:\\\"App\\\\Models\\\\Coupon\\\";s:2:\\\"id\\\";i:23;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:4:\\\"user\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:15:\\\"App\\\\Models\\\\User\\\";s:2:\\\"id\\\";i:37;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:25:\\\"sahilpatel55500@gmail.com\\\";}}s:6:\\\"mailer\\\";s:4:\\\"smtp\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:12:\\\"messageGroup\\\";N;s:12:\\\"deduplicator\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:3:\\\"job\\\";N;}\",\"batchId\":null},\"createdAt\":1784121384,\"delay\":null}', 0, NULL, 1784121384, 1784121384);
+(24, 'default', '{\"uuid\":\"1dd8ffc4-50a2-4850-9ee6-ac60c34c4836\",\"displayName\":\"App\\\\Mail\\\\CouponCreatedMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":17:{s:8:\\\"mailable\\\";O:26:\\\"App\\\\Mail\\\\CouponCreatedMail\\\":4:{s:6:\\\"coupon\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:17:\\\"App\\\\Models\\\\Coupon\\\";s:2:\\\"id\\\";i:23;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:4:\\\"user\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:15:\\\"App\\\\Models\\\\User\\\";s:2:\\\"id\\\";i:37;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:25:\\\"sahilpatel55500@gmail.com\\\";}}s:6:\\\"mailer\\\";s:4:\\\"smtp\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:12:\\\"messageGroup\\\";N;s:12:\\\"deduplicator\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:3:\\\"job\\\";N;}\",\"batchId\":null},\"createdAt\":1784121384,\"delay\":null}', 0, NULL, 1784121384, 1784121384),
+(25, 'default', '{\"uuid\":\"fe58d109-121f-4fb0-889b-6dad200375bd\",\"displayName\":\"App\\\\Mail\\\\CouponCreatedMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":17:{s:8:\\\"mailable\\\";O:26:\\\"App\\\\Mail\\\\CouponCreatedMail\\\":4:{s:6:\\\"coupon\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:17:\\\"App\\\\Models\\\\Coupon\\\";s:2:\\\"id\\\";i:24;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:4:\\\"user\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:15:\\\"App\\\\Models\\\\User\\\";s:2:\\\"id\\\";i:24;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:16:\\\"dhruvi@gmail.com\\\";}}s:6:\\\"mailer\\\";s:4:\\\"smtp\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:12:\\\"messageGroup\\\";N;s:12:\\\"deduplicator\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:3:\\\"job\\\";N;}\",\"batchId\":null},\"createdAt\":1784716452,\"delay\":null}', 0, NULL, 1784716452, 1784716452),
+(26, 'default', '{\"uuid\":\"13cabac3-bf31-49d6-9a5a-b52e86665c28\",\"displayName\":\"App\\\\Mail\\\\CouponCreatedMail\",\"job\":\"Illuminate\\\\Queue\\\\CallQueuedHandler@call\",\"maxTries\":null,\"maxExceptions\":null,\"failOnTimeout\":false,\"backoff\":null,\"timeout\":null,\"retryUntil\":null,\"data\":{\"commandName\":\"Illuminate\\\\Mail\\\\SendQueuedMailable\",\"command\":\"O:34:\\\"Illuminate\\\\Mail\\\\SendQueuedMailable\\\":17:{s:8:\\\"mailable\\\";O:26:\\\"App\\\\Mail\\\\CouponCreatedMail\\\":4:{s:6:\\\"coupon\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:17:\\\"App\\\\Models\\\\Coupon\\\";s:2:\\\"id\\\";i:24;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:4:\\\"user\\\";O:45:\\\"Illuminate\\\\Contracts\\\\Database\\\\ModelIdentifier\\\":5:{s:5:\\\"class\\\";s:15:\\\"App\\\\Models\\\\User\\\";s:2:\\\"id\\\";i:37;s:9:\\\"relations\\\";a:0:{}s:10:\\\"connection\\\";s:5:\\\"mysql\\\";s:15:\\\"collectionClass\\\";N;}s:2:\\\"to\\\";a:1:{i:0;a:2:{s:4:\\\"name\\\";N;s:7:\\\"address\\\";s:25:\\\"sahilpatel55500@gmail.com\\\";}}s:6:\\\"mailer\\\";s:4:\\\"smtp\\\";}s:5:\\\"tries\\\";N;s:7:\\\"timeout\\\";N;s:13:\\\"maxExceptions\\\";N;s:17:\\\"shouldBeEncrypted\\\";b:0;s:10:\\\"connection\\\";N;s:5:\\\"queue\\\";N;s:12:\\\"messageGroup\\\";N;s:12:\\\"deduplicator\\\";N;s:5:\\\"delay\\\";N;s:11:\\\"afterCommit\\\";N;s:10:\\\"middleware\\\";a:0:{}s:7:\\\"chained\\\";a:0:{}s:15:\\\"chainConnection\\\";N;s:10:\\\"chainQueue\\\";N;s:19:\\\"chainCatchCallbacks\\\";N;s:3:\\\"job\\\";N;}\",\"batchId\":null},\"createdAt\":1784716452,\"delay\":null}', 0, NULL, 1784716452, 1784716452);
 
 -- --------------------------------------------------------
 
@@ -232,7 +235,7 @@ CREATE TABLE `Maintenance_Mode` (
 --
 
 INSERT INTO `Maintenance_Mode` (`id`, `maintenance_mode`, `created_at`, `updated_at`) VALUES
-(1, 1, '2026-07-03 03:53:47', '2026-07-22 01:04:09');
+(1, 1, '2026-07-03 03:53:47', '2026-07-23 03:38:59');
 
 -- --------------------------------------------------------
 
@@ -331,8 +334,8 @@ INSERT INTO `orders` (`id`, `user_id`, `coupon_id`, `coupon_code`, `coupon_disco
 (132, 37, 22, 'TGV4OFOE', 1000.00, 0.00, 0.00, 'TG20260715131438', 31999.00, 'Pending', '2026-07-15 07:44:38', '2026-07-15 07:44:38'),
 (133, 24, 22, 'TGV4OFOE', 1000.00, 0.00, 0.00, 'TG20260715131858', 36999.00, 'Delivered', '2026-07-15 07:48:58', '2026-07-16 01:59:41'),
 (134, 24, 21, 'TGCHYJ8T', 12999.90, 0.00, 0.00, 'TG20260715132101', 116999.10, 'Shipped', '2026-07-15 07:51:01', '2026-07-16 01:59:43'),
-(158, 37, NULL, NULL, 0.00, 0.00, 0.00, 'TG20260721105828', 52999.00, 'Shipped', '2026-07-21 05:28:28', '2026-07-21 07:37:29'),
-(162, 37, 21, 'TGCHYJ8T', 3299.90, 148.50, 99.00, 'TG20260722073728', 29946.60, 'Processing', '2026-07-22 02:07:28', '2026-07-22 03:19:30');
+(158, 37, NULL, NULL, 0.00, 0.00, 0.00, 'TG20260721105828', 52999.00, 'Delivered', '2026-07-21 05:28:28', '2026-07-22 03:22:45'),
+(162, 37, 21, 'TGCHYJ8T', 3299.90, 148.50, 99.00, 'TG20260722073728', 29946.60, 'Delivered', '2026-07-22 02:07:28', '2026-07-23 03:59:43');
 
 -- --------------------------------------------------------
 
@@ -412,7 +415,7 @@ CREATE TABLE `otps` (
 
 INSERT INTO `otps` (`id`, `user_id`, `email`, `otp`, `type`, `expiry`, `created_at`, `updated_at`) VALUES
 (94, 24, 'dhruvi@gmail.com', '543532', 'order_verify', '2026-07-15 07:55:49', '2026-07-15 07:50:49', '2026-07-15 07:50:49'),
-(98, 37, 'sahilpatel55500@gmail.com', '224784', 'order_verify', '2026-07-22 02:12:16', '2026-07-22 02:07:16', '2026-07-22 02:07:16');
+(99, 37, 'sahilpatel55500@gmail.com', '867003', 'order_verify', '2026-07-22 04:17:26', '2026-07-22 04:12:26', '2026-07-22 04:12:26');
 
 -- --------------------------------------------------------
 
@@ -440,8 +443,8 @@ INSERT INTO `payments` (`id`, `order_id`, `user_id`, `amount`, `payment_method`,
 (120, 132, 37, 31999.00, 'CARDLESS_EMI', 'Paid', 'pay_TDn6wcIb8rxsj9', '2026-07-15 07:44:38', '2026-07-15 07:44:59'),
 (121, 133, 24, 36999.00, 'NETBANKING', 'Paid', 'pay_TDnBXcw6c1p86f', '2026-07-15 07:48:58', '2026-07-15 07:49:25'),
 (122, 134, 24, 116999.10, 'Cash On Delivery', 'Pending', NULL, '2026-07-15 07:51:01', '2026-07-15 07:51:01'),
-(139, 158, 37, 52999.00, 'Cash On Delivery', 'Pending', NULL, '2026-07-21 06:17:44', '2026-07-21 07:45:20'),
-(143, 162, 37, 29946.60, 'Cash On Delivery', 'Pending', NULL, '2026-07-22 02:07:28', '2026-07-22 02:07:28');
+(139, 158, 37, 52999.00, 'Cash On Delivery', 'Paid', NULL, '2026-07-21 06:17:44', '2026-07-22 03:22:30'),
+(143, 162, 37, 29946.60, 'Cash On Delivery', 'Paid', NULL, '2026-07-22 02:07:28', '2026-07-23 03:59:36');
 
 -- --------------------------------------------------------
 
@@ -530,8 +533,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('XFDHfjQWJP2KAgXs6v1XFm1WTZBvmuuT5kBeoiKY', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiVTF5am5qRHVIVjhHc1RkeWRScFJtT1JDbmxEYU5WY1FyZ3N0ekF4aSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9yZXBvcnRzIjtzOjU6InJvdXRlIjtzOjEzOiJyZXBvcnRzLmluZGV4Ijt9czo1MjoibG9naW5fYWRtaW5fNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozNjtzOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjM0OiJodHRwOi8vbG9jYWxob3N0OjgwMDAvdGF4LXNldHRpbmdzIjt9fQ==', 1784710244),
-('zDw8HvK1H4SM9XW8A34x5SA9EcjhS4UIfDEo6xx2', 37, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiY0dGcUZJeTN2VVRZUE5WTFdwQVJiUnVKS2F4TGlIaTM5bGo0MTdHbCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9teS1vcmRlcnMiO3M6NToicm91dGUiO3M6OToibXkub3JkZXJzIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzc7czoxMDoib3JkZXJfZGF0YSI7YToxMDp7czo2OiJfdG9rZW4iO3M6NDA6ImNHRnFGSXkzdlVUWVBOVkxXcEFSYlJ1SktheExpSGkzOWxqNDE3R2wiO3M6MTg6ImJ1eV9ub3dfcHJvZHVjdF9pZCI7czoyOiIxMiI7czo0OiJuYW1lIjtzOjU6IlNhaGlsIjtzOjY6Im51bWJlciI7czoxMDoiNjM1OTk1MDgyOSI7czo1OiJlbWFpbCI7czoyNToic2FoaWxwYXRlbDU1NTAwQGdtYWlsLmNvbSI7czo3OiJhZGRyZXNzIjtzOjEzOiJKYW50YXIgTWFudGFyIjtzOjQ6ImNpdHkiO3M6NToiRGVsaGkiO3M6NToic3RhdGUiO3M6NToiRGVsaGkiO3M6NzoicGluY29kZSI7czo2OiI2NDc2NjEiO3M6MTQ6InBheW1lbnRfbWV0aG9kIjtzOjE2OiJDYXNoIE9uIERlbGl2ZXJ5Ijt9fQ==', 1784710195);
+('fKAUVurTouoDrQttvdU38VG8V5KUAZHKFAedyS7W', 37, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRkhiVERPeVdQbnE1NkUzcERwOFRZdG9aZFVhNUJITXpwU1ZYWG1qVSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9teS1vcmRlcnMiO3M6NToicm91dGUiO3M6OToibXkub3JkZXJzIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzc7fQ==', 1784798992),
+('qVmpW9RwpbcoMc7XRTnhGzWeG96w3zcNIzrDwCwL', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiemhqTFpHVEU2OTBVQkhMNjdaWDBpenJIYWgzb1lFOEJ5eXRGaG9iVyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJuZXciO2E6MDp7fXM6Mzoib2xkIjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hZG1pbi9wYXltZW50cyI7czo1OiJyb3V0ZSI7czoxNDoiYWRtaW4ucGF5bWVudHMiO31zOjUyOiJsb2dpbl9hZG1pbl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM2O30=', 1784798989);
 
 -- --------------------------------------------------------
 
@@ -610,7 +613,7 @@ INSERT INTO `user` (`id`, `name`, `number`, `email`, `password`, `role`, `create
 (24, 'Dhruvi', '9876542563', 'dhruvi@gmail.com', '$2y$12$4PneWBTLXBBJJthFWd5x9OHXQwCYDJZK0n01lbs09Te6TufM3Zo6y', 'user', '2026-07-03 01:11:33', '2026-07-21 07:11:17', 'Active', NULL),
 (27, 'Bhumi', '8325325124', 'bhumi@gmail.com', '$2y$12$9jKQq7Rb6pXHkTUqjtXY0eGuvJpnGsDBcv521SOKB3x1Zr5lMdetG', 'user', '2026-07-06 04:06:27', '2026-07-16 05:29:26', 'Inactive', NULL),
 (36, 'Sahil', '7622920559', 'sahil@gmail.com', '$2y$12$eS/YHGH1YQ1fY5ZgCF5yNO4nWrVnmSEZfCloclLyvOrg4z2O9jshm', 'admin', '2026-07-09 01:56:11', '2026-07-16 07:23:30', 'Active', NULL),
-(37, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$4rqCPmaqmaD37nWuF/SZ8OS3vnaMv4Yxbw6DEQZ.xIic9BemINz1G', 'user', '2026-07-10 01:58:02', '2026-07-22 01:44:29', 'Active', NULL);
+(37, 'Sahil', '6359950829', 'sahilpatel55500@gmail.com', '$2y$12$wJOYhh7jYmF9sr9CMMLcpeAfYxwtCIORzvG2YqBuFrSlsIHUKzr6C', 'user', '2026-07-10 01:58:02', '2026-07-23 03:34:02', 'Active', NULL);
 
 -- --------------------------------------------------------
 
@@ -647,7 +650,7 @@ CREATE TABLE `wishlists` (
 
 INSERT INTO `wishlists` (`id`, `user_id`, `product_id`, `created_at`, `updated_at`) VALUES
 (109, 37, 9, '2026-07-15 07:45:20', '2026-07-15 07:45:20'),
-(114, 37, 8, '2026-07-21 04:44:02', '2026-07-21 04:44:02');
+(116, 37, 6, '2026-07-22 05:48:13', '2026-07-22 05:48:13');
 
 --
 -- Indexes for dumped tables
@@ -827,7 +830,7 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `add_to_cart`
 --
 ALTER TABLE `add_to_cart`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `category`
@@ -851,7 +854,7 @@ ALTER TABLE `countries`
 -- AUTO_INCREMENT for table `coupons`
 --
 ALTER TABLE `coupons`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `coupon_users`
@@ -869,7 +872,7 @@ ALTER TABLE `data`
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `Maintenance_Mode`
@@ -887,31 +890,31 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=163;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT for table `otps`
 --
 ALTER TABLE `otps`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -953,7 +956,7 @@ ALTER TABLE `user_location_mapping`
 -- AUTO_INCREMENT for table `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- Constraints for dumped tables
