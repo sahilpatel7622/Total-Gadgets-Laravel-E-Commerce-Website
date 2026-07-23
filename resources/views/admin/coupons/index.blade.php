@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         icon: 'error',
         title: @json(session('error')),
         showConfirmButton: false,
-        timer: 3000,
+        timer: 1500,
         timerProgressBar: true,
         background: '#ffffff',
         color: '#333',
@@ -386,10 +386,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'This coupon will be deleted permanently.',
                 icon: 'warning',
                 showCancelButton: true,
+                reverseButtons: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it',
-                cancelButtonText: 'Cancel'
+                cancelButtonText: 'Cancel',
             }).then(function (result) {
 
                 if (result.isConfirmed) {
