@@ -11,9 +11,9 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\ReportController;
 
-    Route::get('/', function () {
-        return redirect()->route('dashboard');
-    });
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [UserController::class, 'register'])->name('register');
@@ -22,6 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [UserController::class, 'login_store'])->name('login_store');
 });
 
+// User Routes
 Route::middleware(['auth', 'check.status', 'nocache'])->group(function () {
    
     // Logout

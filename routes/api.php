@@ -21,7 +21,7 @@ use App\Http\Controllers\Api\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\Admin\PaymentController as AdminPaymentController;
 
 
-// User
+// User Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -56,7 +56,7 @@ Route::middleware(['auth:sanctum', 'role:user'])
     });
 
 
-    // Admin
+    // Admin Routes
     Route::prefix('admin')->group(function () {
 
     Route::post('/login', [AdminAuthController::class, 'login']);
