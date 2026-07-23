@@ -182,7 +182,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            @endif
+                            @endif  
                             <div style="display: flex; gap: 10px;">
                                 <input type="text" id="coupon_code_input" maxlength="20" placeholder="Enter Coupon Code" 
                                        value="{{ $appliedCoupon ? $appliedCoupon['code'] : '' }}" 

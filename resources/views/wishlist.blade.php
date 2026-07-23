@@ -250,15 +250,6 @@
     .products-grid{
         grid-template-columns:1fr;
     }
-    .product-footer{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
-    .view-btn{
-        width:100%;
-        text-align:center;
-    }
 }
 </style>
 
